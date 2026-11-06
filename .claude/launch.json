@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "lipedema360",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["astro", "preview", "--port", "4321"],
+      "cwd": "site",
+      "port": 4321
+    }
+  ]
+}

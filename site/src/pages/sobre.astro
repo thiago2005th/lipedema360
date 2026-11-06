@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import { artigos } from '../lib/data';
+---
+<Base titulo="Sobre">
+  <div class="prose">
+    <h1>Sobre o Lipedema360</h1>
+    <p>O Lipedema360 é um boletim científico independente, voltado a médicos, nutricionistas, fisioterapeutas e outros profissionais de saúde que acompanham o lipedema.</p>
+    <h2>Como funciona</h2>
+    <p>Todos os dias o sistema consulta o PubMed, a base de literatura biomédica da National Library of Medicine dos Estados Unidos, buscando qualquer artigo que mencione lipedema. Cada artigo novo é classificado por tipo de evidência (diretriz, metanálise, ensaio clínico, estudo original, revisão, relato de caso) e por área clínica, e recebe um resumo em português gerado por inteligência artificial e identificado como tal.</p>
+    <p>Hoje a base reúne {artigos.length} artigos, desde as primeiras descrições até as publicações da última semana.</p>
+    <h2>O que o boletim não é</h2>
+    <p>Os resumos são apoio à leitura, não substituem o artigo original nem o julgamento clínico. Sempre confira o texto completo antes de aplicar qualquer achado na prática.</p>
+    <h2>Responsável</h2>
+    <p>Dr. Thiago Cabral. Contato e sugestões: em breve.</p>
+  </div>
+</Base>

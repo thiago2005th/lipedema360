@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import { artigos, TIPOS } from '../lib/data';
+const fortes = artigos.filter((a) => a.destaque || ['guideline', 'meta', 'rct'].includes(a.tipo));
+const grupos = ['guideline', 'meta', 'rct'].map((t) => ({ t, lista: fortes.filter((a) => a.tipo === t) }));
+const outros = fortes.filter((a) => !['guideline', 'meta', 'rct'].includes(a.tipo));
+---
+<Base titulo="Melhor evidência" descricao="Diretrizes, metanálises e ensaios clínicos randomizados sobre lipedema.">
+  <section class="hero">
+    <h1>Melhor evidência</h1>
+    <p>Diretrizes, consensos, metanálises, revisões sistemáticas e ensaios clínicos randomizados. {fortes.length} artigos.</p>
+  </section>
+  {grupos.map(({ t, lista }) => lista.length > 0 && (
+    <>
+      <h2 class="secao">{TIPOS[t]} ({lista.length})</h2>
+      <div class="grid">{lista.map((a) => <Card a={a} />)}</div>
+    </>
+  ))}
+  {outros.length > 0 && (
+    <>
+      <h2 class="secao">Estudos originais marcados como destaque ({outros.length})</h2>
+      <div class="grid">{outros.map((a) => <Card a={a} />)}</div>
+    </>
+  )}
+</Base>

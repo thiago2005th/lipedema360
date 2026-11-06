@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { artigos, AREAS } from '../../lib/data';
+
+export function getStaticPaths() {
+  return Object.keys(AREAS).map((area) => ({ params: { area } }));
+}
+const { area } = Astro.params;
+const info = AREAS[area!];
+const lista = artigos.filter((a) => a.area === area);
+const fortes = lista.filter((a) => ['guideline', 'meta', 'rct'].includes(a.tipo)).slice(0, 6);
+---
+<Base titulo={info.nome} descricao={info.desc}>
+  <section class="hero">
+    <h1>{info.nome}</h1>
+    <p>{info.desc} {lista.length} artigos nesta área.</p>
+  </section>
+  {fortes.length > 0 && (
+    <>
+      <h2 class="secao">Maior nível de evidência</h2>
+      <div class="grid">{fortes.map((a) => <Card a={a} />)}</div>
+    </>
+  )}
+  <h2 class="secao">Todos, do mais recente ao mais antigo</h2>
+  <div class="grid">{lista.map((a) => <Card a={a} />)}</div>
+</Base>

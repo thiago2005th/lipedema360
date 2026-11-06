@@ -1,0 +1,15 @@
+---
+import Base from '../../layouts/Base.astro';
+import Card from '../../components/Card.astro';
+import { artigos, TIPOS } from '../../lib/data';
+
+export function getStaticPaths() {
+  return Object.keys(TIPOS).map((tipo) => ({ params: { tipo } }));
+}
+const { tipo } = Astro.params;
+const lista = artigos.filter((a) => a.tipo === tipo);
+---
+<Base titulo={TIPOS[tipo!]}>
+  <section class="hero"><h1>{TIPOS[tipo!]}</h1><p>{lista.length} artigos deste tipo, do mais recente ao mais antigo.</p></section>
+  <div class="grid">{lista.map((a) => <Card a={a} />)}</div>
+</Base>

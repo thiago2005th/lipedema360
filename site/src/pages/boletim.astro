@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import { artigos, semanaDe, AREAS } from '../lib/data';
+
+const hoje = new Date();
+const corte = new Date(hoje.getTime() - 120 * 86400000).toISOString().slice(0, 10);
+const recentes = artigos.filter((a) => a.data >= corte);
+const semanas = new Map<string, typeof artigos>();
+for (const a of recentes) {
+  const k = semanaDe(a.data);
+  if (!semanas.has(k)) semanas.set(k, []);
+  semanas.get(k)!.push(a);
+}
+const ordem = [...semanas.keys()].sort().reverse();
+function rotulo(k: string) {
+  const [ano, w] = k.split('-W');
+  return `Semana ${Number(w)} de ${ano}`;
+}
+function ordenar(l: typeof artigos) {
+  return [...l].sort((x, y) => y.peso - x.peso || (y.data > x.data ? 1 : -1));
+}
+---
+<Base titulo="Boletim semanal" descricao="Edições semanais com tudo o que foi publicado sobre lipedema.">
+  <section class="hero">
+    <h1>Boletim semanal</h1>
+    <p>Cada edição reúne o que entrou no PubMed naquela semana, com a evidência mais forte primeiro. Últimas {ordem.length} semanas.</p>
+  </section>
+  {ordem.map((k) => {
+    const lista = ordenar(semanas.get(k)!);
+    const areas = [...new Set(lista.map((a) => a.area))].map((x) => AREAS[x]?.curto).join(', ');
+    return (
+      <section class="boletim-semana" id={k}>
+        <h2>{rotulo(k)}</h2>
+        <p class="sub">{lista.length} {lista.length === 1 ? 'artigo' : 'artigos'} · {areas}</p>
+        <div class="grid">{lista.map((a) => <Card a={a} />)}</div>
+      </section>
+    );
+  })}
+</Base>

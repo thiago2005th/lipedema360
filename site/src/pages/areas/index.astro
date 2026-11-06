@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import { artigos, AREAS } from '../../lib/data';
+const contagem: Record<string, number> = {};
+for (const a of artigos) contagem[a.area] = (contagem[a.area] || 0) + 1;
+---
+<Base titulo="Áreas">
+  <section class="hero"><h1>Áreas clínicas</h1><p>Cada artigo é classificado na área principal a que se dedica.</p></section>
+  <div class="areas-grid">
+    {Object.entries(AREAS).map(([k, v]) => (
+      <a class="area-box" href={`/areas/${k}`}><h3>{v.nome}</h3><p>{v.desc}</p><p class="n">{contagem[k] || 0} artigos</p></a>
+    ))}
+  </div>
+</Base>

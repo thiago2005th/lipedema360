@@ -1,0 +1,44 @@
+---
+import { AREAS, artigos, ultimaAtualizacao, fmtData } from '../lib/data';
+interface Props { titulo?: string; descricao?: string }
+const { titulo, descricao } = Astro.props;
+const tituloFull = titulo ? `${titulo} · Lipedema360` : 'Lipedema360 · A ciência do lipedema, atualizada todo dia';
+const desc = descricao || 'Boletim científico sobre lipedema para médicos, nutricionistas e fisioterapeutas. Artigos do PubMed selecionados e resumidos em português, atualizados diariamente.';
+const path = Astro.url.pathname;
+---
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{tituloFull}</title>
+  <meta name="description" content={desc} />
+  <link rel="alternate" type="application/rss+xml" title="Lipedema360" href="/rss.xml" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header class="topo">
+    <div class="wrap">
+      <a class="logo" href="/"><span class="logo-mark">L</span> Lipedema<b>360</b></a>
+      <nav>
+        <a href="/" class={path === '/' ? 'ativo' : ''}>Últimos</a>
+        <a href="/boletim" class={path.startsWith('/boletim') ? 'ativo' : ''}>Boletim semanal</a>
+        <a href="/destaques" class={path.startsWith('/destaques') ? 'ativo' : ''}>Melhor evidência</a>
+        <a href="/areas" class={path.startsWith('/areas') ? 'ativo' : ''}>Áreas</a>
+        <a href="/sobre" class={path.startsWith('/sobre') ? 'ativo' : ''}>Sobre</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <slot />
+  </main>
+  <footer class="rodape">
+    <div class="wrap">
+      <p><b>Lipedema360</b> · {artigos.length} artigos indexados · última atualização {ultimaAtualizacao ? fmtData(ultimaAtualizacao) : '—'} · <a href="/rss.xml">RSS</a></p>
+      <p class="mini">Conteúdo destinado a profissionais de saúde. Resumos são apoio à leitura e não substituem o artigo original. Fonte dos dados: PubMed / NLM.</p>
+      <p class="mini">Áreas: {Object.entries(AREAS).map(([k, v], i) => (<><a href={`/areas/${k}`}>{v.curto}</a>{i < 6 ? ' · ' : ''}</>))}</p>
+    </div>
+  </footer>
+</body>
+</html>

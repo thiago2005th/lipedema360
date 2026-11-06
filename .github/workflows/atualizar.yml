@@ -1,0 +1,35 @@
+# Roda todo dia as 06:00 (horario de Brasilia = 09:00 UTC):
+# busca artigos novos no PubMed, gera resumos em portugues e salva na base.
+# O commit dispara a publicacao automatica do site (Vercel/Cloudflare Pages).
+name: Atualizar artigos
+
+on:
+  schedule:
+    - cron: "0 9 * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests anthropic
+      - name: Coletar no PubMed
+        run: python pipeline/fetch_pubmed.py
+      - name: Resumir em portugues
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python pipeline/summarize.py --limite 60
+      - name: Salvar
+        run: |
+          git config user.name "lipedema360-bot"
+          git config user.email "bot@lipedema360.com.br"
+          git add data/articles.json
+          git diff --cached --quiet || git commit -m "Atualização automática $(date -u +%Y-%m-%d)"
+          git push

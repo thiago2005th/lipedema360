@@ -1,0 +1,17 @@
+---
+import { AREAS, TIPOS, fmtData, autoresCurto, tituloExibido, resumoCurto, type Artigo } from '../lib/data';
+interface Props { a: Artigo; grande?: boolean }
+const { a, grande = false } = Astro.props;
+const forte = ['guideline', 'meta', 'rct'].includes(a.tipo);
+---
+<article class={`card ${grande ? 'card-grande' : ''}`}>
+  <div class="meta">
+    <a class={`tag tipo-${a.tipo}`} href={`/tipos/${a.tipo}`}>{TIPOS[a.tipo]}</a>
+    <a class="tag area" href={`/areas/${a.area}`}>{AREAS[a.area]?.curto}</a>
+    {forte && <span class="tag forte">Alta evidência</span>}
+  </div>
+  <h3><a href={`/artigos/${a.pmid}`}>{tituloExibido(a)}</a></h3>
+  {a.titulo_pt && <p class="orig">{a.titulo}</p>}
+  <p class="resumo">{resumoCurto(a, grande ? 420 : 240) || <em>Sem abstract disponível no PubMed.</em>}</p>
+  <p class="fonte">{autoresCurto(a)} · <i>{a.revista}</i> · {fmtData(a.data)}</p>
+</article>
