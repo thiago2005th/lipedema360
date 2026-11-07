@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { env } from '../../lib/acesso';
+import { env, cabecalhoServico } from '../../lib/acesso';
 export const prerender = false;
 
 // Painel do dono do produto: SOMENTE agregados da visão anonimizada.
@@ -13,7 +13,7 @@ if (!base || !servico) erro = 'Painel não configurado (faltam as chaves do serv
 else {
   try {
     const r = await fetch(`${base}/rest/v1/v_avaliacoes_anonimas?select=paciente_codigo,profissional_ref,ferramenta,mes,faixa_etaria_decada,dados&limit=50000`, {
-      headers: { apikey: servico, Authorization: `Bearer ${servico}` },
+      headers: cabecalhoServico(servico),
     });
     if (!r.ok) erro = 'Não foi possível ler a visão anonimizada. Rode o SQL 002 no Supabase.';
     else linhas = await r.json();

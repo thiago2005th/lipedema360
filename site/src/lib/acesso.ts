@@ -9,6 +9,12 @@ export function env(nome: string): string | undefined {
   return p || (import.meta.env as Record<string, string | undefined>)[nome];
 }
 
+// Cabeçalhos para chamar o Supabase com a chave de SERVIDOR. As chaves novas (sb_secret_...) não são
+// JWT e vão só em "apikey"; as antigas (service_role, JWT) também aceitam "Authorization: Bearer".
+export function cabecalhoServico(chave: string): Record<string, string> {
+  return chave.startsWith('sb_') ? { apikey: chave } : { apikey: chave, Authorization: `Bearer ${chave}` };
+}
+
 export function configSupabase() {
   const url = (env('PUBLIC_SUPABASE_URL') || '').replace(/\/$/, '');
   const anon = env('PUBLIC_SUPABASE_ANON_KEY') || '';

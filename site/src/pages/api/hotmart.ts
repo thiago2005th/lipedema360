@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { env } from '../../lib/acesso';
+import { env, cabecalhoServico } from '../../lib/acesso';
 
 export const prerender = false;
 
@@ -52,8 +52,7 @@ export const POST: APIRoute = async ({ request, url }) => {
   const r = await fetch(`${base}/rest/v1/assinaturas_lipedema360?on_conflict=email`, {
     method: 'POST',
     headers: {
-      apikey: servico,
-      Authorization: `Bearer ${servico}`,
+      ...cabecalhoServico(servico),
       'Content-Type': 'application/json',
       Prefer: 'resolution=merge-duplicates,return=minimal',
     },
