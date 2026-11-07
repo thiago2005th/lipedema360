@@ -14,9 +14,18 @@ Contexto geral em `LEIA-ME.md`. Nunca peça nem aceite chaves/senhas coladas no 
 - **Design**: editorial escuro, capa interativa (constelação de estudos), busca em português, comparar estudos, alertas RSS por área, página Profissional (`/premium`), análises críticas de exemplo (`/analises`, escritas a partir do abstract, a revisar pelo Dr. Thiago).
 - **Ferramentas clínicas** (`/ferramentas/*`): critérios diagnósticos, tipo/estágio, diferencial, antropometria, laudo de ultrassom (cortes de Amato 2021), questionários, plano terapêutico, seguimento e nota de consulta. Fontes: Buso 2019, Amato 2021 e as revisões de dieta cetogênica da pasta `Artigos/Lipedema` do Dropbox.
 
-### Área Profissional protegida (branch `acesso-profissional`, AINDA NÃO no ar)
+### Área Profissional protegida (NO AR na `main` desde 7 nov)
 
-Tudo abaixo está testado localmente com Supabase simulado e numa prévia da Vercel, **mas não com o Supabase real**.
+**Já configurado em 7 nov 2026 (Claude + Thiago):**
+- Supabase (projeto do PONTE, `kpqqyrwjurjktllwqzri`): SQLs 001 e 002 rodados e verificados (4 tabelas novas com RLS, 6 regras, visão anônima fechada). Redirect URLs `https://www.lipedema360.com.br/entrar` e `.../entrar**` adicionadas (o Site URL `localhost:3000` é do PONTE, não mexer).
+- Vercel (Production): `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY` (chave publishable) e `ADMIN_EMAILS=thiago2005th@gmail.com`.
+- Assinante de teste liberado: `thiago2005th@gmail.com` (tabela `assinaturas_lipedema360`).
+- Teste real anônimo em produção: tabelas devolvem vazio, escrita negada (401), visão anônima negada.
+- Este projeto usa as chaves NOVAS do Supabase (`sb_publishable_`/`sb_secret_`). A secret vai só no cabeçalho `apikey` (já tratado em `cabecalhoServico`).
+
+**Ainda falta:** `SUPABASE_SERVICE_ROLE_KEY` (a Secret key do Supabase), `HOTMART_WEBHOOK_SECRET` (hottok) e `HOTMART_PRODUCT_IDS` na Vercel, coladas pelo próprio Thiago; produto e webhook na Hotmart; SMTP próprio no Supabase (o padrão envia poucos e-mails/hora); testar login por link real, salvar paciente e `/admin` (precisa da Secret key). O e-mail da conta da Hotmart (Outlook) não precisa ser o mesmo do login: vale o e-mail do COMPRADOR.
+
+Tudo abaixo foi testado localmente com Supabase simulado e numa prévia da Vercel.
 
 - Adaptador `@astrojs/vercel@8` (compatível com Astro 5). Só as ferramentas, `/admin` e `/api/hotmart` rodam no servidor; o resto continua estático.
 - `src/middleware.ts`: `/ferramentas/*` exige login + assinatura ativa (verificados no servidor); `/admin` exige e-mail em `ADMIN_EMAILS`. Nega por padrão (sem configuração = bloqueado).
