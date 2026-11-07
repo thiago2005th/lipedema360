@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { artigos, nivelEvidencia, LISTA_ESPERA_URL } from '../lib/data';
+import { artigos, nivelEvidencia, LISTA_ESPERA_URL, CHECKOUT_URL } from '../lib/data';
 
 const total = artigos.length;
 const anos = new Set(artigos.map((a) => a.data.slice(0, 4)));
@@ -32,7 +32,7 @@ const faq = [
   ['Como a inteligência artificial entra no processo?', 'Ela ajuda a organizar e resumir o volume de estudos, e isso é sinalizado em cada resumo. A análise crítica do plano Profissional foi desenhada para ter curadoria do Dr. Thiago Cabral.'],
   ['O que é o nível de evidência exibido?', 'É uma estimativa pelo tipo de publicação (diretriz, metanálise, ensaio, estudo original, revisão, relato de caso). Ele orienta a leitura, mas não avalia a qualidade metodológica de cada estudo.'],
   ['A base gratuita continua aberta?', 'Sim. Busca, filtros, resumos, salvar estudos, alertas por RSS e o boletim semanal seguem gratuitos.'],
-  ['Quanto custa e quando começa?', 'Valores e data de lançamento ainda não foram definidos. Quem entrar na lista de espera será avisado primeiro.'],
+  ['Quanto custa e como entro?', 'Mensal: R$ 97,00 por mês. Anual: R$ 897,00 por ano. Há garantia de 7 dias e você cancela quando quiser. O pagamento é na Hotmart; o acesso é liberado no e-mail da compra, por link, sem senha.'],
 ];
 ---
 <Base titulo="Profissional" descricao="Lipedema360 Profissional: análise crítica dos estudos, comparação, alertas por e-mail e coleções para quem atende lipedema.">
@@ -41,9 +41,12 @@ const faq = [
     <h1>Pare de caçar estudo. <em>Decida com evidência.</em></h1>
     <p>A leitura crítica da literatura sobre lipedema, pronta para usar entre um paciente e outro.</p>
     <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap">
-      {LISTA_ESPERA_URL
-        ? <a class="btn" href={LISTA_ESPERA_URL} target="_blank" rel="noopener">Entrar na lista de espera</a>
-        : <span class="btn off">Lista de espera abre em breve</span>}
+      {CHECKOUT_URL
+        ? <a class="btn" href={CHECKOUT_URL} target="_blank" rel="noopener">Quero assinar</a>
+        : LISTA_ESPERA_URL
+          ? <a class="btn" href={LISTA_ESPERA_URL} target="_blank" rel="noopener">Entrar na lista de espera</a>
+          : <span class="btn off">Lista de espera abre em breve</span>}
+      <a class="btn sec" href="/entrar">Já sou assinante</a>
       <a class="btn sec" href="/ferramentas">Ver as ferramentas</a>
       <a class="btn sec" href="/analises">Ver análises de exemplo</a>
     </div>
@@ -112,17 +115,19 @@ const faq = [
 
   <section class="faixa-pro">
     <div>
-      <p class="eyebrow">Seja um dos primeiros</p>
-      <h2>Entre na lista de <em>espera.</em></h2>
-      <p>Quem entrar primeiro será avisado do lançamento e das condições de entrada.</p>
-      {LISTA_ESPERA_URL
-        ? <a class="btn" href={LISTA_ESPERA_URL} target="_blank" rel="noopener">Quero ser avisado</a>
-        : <span class="btn off">Abre em breve</span>}
+      <p class="eyebrow">Lipedema360 Profissional</p>
+      <h2>Chegue à consulta com a evidência <em>pronta.</em></h2>
+      <p>R$ 97,00 por mês ou R$ 897,00 por ano. Garantia de 7 dias.</p>
+      {CHECKOUT_URL
+        ? <a class="btn" href={CHECKOUT_URL} target="_blank" rel="noopener">Quero assinar</a>
+        : LISTA_ESPERA_URL
+          ? <a class="btn" href={LISTA_ESPERA_URL} target="_blank" rel="noopener">Quero ser avisado</a>
+          : <span class="btn off">Abre em breve</span>}
     </div>
     <ul>
-      <li>Aviso antecipado do lançamento</li>
-      <li>Condições para os primeiros assinantes</li>
-      <li>Sem compromisso</li>
+      <li>Acesso por link no e-mail, sem senha</li>
+      <li>Cancele quando quiser</li>
+      <li>Garantia de 7 dias</li>
     </ul>
   </section>
 </Base>

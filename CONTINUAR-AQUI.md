@@ -44,6 +44,12 @@ Tudo abaixo foi testado localmente com Supabase simulado e numa prévia da Verce
 5. Juntar a branch `acesso-profissional` na `main` quando o Thiago aprovar (a `main` recebe commits automáticos do robô diário: fazer `git pull --rebase` antes).
 6. Testar com Supabase real: login por link, compra de teste, salvar paciente, isolamento entre dois profissionais (rodar o teste no fim do 002), `/admin`.
 
+### Hotmart (estado em 7 nov 2026)
+
+- Produto **ID 8911711** "Lipedema360 Profissional" (assinatura), rascunho. Planos: Mensal R$ 97 · Anual R$ 897 · reembolso 7 dias. Checkout: `https://pay.hotmart.com/U108384219S?off=xgtxd9u4`.
+- Página de vendas publicada (Hotmart Pages), já sem afirmações não verificáveis. Texto e passos em `hotmart/pagina-de-vendas.md`.
+- Falta: aba "Conteúdo" (texto já preenchido, falta o Thiago marcar a caixa de autoria e Salvar), "Finalizar cadastro", webhook (`/api/hotmart`, só produto 8911711), botões de checkout em `/premium`, e as 3 variáveis secretas na Vercel.
+
 ### Pendências e cuidados
 
 - **Jurídico/LGPD**: termos e política são rascunho. O uso dos dados é para melhorar o produto, de forma agregada/anonimizada. Qualquer uso para pesquisa científica exige base legal própria, consentimento e aprovação de comitê de ética (CEP). O nome do paciente fica na tabela `pacientes`, mas é o dono do banco (Supabase) quem tecnicamente consegue ler: endurecimento possível = criptografar o nome.
