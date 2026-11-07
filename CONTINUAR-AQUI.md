@@ -48,7 +48,8 @@ Tudo abaixo foi testado localmente com Supabase simulado e numa prévia da Verce
 
 - Produto **ID 8911711** "Lipedema360 Profissional" (assinatura), rascunho. Planos: Mensal R$ 97 · Anual R$ 897 · reembolso 7 dias. Checkout: `https://pay.hotmart.com/U108384219S?off=xgtxd9u4`.
 - Página de vendas publicada (Hotmart Pages), já sem afirmações não verificáveis. Texto e passos em `hotmart/pagina-de-vendas.md`.
-- Falta: aba "Conteúdo" (texto já preenchido, falta o Thiago marcar a caixa de autoria e Salvar), "Finalizar cadastro", webhook (`/api/hotmart`, só produto 8911711), botões de checkout em `/premium`, e as 3 variáveis secretas na Vercel.
+- **8 nov 2026: Hotmart REPROVOU** ("conteúdo inadequado", sem detalhe). Já corrigido: capa 600x600, aula "Boas-vindas…" (sem dizer que o conteúdo é externo), descrição e página de vendas sem "tratar/prognóstico/tratamento" e com aviso "exclusivo a profissionais de saúde", placeholders de imagem removidos. Falta: pedir REANÁLISE manual (Central de ajuda > Sou Produtor(a) > Cadastro de Produto > Quero ajuda para cadastrar meu produto; o botão "Finalizar cadastro" não aparece). Plano B: Stripe/Kiwify (adaptar `/api/hotmart`). Botão de /premium aponta para checkout que não funciona até aprovar.
+- (antigo) Falta: aba "Conteúdo" (texto já preenchido, falta o Thiago marcar a caixa de autoria e Salvar), "Finalizar cadastro", webhook (`/api/hotmart`, só produto 8911711), botões de checkout em `/premium`, e as 3 variáveis secretas na Vercel.
 
 ### Pendências e cuidados
 
