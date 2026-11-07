@@ -28,4 +28,4 @@ export const FERRAMENTAS: Ferramenta[] = [
 ];
 
 export const AVISO =
-  'Ferramenta de apoio à decisão clínica. Não substitui o julgamento do profissional nem o exame do paciente. Os dados digitados ficam apenas no seu navegador: não são enviados a nenhum servidor. Evite nomes completos e identificadores, use um código do paciente.';
+  'Ferramenta de apoio à decisão clínica. Não substitui o julgamento do profissional nem o exame do paciente. O que você digita só é gravado se você escolher um paciente e clicar em “Salvar avaliação”; sem isso, fica apenas na tela. Os dados gravados ficam no seu cadastro e só você os vê.';

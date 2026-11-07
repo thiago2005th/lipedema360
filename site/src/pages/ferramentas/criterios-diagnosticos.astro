@@ -93,4 +93,21 @@ const extras = [
       calc();
     })();
   </script>
+  <script is:inline>
+window.l360tool = {
+  slug: 'criterios-diagnosticos',
+  rotulos: function () {
+    var r = { A: 'História: critérios presentes (de 6)', exame: 'Exame: blocos completos (de 4)', F: 'Critérios extras (de 2)', resultado: 'Interpretação' };
+    document.querySelectorAll('input[data-k]').forEach(function (i) { r[i.getAttribute('data-k')] = i.parentElement.textContent.trim(); });
+    return r;
+  },
+  coletar: function () {
+    var o = {}; document.querySelectorAll('input[data-k]').forEach(function (i) { o[i.getAttribute('data-k')] = i.checked; });
+    var c = window.l360caso.get().criterios || {};
+    o.A = c.A == null ? null : c.A; o.exame = c.exame == null ? null : c.exame; o.F = c.F == null ? null : c.F; o.resultado = c.titulo || ''; o.texto = c.texto || '';
+    return o;
+  },
+  aplicar: function (d) { document.querySelectorAll('input[data-k]').forEach(function (i) { marcar(i, d[i.getAttribute('data-k')]); }); }
+};
+  </script>
 </Ferramenta>

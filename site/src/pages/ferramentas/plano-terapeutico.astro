@@ -86,4 +86,22 @@ const grupos = [...new Set(itens.map((i) => i.g))];
       calc();
     })();
   </script>
+  <script is:inline>
+window.l360tool = {
+  slug: 'plano-terapeutico',
+  rotulos: function () {
+    var r = {}; document.querySelectorAll('input[data-id]').forEach(function (i) { var b = i.parentElement.querySelector('b'); r[i.getAttribute('data-id')] = b ? b.textContent.trim() : i.getAttribute('data-id'); });
+    document.querySelectorAll('input[data-p]').forEach(function (i, k) { r['p' + k] = 'Pré-cirúrgico: ' + i.getAttribute('data-p'); }); return r;
+  },
+  coletar: function () {
+    var o = {}; document.querySelectorAll('input[data-id]').forEach(function (i) { o[i.getAttribute('data-id')] = i.checked; });
+    document.querySelectorAll('input[data-p]').forEach(function (i, k) { o['p' + k] = i.checked; });
+    o.texto = document.getElementById('plano').value; return o;
+  },
+  aplicar: function (d) {
+    document.querySelectorAll('input[data-id]').forEach(function (i) { marcar(i, d[i.getAttribute('data-id')]); });
+    document.querySelectorAll('input[data-p]').forEach(function (i, k) { marcar(i, d['p' + k]); });
+  }
+};
+  </script>
 </Ferramenta>

@@ -1,0 +1,114 @@
+---
+import Base from '../../layouts/Base.astro';
+import { env } from '../../lib/acesso';
+export const prerender = false;
+
+// Painel do dono do produto: SOMENTE agregados da visão anonimizada.
+// Não consulta pacientes (nomes) nem mostra prontuário, paciente ou profissional individual.
+const base = (env('PUBLIC_SUPABASE_URL') || '').replace(/\/$/, '');
+const servico = env('SUPABASE_SERVICE_ROLE_KEY') || '';
+let erro = '';
+let linhas: any[] = [];
+if (!base || !servico) erro = 'Painel não configurado (faltam as chaves do servidor).';
+else {
+  try {
+    const r = await fetch(`${base}/rest/v1/v_avaliacoes_anonimas?select=paciente_codigo,profissional_ref,ferramenta,mes,faixa_etaria_decada,dados&limit=50000`, {
+      headers: { apikey: servico, Authorization: `Bearer ${servico}` },
+    });
+    if (!r.ok) erro = 'Não foi possível ler a visão anonimizada. Rode o SQL 002 no Supabase.';
+    else linhas = await r.json();
+  } catch {
+    erro = 'Falha de conexão com o banco.';
+  }
+}
+
+// células com menos de 5 casos aparecem como "<5" para evitar reidentificação
+const MIN = 5;
+const n = (v: number) => (v < MIN ? '<5' : String(v));
+const pct = (v: number, t: number) => (t > 0 && v >= MIN ? Math.round((v / t) * 100) + '%' : '—');
+const por = (ferr: string) => linhas.filter((l) => l.ferramenta === ferr);
+const dist = (arr: string[]) => { const m: Record<string, number> = {}; arr.forEach((x) => { if (x) m[x] = (m[x] || 0) + 1; }); return Object.entries(m).sort((a, b) => b[1] - a[1]); };
+const mediana = (v: number[]) => { const a = v.filter((x) => typeof x === 'number' && !isNaN(x)).sort((x, y) => x - y); if (a.length < MIN) return '—'; const m = Math.floor(a.length / 2); return String(+(a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2).toFixed(2)).replace('.', ','); };
+
+const total = linhas.length;
+const pacientes = new Set(linhas.map((l) => l.paciente_codigo)).size;
+const profissionais = new Set(linhas.map((l) => l.profissional_ref)).size;
+const porFerr = dist(linhas.map((l) => l.ferramenta));
+const porMes = dist(linhas.map((l) => String(l.mes).slice(0, 7))).sort((a, b) => (a[0] < b[0] ? -1 : 1));
+const faixas = dist(linhas.map((l) => (l.faixa_etaria_decada == null ? '' : l.faixa_etaria_decada + 's')));
+
+function freq(ferr: string, chaves: [string, string][]) {
+  const base = por(ferr); const t = base.length;
+  return { t, itens: chaves.map(([k, rot]) => { const c = base.filter((l) => l.dados && l.dados[k] === true).length; return { rot, c, p: pct(c, t) }; }).sort((a, b) => b.c - a.c) };
+}
+const critChaves: [string, string][] = [['A1', 'A1 Distribuição desproporcional'], ['A2', 'A2 Pouca influência da perda de peso'], ['A3', 'A3 Dor e equimoses'], ['A4', 'A4 Sensibilidade ao toque ou fadiga'], ['A5', 'A5 Edema sem cacifo'], ['A6', 'A6 Sem alívio com elevação'], ['B1', 'B1 Desproporção proximal (MMII)'], ['B2', 'B2 Gordura cutânea espessada'], ['C1', 'C1 Espessamento proximal distal'], ['C2', 'C2 Sinal do manguito (pernas)'], ['D1', 'D1 Braço proximal espessado'], ['D2', 'D2 Interrupção no cotovelo'], ['E', 'E Sinal do manguito (mãos)'], ['F1', 'F1 Dor à palpação bimanual'], ['F2', 'F2 Gordura poplítea']];
+const difChaves: [string, string][] = [['a0', 'Distribuição desproporcional'], ['a1', 'Dor à palpação'], ['a2', 'Equimoses fáceis'], ['a3', 'Sinal do manguito'], ['a4', 'Edema de pés e tornozelos'], ['a5', 'Stemmer positivo'], ['a6', 'Edema com cacifo'], ['a7', 'Melhora com elevação'], ['a8', 'Alterações de pele'], ['a9', 'Resistente a dieta/exercício'], ['a10', 'Acometimento simétrico'], ['a11', 'Lipomas dolorosos/cefaleia/depressão'], ['a12', 'Varizes']];
+const planoChaves: [string, string][] = [['edu', 'Educação'], ['psi', 'Apoio psicológico'], ['atv', 'Atividade física'], ['dieta', 'Manejo nutricional'], ['iso', 'Padrão isoglicêmico'], ['keto', 'Dieta cetogênica/low carb'], ['comp', 'Compressão'], ['cdt', 'Terapia descongestiva'], ['cpi', 'Compressão pneumática'], ['farm', 'Fármacos'], ['cir', 'Lipoaspiração'], ['lump', 'Lipectomia']];
+const crit = freq('criterios-diagnosticos', critChaves);
+const dif = freq('diferencial', difChaves);
+const plano = freq('plano-terapeutico', planoChaves);
+const classif = por('classificacao');
+const estagios = dist(classif.map((l) => l.dados?.estagio && 'Estágio ' + l.dados.estagio));
+const tipos = dist(classif.flatMap((l) => String(l.dados?.tipos || '').split('+').filter(Boolean).map((t) => 'Tipo ' + t)));
+const antro = por('antropometria');
+const imcs = antro.map((l) => l.dados?.imc);
+const us = por('laudo-ultrassom');
+const seg = por('seguimento');
+---
+<Base titulo="Painel" descricao="Painel de produto (restrito)">
+  <section class="hero" style="padding-bottom:32px;margin-bottom:32px">
+    <p class="eyebrow">Painel do produto · restrito</p>
+    <h1 style="font-size:clamp(2rem,4vw,3rem);max-width:none">O que os profissionais <em>registram.</em></h1>
+    <p>Somente dados agregados e anonimizados. Células com menos de {MIN} casos aparecem como “&lt;{MIN}”. Não há nome, prontuário ou paciente individual neste painel.</p>
+  </section>
+
+  {erro && <p class="res neutro" style="padding:18px">{erro}</p>}
+
+  {!erro && (
+    <>
+      <div class="stats" style="margin-top:0">
+        <div><b>{n(profissionais)}</b>profissionais com dados</div>
+        <div><b>{n(pacientes)}</b>pacientes (códigos)</div>
+        <div><b>{n(total)}</b>avaliações salvas</div>
+      </div>
+
+      <h2 class="secao">Uso das ferramentas</h2>
+      <div class="res neutro" style="margin-top:0">
+        {porFerr.map(([k, v]) => <div class="linha"><span>{k}</span><b>{n(v)}</b></div>)}
+        {porFerr.length === 0 && <p>Nenhuma avaliação salva ainda.</p>}
+      </div>
+
+      <h2 class="secao">Avaliações por mês</h2>
+      <div class="res neutro" style="margin-top:0">{porMes.map(([k, v]) => <div class="linha"><span>{k}</span><b>{n(v)}</b></div>)}</div>
+
+      <h2 class="secao">Faixa etária dos pacientes (quando informada)</h2>
+      <div class="res neutro" style="margin-top:0">{faixas.map(([k, v]) => <div class="linha"><span>{k}</span><b>{n(v)}</b></div>)}{faixas.length === 0 && <p>Sem dados.</p>}</div>
+
+      <h2 class="secao">Critérios diagnósticos mais marcados <span style="font-family:var(--sans);font-size:.84rem;color:var(--muted);font-weight:400">{n(crit.t)} avaliações</span></h2>
+      <div class="res neutro" style="margin-top:0">{crit.itens.map((i) => <div class="linha"><span>{i.rot}</span><b>{n(i.c)} · {i.p}</b></div>)}</div>
+
+      <h2 class="secao">Tipo e estágio</h2>
+      <div class="res neutro" style="margin-top:0">
+        {estagios.map(([k, v]) => <div class="linha"><span>{k}</span><b>{n(v)}</b></div>)}
+        {tipos.map(([k, v]) => <div class="linha"><span>{k}</span><b>{n(v)}</b></div>)}
+        {estagios.length + tipos.length === 0 && <p>Sem dados.</p>}
+      </div>
+
+      <h2 class="secao">Achados do diagnóstico diferencial <span style="font-family:var(--sans);font-size:.84rem;color:var(--muted);font-weight:400">{n(dif.t)} avaliações</span></h2>
+      <div class="res neutro" style="margin-top:0">{dif.itens.map((i) => <div class="linha"><span>{i.rot}</span><b>{n(i.c)} · {i.p}</b></div>)}</div>
+
+      <h2 class="secao">Condutas planejadas <span style="font-family:var(--sans);font-size:.84rem;color:var(--muted);font-weight:400">{n(plano.t)} planos</span></h2>
+      <div class="res neutro" style="margin-top:0">{plano.itens.map((i) => <div class="linha"><span>{i.rot}</span><b>{n(i.c)} · {i.p}</b></div>)}</div>
+
+      <h2 class="secao">Medidas (medianas)</h2>
+      <div class="res neutro" style="margin-top:0">
+        <div class="linha"><span>IMC (antropometria, {n(antro.length)} avaliações)</span><b>{mediana(imcs)}</b></div>
+        <div class="linha"><span>Pré-tibial direita, ultrassom (mm)</span><b>{mediana(us.map((l) => l.dados?.preD))}</b></div>
+        <div class="linha"><span>Pré-tibial esquerda, ultrassom (mm)</span><b>{mediana(us.map((l) => l.dados?.preE))}</b></div>
+        <div class="linha"><span>Coxa anterior direita, ultrassom (mm)</span><b>{mediana(us.map((l) => l.dados?.coxaD))}</b></div>
+        <div class="linha"><span>Dor (seguimento, escala 0 a 10)</span><b>{mediana(seg.map((l) => l.dados?.dor))}</b></div>
+      </div>
+      <p style="color:var(--muted);font-size:.8rem;margin-top:24px">Leitura limitada a 50.000 avaliações. Contagens por avaliação, não por paciente.</p>
+    </>
+  )}
+</Base>

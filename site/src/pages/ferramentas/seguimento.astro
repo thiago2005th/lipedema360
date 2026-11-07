@@ -139,4 +139,13 @@ const sitios = [
       desenhar();
     })();
   </script>
+  <script is:inline>
+window.l360tool = {
+  slug: 'seguimento',
+  _ids: [['peso', 'Peso (kg)'], ['dor', 'Dor (0 a 10)'], ['cintD', 'Cintura (cm)'], ['quadD', 'Quadril (cm)'], ['bracoD', 'Braço D (cm)'], ['bracoE', 'Braço E (cm)'], ['coxapD', 'Coxa proximal D (cm)'], ['coxapE', 'Coxa proximal E (cm)'], ['coxamD', 'Coxa média D (cm)'], ['coxamE', 'Coxa média E (cm)'], ['joelhoD', 'Joelho D (cm)'], ['joelhoE', 'Joelho E (cm)'], ['pantD', 'Panturrilha D (cm)'], ['pantE', 'Panturrilha E (cm)'], ['tornD', 'Tornozelo D (cm)'], ['tornE', 'Tornozelo E (cm)']],
+  rotulos: function () { var r = {}; window.l360tool._ids.forEach(function (x) { r[x[0]] = x[1]; }); return r; },
+  coletar: function () { var o = {}; window.l360tool._ids.forEach(function (x) { o[x[0]] = num(x[0]); }); return o; },
+  aplicar: function (d) { window.l360tool._ids.forEach(function (x) { setv(x[0], d[x[0]]); }); }
+};
+  </script>
 </Ferramenta>

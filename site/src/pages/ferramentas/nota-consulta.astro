@@ -22,6 +22,7 @@ const fontes = [
     <textarea class="texto-saida" id="nota" style="min-height:360px"></textarea>
   </div>
   <div class="acoes-ferr">
+    <button class="btn sec" id="b-paciente" type="button">Carregar últimas avaliações do paciente</button>
     <button class="btn" id="b-copiar" type="button">Copiar nota</button>
     <button class="btn sec" id="b-imprimir" type="button">Imprimir</button>
     <button class="btn sec" id="b-limpar" type="button">Limpar dados do caso</button>
@@ -61,6 +62,24 @@ const fontes = [
       document.getElementById('b-copiar').addEventListener('click', function () { window.copiar(document.getElementById('nota').value, this); });
       document.getElementById('b-imprimir').addEventListener('click', function () { window.print(); });
       document.getElementById('b-limpar').addEventListener('click', function () { if (confirm('Apagar os dados registrados neste caso (não apaga o histórico de seguimento)?')) { window.l360caso.limpar(); blocos(); } });
+      document.addEventListener('l360:recarregar', blocos);
+      document.getElementById('b-paciente').addEventListener('click', function () {
+        var btn = this, P = window.l360pac;
+        var p = P && P.atual();
+        if (!p) { alert('Selecione um paciente na barra acima.'); return; }
+        btn.disabled = true; btn.textContent = 'Carregando…';
+        P.ultimas().then(function (m) {
+          var mapa = { 'criterios-diagnosticos': 'criterios', 'classificacao': 'classificacao', 'diferencial': 'diferencial', 'antropometria': 'antropometria', 'laudo-ultrassom': 'ultrassom', 'plano-terapeutico': 'plano', 'seguimento': 'seguimento' };
+          var n = 0;
+          Object.keys(mapa).forEach(function (slug) {
+            var x = m[slug]; if (x && x.dados && x.dados.texto) { window.l360caso.set(mapa[slug], { texto: x.dados.texto }); n++; }
+          });
+          if (m['instrumentos'] && m['instrumentos'].dados && m['instrumentos'].dados.texto) { window.l360caso.set('escores_texto', m['instrumentos'].dados.texto); n++; }
+          document.getElementById('cod').value = p.nome + ' (' + p.codigo + ')';
+          document.dispatchEvent(new Event('l360:recarregar'));
+          btn.textContent = n ? ('Carregado: ' + n + ' bloco(s)') : 'Nenhuma avaliação salva para este paciente';
+        }).catch(function () { btn.textContent = 'Não foi possível carregar agora'; }).then(function () { btn.disabled = false; setTimeout(function () { btn.textContent = 'Carregar últimas avaliações do paciente'; }, 3000); });
+      });
       blocos();
     })();
   </script>

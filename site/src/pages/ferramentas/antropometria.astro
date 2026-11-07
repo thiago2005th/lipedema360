@@ -52,4 +52,18 @@ const fontes = [
       calc();
     })();
   </script>
+  <script is:inline>
+window.l360tool = {
+  slug: 'antropometria',
+  rotulos: { peso: 'Peso (kg)', altura: 'Altura (cm)', cintura: 'Cintura (cm)', quadril: 'Quadril (cm)', gordura_pernas: 'Gordura das pernas, DXA (kg)', imc: 'IMC (kg/m²)', rcq: 'Relação cintura-quadril', rce: 'Relação cintura-estatura' },
+  coletar: function () {
+    var p = num('peso'), a = num('alt'), c = num('cint'), q = num('quad'), g = num('gper');
+    return { peso: p, altura: a, cintura: c, quadril: q, gordura_pernas: g,
+      imc: (p && a) ? +(p / Math.pow(a / 100, 2)).toFixed(2) : null,
+      rcq: (c && q) ? +(c / q).toFixed(3) : null, rce: (c && a) ? +(c / a).toFixed(3) : null,
+      texto: (window.l360caso.get().antropometria || {}).texto || '' };
+  },
+  aplicar: function (d) { setv('peso', d.peso); setv('alt', d.altura); setv('cint', d.cintura); setv('quad', d.quadril); setv('gper', d.gordura_pernas); }
+};
+  </script>
 </Ferramenta>

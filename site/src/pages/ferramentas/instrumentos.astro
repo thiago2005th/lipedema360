@@ -63,4 +63,12 @@ const inst = [
       desenhar();
     })();
   </script>
+  <script is:inline>
+window.l360tool = {
+  slug: 'instrumentos',
+  rotulos: {},
+  coletar: function () { var c = window.l360caso.get(); return { escores: c.escores || [], texto: c.escores_texto || '' }; },
+  aplicar: function (d) { window.l360caso.set('escores', d.escores || []); window.l360caso.set('escores_texto', d.texto || ''); location.reload(); }
+};
+  </script>
 </Ferramenta>

@@ -15,6 +15,23 @@ export function configSupabase() {
   return url && anon ? { url, anon } : null;
 }
 
+// Administrador: token válido E e-mail confirmado dentro de ADMIN_EMAILS (lista separada por vírgulas).
+export async function verificarAdmin(token?: string): Promise<{ ok: boolean; email?: string }> {
+  const cfg = configSupabase();
+  const lista = (env('ADMIN_EMAILS') || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
+  if (!cfg || !token || lista.length === 0) return { ok: false };
+  try {
+    const u = await fetch(`${cfg.url}/auth/v1/user`, { headers: { apikey: cfg.anon, Authorization: `Bearer ${token}` } });
+    if (!u.ok) return { ok: false };
+    const user = await u.json();
+    const email = String(user?.email || '').toLowerCase().trim();
+    if (!email || !user?.email_confirmed_at || !lista.includes(email)) return { ok: false };
+    return { ok: true, email };
+  } catch {
+    return { ok: false };
+  }
+}
+
 export async function verificar(token?: string): Promise<Veredito> {
   const cfg = configSupabase();
   if (!cfg) return { ok: false, motivo: 'config' };

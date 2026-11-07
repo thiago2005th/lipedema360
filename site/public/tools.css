@@ -74,3 +74,21 @@
 .vis-lista { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 0; }
 @media (max-width: 960px) { .ferr { grid-template-columns: 1fr; gap: 36px; } .ferr-lado { position: static; } .barra-compat { grid-template-columns: 110px 1fr 40px; } }
 @media print { .ferr-lado, .acoes-ferr, .aviso-ferr { display: none; } .res { border-color: #999; background: none; } .res p, .res .linha, .opt { color: #000; } }
+
+/* ---------- paciente (barra, histórico, diálogos) ---------- */
+.pac { border: 1px solid var(--line-2); background: var(--surface); padding: 20px 22px; margin: 0 0 32px; }
+.pac-linha { display: flex; gap: 14px; flex-wrap: wrap; align-items: flex-end; }
+.pac-acoes { display: flex; gap: 10px; flex-wrap: wrap; }
+.pac-acoes .btn { padding: 11px 20px; font-size: .84rem; }
+.pac .btn[disabled] { opacity: .45; cursor: not-allowed; }
+.pac-info { margin: 14px 0 0; font-size: .86rem; color: var(--fg-2); line-height: 1.55; }
+.pac-hist { margin-top: 18px; border-top: 1px solid var(--line); padding-top: 16px; }
+.pac-hist h4 { margin: 0 0 12px; font-size: .7rem; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; color: var(--gold); }
+.pac-hist p { margin: 0; color: var(--muted); font-size: .9rem; }
+.pac-hist-linha { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+.pac-hist-linha select { background: var(--bg); border: 1px solid var(--line-2); color: var(--fg); font: inherit; font-size: .88rem; padding: 9px 12px; border-radius: 2px; }
+.pac-hist-linha .btn { padding: 9px 16px; font-size: .8rem; }
+.dlg { background: var(--surface); color: var(--fg); border: 1px solid var(--gold-dim); padding: 28px 30px; width: min(520px, calc(100vw - 32px)); }
+.dlg::backdrop { background: rgba(0,0,0,.7); }
+.dlg h3 { margin: 0 0 14px; font-size: 1.5rem; font-weight: 450; }
+.fld select { background: var(--surface); border: 1px solid var(--line-2); color: var(--fg); font: inherit; font-size: 1rem; padding: 11px 14px; border-radius: 2px; width: 100%; }

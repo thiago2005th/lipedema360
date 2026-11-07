@@ -1,0 +1,214 @@
+---
+import { env } from '../lib/acesso';
+const url = (env('PUBLIC_SUPABASE_URL') || '').replace(/\/$/, '');
+const anon = env('PUBLIC_SUPABASE_ANON_KEY') || '';
+const VERSAO_TERMOS = '2026-11-rascunho';
+---
+<section class="pac" id="pac">
+  <div class="pac-linha">
+    <div class="fld" style="flex:1;min-width:230px"><label for="pac-sel">Paciente</label><select id="pac-sel"><option value="">Carregando…</option></select></div>
+    <div class="fld"><label for="pac-data">Data da avaliação</label><input id="pac-data" type="date" /></div>
+    <div class="pac-acoes">
+      <button class="btn sec" id="pac-novo" type="button">Novo paciente</button>
+      <button class="btn" id="pac-salvar" type="button" disabled>Salvar avaliação</button>
+    </div>
+  </div>
+  <p class="pac-info" id="pac-info">Escolha ou cadastre um paciente para salvar esta avaliação e comparar com as anteriores. Sem paciente selecionado, nada é gravado.</p>
+  <div id="pac-hist" class="pac-hist" hidden></div>
+</section>
+
+<dialog id="dlg-novo" class="dlg">
+  <form method="dialog" id="form-novo">
+    <h3>Novo paciente</h3>
+    <div class="fld"><label for="n-nome">Nome completo</label><input id="n-nome" required minlength="2" maxlength="200" autocomplete="off" /></div>
+    <div class="campos" style="margin-top:12px">
+      <div class="fld"><label for="n-pront">Nº do prontuário (opcional)</label><input id="n-pront" maxlength="60" autocomplete="off" /></div>
+      <div class="fld"><label for="n-ano">Ano de nascimento (opcional)</label><input id="n-ano" inputmode="numeric" maxlength="4" placeholder="1985" autocomplete="off" /></div>
+    </div>
+    <p class="un" style="margin:12px 0 0;font-size:.8rem;color:var(--muted)">O nome fica visível só para você. O sistema gera um código do paciente que não revela o nome.</p>
+    <p id="n-erro" style="color:#e0a0a0;font-size:.86rem;margin:10px 0 0" hidden></p>
+    <div class="acoes-ferr"><button class="btn" type="submit" id="n-salvar">Cadastrar</button><button class="btn sec" type="button" id="n-cancelar">Cancelar</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlg-termos" class="dlg">
+  <form method="dialog" id="form-termos">
+    <h3>Antes de guardar dados de pacientes</h3>
+    <ul style="color:var(--fg-2);line-height:1.65;padding-left:18px;margin:12px 0">
+      <li>Sou responsável pelos dados dos meus pacientes e tenho base legal e, quando necessário, o consentimento deles para registrá-los.</li>
+      <li>O Lipedema360 armazena esses dados em meu nome. O nome completo do paciente não é exibido à equipe do produto.</li>
+      <li>Dados sem identificação direta (sem nome e sem prontuário, com datas por mês e idade em faixa) podem ser analisados de forma agregada para melhorar o produto.</li>
+      <li>Li os <a href="/termos" target="_blank" rel="noopener" style="color:var(--gold)">Termos de uso e a Política de privacidade</a>.</li>
+    </ul>
+    <label class="opt" style="margin-top:8px"><input type="checkbox" id="t-ok" /> <span>Li e concordo</span></label>
+    <div class="acoes-ferr"><button class="btn" type="submit" id="t-aceitar" disabled>Aceitar e continuar</button><button class="btn sec" type="button" id="t-cancelar">Agora não</button></div>
+  </form>
+</dialog>
+
+<script is:inline define:vars={{ SB_URL: url, SB_KEY: anon, VERSAO_TERMOS }}>
+  (function () {
+    var $ = function (id) { return document.getElementById(id); };
+    var pacientes = [], atual = null, historico = [], aceito = null;
+    var meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+    function fd(iso) { var p = String(iso).slice(0, 10).split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+    function tok() { var m = document.cookie.match(/(?:^|; )l360_at=([^;]*)/); return m ? decodeURIComponent(m[1]) : ''; }
+    function emailDoToken() { try { return JSON.parse(atob(tok().split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).email || null; } catch (e) { return null; } }
+    function api(caminho, opt) {
+      opt = opt || {};
+      var h = { apikey: SB_KEY, Authorization: 'Bearer ' + tok(), 'Content-Type': 'application/json' };
+      if (opt.prefer) h.Prefer = opt.prefer;
+      return fetch(SB_URL + '/rest/v1/' + caminho, { method: opt.method || 'GET', headers: h, body: opt.body ? JSON.stringify(opt.body) : undefined }).then(function (r) {
+        if (r.status === 401 || r.status === 403) { location.href = '/entrar?next=' + encodeURIComponent(location.pathname) + '&erro=sessao'; throw new Error('auth'); }
+        // respostas sem corpo (201/204 com return=minimal) são normais: não tentar ler JSON delas
+        return r.text().then(function (t) {
+          if (!r.ok) throw new Error(t || String(r.status));
+          return t ? JSON.parse(t) : null;
+        });
+      });
+    }
+    function info(t, erro) { var e = $('pac-info'); e.textContent = t; e.style.color = erro ? '#e0a0a0' : ''; }
+    function ferramenta() { return window.l360tool || null; }
+
+    function desenharLista() {
+      var s = $('pac-sel'); s.innerHTML = '';
+      var o0 = document.createElement('option'); o0.value = ''; o0.textContent = pacientes.length ? '— sem paciente (não gravar) —' : 'Nenhum paciente cadastrado'; s.appendChild(o0);
+      pacientes.forEach(function (p) { var o = document.createElement('option'); o.value = p.id; o.textContent = p.nome + (p.prontuario ? ' · pront. ' + p.prontuario : '') + ' · ' + p.codigo; s.appendChild(o); });
+      if (atual) s.value = atual;
+    }
+    function pacAtual() { return pacientes.filter(function (p) { return p.id === atual; })[0] || null; }
+
+    function valor(v) { if (v === true) return 'Sim'; if (v === false) return 'Não'; if (v == null || v === '') return '—'; if (typeof v === 'number') return String(v).replace('.', ','); return String(v); }
+    function delta(a, b) { if (typeof a !== 'number' || typeof b !== 'number') return ''; var d = b - a; if (Math.abs(d) < 1e-9) return '0'; return (d > 0 ? '+' : '') + String(+d.toFixed(2)).replace('.', ','); }
+    function rotulosDe(t) { var r = t.rotulos; return typeof r === 'function' ? r() : (r || {}); }
+
+    function desenharHistorico() {
+      var box = $('pac-hist'); var t = ferramenta();
+      if (!atual || !t) { box.hidden = true; return; }
+      box.hidden = false; box.innerHTML = '';
+      var tit = document.createElement('h4'); tit.textContent = 'Histórico deste paciente nesta ferramenta'; box.appendChild(tit);
+      if (!historico.length) { var vz = document.createElement('p'); vz.textContent = 'Nenhuma avaliação salva ainda para este paciente nesta ferramenta.'; box.appendChild(vz); return; }
+
+      var sel = document.createElement('select'); sel.id = 'pac-cmp'; sel.setAttribute('aria-label', 'Comparar com');
+      historico.forEach(function (h, i) { var o = document.createElement('option'); o.value = i; o.textContent = 'Comparar com a avaliação de ' + fd(h.data_avaliacao); sel.appendChild(o); });
+      var linha = document.createElement('div'); linha.className = 'pac-hist-linha'; linha.appendChild(sel);
+      var bC = document.createElement('button'); bC.type = 'button'; bC.className = 'btn sec'; bC.textContent = 'Carregar no formulário'; linha.appendChild(bC);
+      var bX = document.createElement('button'); bX.type = 'button'; bX.className = 'btn sec'; bX.textContent = 'Excluir'; linha.appendChild(bX);
+      box.appendChild(linha);
+      var tabela = document.createElement('div'); tabela.className = 'tabela-rolavel'; box.appendChild(tabela);
+
+      function comparar() {
+        var h = historico[+sel.value]; var cur = t.coletar(); var rot = rotulosDe(t); var prev = h.dados || {};
+        var tb = document.createElement('table'); tb.className = 'grade';
+        tb.innerHTML = '<thead><tr><th>Item</th><th>' + 'Anterior (' + fd(h.data_avaliacao) + ')' + '</th><th>Atual (formulário)</th><th>Variação</th></tr></thead>';
+        var corpo = document.createElement('tbody'); var n = 0;
+        Object.keys(rot).forEach(function (k) {
+          var a = prev[k], b = cur[k];
+          if ((a == null || a === '' || a === false) && (b == null || b === '' || b === false)) return;
+          n++;
+          var tr = document.createElement('tr');
+          [rot[k], valor(a), valor(b), delta(a, b)].forEach(function (x, i) { var td = document.createElement('td'); td.textContent = x; if (i === 3 && x && x !== '0') td.className = 'pos'; tr.appendChild(td); });
+          corpo.appendChild(tr);
+        });
+        tb.appendChild(corpo); tabela.innerHTML = '';
+        if (!n) { var p = document.createElement('p'); p.textContent = 'Sem itens para comparar.'; tabela.appendChild(p); } else tabela.appendChild(tb);
+      }
+      sel.addEventListener('change', comparar);
+      bC.addEventListener('click', function () { var h = historico[+sel.value]; if (t.aplicar) t.aplicar(h.dados || {}); comparar(); info('Avaliação de ' + fd(h.data_avaliacao) + ' carregada no formulário.'); });
+      bX.addEventListener('click', function () {
+        var h = historico[+sel.value]; if (!confirm('Excluir a avaliação de ' + fd(h.data_avaliacao) + '? Não dá para desfazer.')) return;
+        api('avaliacoes?id=eq.' + encodeURIComponent(h.id), { method: 'DELETE' }).then(function () { return carregarHistorico(); }).then(function () { info('Avaliação excluída.'); }).catch(function () { info('Não foi possível excluir agora.', true); });
+      });
+      comparar();
+      // recalcula a comparação quando o formulário muda
+      var fila; (document.querySelector('.ferr-main') || document).addEventListener('input', function () { clearTimeout(fila); fila = setTimeout(comparar, 250); });
+      (document.querySelector('.ferr-main') || document).addEventListener('change', function () { clearTimeout(fila); fila = setTimeout(comparar, 250); });
+    }
+
+    function carregarHistorico() {
+      var t = ferramenta();
+      if (!atual || !t) { historico = []; desenharHistorico(); return Promise.resolve(); }
+      return api('avaliacoes?select=id,data_avaliacao,criado_em,dados&paciente_id=eq.' + encodeURIComponent(atual) + '&ferramenta=eq.' + encodeURIComponent(t.slug) + '&order=data_avaliacao.desc,criado_em.desc&limit=30')
+        .then(function (r) { historico = r || []; desenharHistorico(); })
+        .catch(function () { info('Não foi possível carregar o histórico agora.', true); });
+    }
+
+    function selecionar(id) {
+      atual = id || null;
+      try { if (atual) localStorage.setItem('l360_pac_sel', atual); else localStorage.removeItem('l360_pac_sel'); } catch (e) {}
+      var p = pacAtual();
+      $('pac-salvar').disabled = !(p && ferramenta());
+      info(p ? 'Paciente: ' + p.nome + ' · código ' + p.codigo + (p.prontuario ? ' · prontuário ' + p.prontuario : '') : 'Escolha ou cadastre um paciente para salvar esta avaliação e comparar com as anteriores. Sem paciente selecionado, nada é gravado.');
+      carregarHistorico();
+    }
+
+    function garantirAceite() {
+      if (aceito) return Promise.resolve(true);
+      return api('profissionais?select=aceite_termos_em&limit=1').then(function (r) {
+        if (r && r[0] && r[0].aceite_termos_em) { aceito = true; return true; }
+        return new Promise(function (resolve) {
+          var d = $('dlg-termos'); $('t-ok').checked = false; $('t-aceitar').disabled = true;
+          $('t-ok').onchange = function () { $('t-aceitar').disabled = !$('t-ok').checked; };
+          $('t-cancelar').onclick = function () { d.close(); resolve(false); };
+          $('form-termos').onsubmit = function (e) {
+            e.preventDefault();
+            api('profissionais?on_conflict=user_id', { method: 'POST', prefer: 'resolution=merge-duplicates,return=minimal', body: { email: emailDoToken(), aceite_termos_em: new Date().toISOString(), versao_termos: VERSAO_TERMOS } })
+              .then(function () { aceito = true; d.close(); resolve(true); })
+              .catch(function () { d.close(); info('Não foi possível registrar o aceite agora.', true); resolve(false); });
+          };
+          d.showModal();
+        });
+      });
+    }
+
+    function init() {
+      if (!SB_URL || !SB_KEY) { $('pac-sel').innerHTML = '<option>Indisponível</option>'; $('pac-novo').disabled = true; info('O cadastro de pacientes ainda não foi ativado neste site.', true); return; }
+      $('pac-data').value = new Date().toISOString().slice(0, 10);
+      api('pacientes?select=id,codigo,nome,prontuario&arquivado=eq.false&order=nome.asc&limit=1000').then(function (r) {
+        pacientes = r || []; desenharLista();
+        var salvo = null; try { salvo = localStorage.getItem('l360_pac_sel'); } catch (e) {}
+        if (salvo && pacientes.some(function (p) { return p.id === salvo; })) selecionar(salvo); else selecionar(null);
+      }).catch(function (e) { if (e.message !== 'auth') { $('pac-sel').innerHTML = '<option>Erro ao carregar</option>'; info('Não foi possível carregar seus pacientes agora. O banco pode ainda não estar configurado.', true); } });
+
+      $('pac-sel').addEventListener('change', function () { selecionar(this.value); });
+
+      $('pac-novo').addEventListener('click', function () {
+        garantirAceite().then(function (ok) { if (!ok) return; $('form-novo').reset(); $('n-erro').hidden = true; $('dlg-novo').showModal(); $('n-nome').focus(); });
+      });
+      $('n-cancelar').addEventListener('click', function () { $('dlg-novo').close(); });
+      $('form-novo').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var nome = $('n-nome').value.trim(); if (nome.length < 2) return;
+        var ano = parseInt($('n-ano').value, 10);
+        var corpo = { nome: nome, prontuario: $('n-pront').value.trim() || null, ano_nascimento: (ano >= 1900 && ano <= 2100) ? ano : null };
+        $('n-salvar').disabled = true;
+        api('pacientes?select=id,codigo,nome,prontuario', { method: 'POST', prefer: 'return=representation', body: corpo }).then(function (r) {
+          var p = r[0]; pacientes.push(p); pacientes.sort(function (a, b) { return a.nome.localeCompare(b.nome, 'pt-BR'); });
+          desenharLista(); $('dlg-novo').close(); selecionar(p.id); info('Paciente cadastrado. Código: ' + p.codigo);
+        }).catch(function () { var er = $('n-erro'); er.hidden = false; er.textContent = 'Não foi possível cadastrar agora. Tente de novo.'; }).then(function () { $('n-salvar').disabled = false; });
+      });
+
+      $('pac-salvar').addEventListener('click', function () {
+        var t = ferramenta(); var p = pacAtual(); if (!t || !p) return;
+        var botao = this; botao.disabled = true;
+        garantirAceite().then(function (ok) {
+          if (!ok) return;
+          var dados = t.coletar();
+          return api('avaliacoes', { method: 'POST', prefer: 'return=minimal', body: { paciente_id: p.id, ferramenta: t.slug, data_avaliacao: $('pac-data').value || new Date().toISOString().slice(0, 10), dados: dados } })
+            .then(function () { info('Avaliação salva no prontuário de ' + p.nome + '.'); return carregarHistorico(); });
+        }).catch(function () { info('Não foi possível salvar agora. Seus dados continuam na tela.', true); }).then(function () { botao.disabled = false; });
+      });
+    }
+
+    // para a nota de consulta: última avaliação de cada ferramenta do paciente selecionado
+    window.l360pac = {
+      atual: function () { return pacAtual(); },
+      ultimas: function () {
+        if (!atual) return Promise.resolve({});
+        return api('avaliacoes?select=ferramenta,data_avaliacao,dados&paciente_id=eq.' + encodeURIComponent(atual) + '&order=data_avaliacao.desc,criado_em.desc&limit=200').then(function (r) {
+          var m = {}; (r || []).forEach(function (x) { if (!m[x.ferramenta]) m[x.ferramenta] = x; }); return m;
+        });
+      }
+    };
+    document.addEventListener('DOMContentLoaded', init);
+  })();
+</script>

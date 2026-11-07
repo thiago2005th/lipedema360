@@ -65,4 +65,21 @@ const estagios = [
       calc();
     })();
   </script>
+  <script is:inline>
+window.l360tool = {
+  slug: 'classificacao',
+  rotulos: { tipos: 'Tipo(s)', estagio: 'Estágio' },
+  coletar: function () {
+    var t = Array.prototype.map.call(document.querySelectorAll('input[name=tipo]:checked'), function (e) { return e.value; });
+    var e = document.querySelector('input[name=estagio]:checked');
+    return { tipos: t.join('+'), estagio: e ? e.value : '', obs: document.getElementById('obs').value.trim(), texto: (window.l360caso.get().classificacao || {}).texto || '' };
+  },
+  aplicar: function (d) {
+    var ts = String(d.tipos || '').split('+');
+    document.querySelectorAll('input[name=tipo]').forEach(function (i) { marcar(i, ts.indexOf(i.value) > -1); });
+    document.querySelectorAll('input[name=estagio]').forEach(function (i) { marcar(i, i.value === String(d.estagio)); });
+    setv('obs', d.obs);
+  }
+};
+  </script>
 </Ferramenta>

@@ -64,4 +64,17 @@ const fontes = [
       calc();
     })();
   </script>
+  <script is:inline>
+window.l360tool = {
+  slug: 'diferencial',
+  rotulos: function () {
+    var r = {}; document.querySelectorAll('input[data-i]').forEach(function (i) { r['a' + i.getAttribute('data-i')] = i.parentElement.textContent.trim(); }); return r;
+  },
+  coletar: function () {
+    var o = {}; document.querySelectorAll('input[data-i]').forEach(function (i) { o['a' + i.getAttribute('data-i')] = i.checked; });
+    o.texto = (window.l360caso.get().diferencial || {}).texto || ''; return o;
+  },
+  aplicar: function (d) { document.querySelectorAll('input[data-i]').forEach(function (i) { marcar(i, d['a' + i.getAttribute('data-i')]); }); }
+};
+  </script>
 </Ferramenta>

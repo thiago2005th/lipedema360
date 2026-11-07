@@ -108,4 +108,24 @@ const fontes = [
       calc();
     })();
   </script>
+  <script is:inline>
+window.l360tool = {
+  slug: 'laudo-ultrassom',
+  rotulos: function () {
+    var r = { coxaD: 'Coxa anterior, direita (mm)', coxaE: 'Coxa anterior, esquerda (mm)', latD: 'Face lateral da perna, direita (mm)', latE: 'Face lateral da perna, esquerda (mm)', preD: 'Pré-tibial, direita (mm)', preE: 'Pré-tibial, esquerda (mm)', supD: 'Supramaleolar medial, direita (mm)', supE: 'Supramaleolar medial, esquerda (mm)', mar: '6 a 8 cm acima do maléolo medial (mm)', acima: 'Medidas acima do corte ótimo', medidas: 'Medidas informadas' };
+    document.querySelectorAll('input[data-d]').forEach(function (i, k) { r['d' + k] = i.getAttribute('data-d'); });
+    return r;
+  },
+  coletar: function () {
+    var o = {}; ['coxaD', 'coxaE', 'latD', 'latE', 'preD', 'preE', 'supD', 'supE', 'mar'].forEach(function (id) { o[id] = num(id); });
+    document.querySelectorAll('input[data-d]').forEach(function (i, k) { o['d' + k] = i.checked; });
+    var c = window.l360caso.get().ultrassom || {}; o.acima = c.acima == null ? null : c.acima; o.medidas = c.medidas == null ? null : c.medidas;
+    o.texto = document.getElementById('laudo').value; return o;
+  },
+  aplicar: function (d) {
+    ['coxaD', 'coxaE', 'latD', 'latE', 'preD', 'preE', 'supD', 'supE', 'mar'].forEach(function (id) { setv(id, d[id]); });
+    document.querySelectorAll('input[data-d]').forEach(function (i, k) { marcar(i, d['d' + k]); });
+  }
+};
+  </script>
 </Ferramenta>
