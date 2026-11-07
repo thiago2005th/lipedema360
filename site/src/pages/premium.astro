@@ -10,6 +10,7 @@ const porMes = Math.round(noAno / 12);
 const pctAlta = Math.round((artigos.filter((a) => nivelEvidencia(a) >= 4).length / total) * 100);
 
 const recursos = [
+  { t: 'Ferramentas clínicas para a consulta', d: 'Critérios diagnósticos, tipo e estágio, diagnóstico diferencial, antropometria, laudo de ultrassom, plano terapêutico, seguimento de medidas e nota de consulta, cada um com a fonte citada.' },
   { t: 'Análise crítica dos estudos que importam', d: 'Cada diretriz, metanálise e ensaio randomizado ganha uma leitura estruturada, do desenho ao que muda na conduta.' },
   { t: 'Comparação lado a lado', d: 'Coloque até três estudos na mesma tela e veja evidência, população e resultados sem abrir dez abas.' },
   { t: 'Alertas por e-mail', d: 'Escolha suas áreas e receba um resumo em português quando sair algo relevante.' },
@@ -43,7 +44,8 @@ const faq = [
       {LISTA_ESPERA_URL
         ? <a class="btn" href={LISTA_ESPERA_URL} target="_blank" rel="noopener">Entrar na lista de espera</a>
         : <span class="btn off">Lista de espera abre em breve</span>}
-      <a class="btn sec" href="/busca">Explorar a base gratuita</a>
+      <a class="btn sec" href="/ferramentas">Ver as ferramentas</a>
+      <a class="btn sec" href="/analises">Ver análises de exemplo</a>
     </div>
   </section>
 

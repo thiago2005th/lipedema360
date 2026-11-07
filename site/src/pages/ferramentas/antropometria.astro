@@ -1,0 +1,54 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Buso G, et al. Obesity, 2019;27(10):1567-1576.', nota: 'Parâmetros de acompanhamento recomendados (peso, IMC, relação cintura-quadril, cintura-estatura, medidas dos membros). Cita Dietzel et al. (2015): razão gordura de pernas (DXA) por IMC, corte ótimo 0,46.' },
+  { ref: 'Classificação do IMC: Organização Mundial da Saúde.', nota: 'Eutrofia 18,5 a 24,9; sobrepeso 25 a 29,9; obesidade grau I 30 a 34,9, II 35 a 39,9, III a partir de 40.' },
+  { ref: 'Relação cintura-quadril: OMS (2008); relação cintura-estatura: corte 0,5 de risco cardiometabólico (uso geral).', nota: 'Não são critérios diagnósticos de lipedema: indicam risco metabólico geral.' },
+  { ref: 'Amato ACM, et al. Phlebology, 2021.', nota: 'Cerca de 81% das pacientes com lipedema seriam classificadas como sobrepeso ou obesidade só pelo IMC, apesar da desproporção corporal.' },
+];
+---
+<Ferramenta slug="antropometria" fontes={fontes}>
+  <h2 class="sub">Medidas</h2>
+  <div class="campos">
+    <div class="fld"><label for="peso">Peso</label><input id="peso" inputmode="decimal" placeholder="72,5" /><span class="un">kg</span></div>
+    <div class="fld"><label for="alt">Altura</label><input id="alt" inputmode="decimal" placeholder="165" /><span class="un">cm</span></div>
+    <div class="fld"><label for="cint">Cintura</label><input id="cint" inputmode="decimal" placeholder="78" /><span class="un">cm, ponto médio entre a última costela e a crista ilíaca</span></div>
+    <div class="fld"><label for="quad">Quadril</label><input id="quad" inputmode="decimal" placeholder="108" /><span class="un">cm, maior circunferência glútea</span></div>
+    <div class="fld"><label for="gper">Gordura das pernas (DXA)</label><input id="gper" inputmode="decimal" placeholder="opcional" /><span class="un">kg, massa de gordura regional</span></div>
+  </div>
+
+  <div class="res neutro" id="res">
+    <p class="kicker">Resultados</p>
+    <div id="out"><p>Preencha peso e altura para começar.</p></div>
+    <p class="nota" id="nota-dxa"></p>
+  </div>
+  <div class="acoes-ferr">
+    <button class="btn" id="b-copiar" type="button">Copiar para o prontuário</button>
+    <button class="btn sec" id="b-limpar" type="button">Limpar</button>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var saida = '';
+      function classeIMC(v) { return v < 18.5 ? 'abaixo do peso' : v < 25 ? 'eutrofia' : v < 30 ? 'sobrepeso' : v < 35 ? 'obesidade grau I' : v < 40 ? 'obesidade grau II' : 'obesidade grau III'; }
+      function calc() {
+        var p = num('peso'), a = num('alt'), c = num('cint'), q = num('quad'), g = num('gper');
+        var linhas = [], html = '';
+        function add(rot, val, extra) { html += '<div class="linha"><span>' + rot + '</span><b>' + val + (extra ? ' · ' + extra : '') + '</b></div>'; linhas.push(rot + ': ' + val + (extra ? ' (' + extra + ')' : '')); }
+        var imc = (p && a) ? p / Math.pow(a / 100, 2) : null;
+        if (imc) add('IMC', f1(imc) + ' kg/m²', classeIMC(imc));
+        if (c && q) { var rcq = c / q; add('Relação cintura-quadril', f2(rcq), rcq >= 0.85 ? 'acima do corte da OMS para mulheres (0,85)' : 'abaixo do corte da OMS para mulheres (0,85)'); }
+        if (c && a) { var rce = c / a; add('Relação cintura-estatura', f2(rce), rce >= 0.5 ? 'igual ou acima de 0,5' : 'abaixo de 0,5'); }
+        if (g && imc) { var r = g / imc; add('Gordura das pernas (kg) ÷ IMC', f2(r), r >= 0.46 ? 'igual ou acima de 0,46' : 'abaixo de 0,46'); }
+        document.getElementById('out').innerHTML = html || '<p>Preencha peso e altura para começar.</p>';
+        document.getElementById('nota-dxa').textContent = (g && imc) ? 'Razão gordura das pernas/IMC: em Dietzel et al. (2015, citado por Buso 2019), valores acima de 0,46 identificaram lipedema em relação à obesidade. Útil em casos duvidosos; depende de DXA e da unidade usada no estudo original (kg), e não substitui a avaliação clínica.' : (imc && imc >= 25 ? 'IMC elevado não exclui nem confirma lipedema: o IMC ignora a distribuição da gordura. Interprete junto com a desproporção corporal e o exame físico.' : '');
+        saida = 'ANTROPOMETRIA\n' + (p ? 'Peso ' + f1(p) + ' kg, ' : '') + (a ? 'altura ' + a + ' cm' : '') + '\n' + linhas.join('\n');
+        if (linhas.length && window.l360caso) window.l360caso.set('antropometria', { texto: saida });
+      }
+      ['peso', 'alt', 'cint', 'quad', 'gper'].forEach(function (id) { document.getElementById(id).addEventListener('input', calc); });
+      document.getElementById('b-copiar').addEventListener('click', function () { calc(); window.copiar(saida, this); });
+      document.getElementById('b-limpar').addEventListener('click', function () { ['peso', 'alt', 'cint', 'quad', 'gper'].forEach(function (id) { document.getElementById(id).value = ''; }); calc(); });
+      calc();
+    })();
+  </script>
+</Ferramenta>

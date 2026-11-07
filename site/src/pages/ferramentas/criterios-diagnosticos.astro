@@ -1,0 +1,95 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Buso G, et al. Lipedema: a call to action! Obesity, 2019;27(10):1567-1576. Tabela 1.', nota: 'Versão modificada dos critérios de Halk e Damstra (diretriz holandesa, 2017), que estendem os seis critérios de Wold (1951).' },
+  { ref: 'Amato ACM, et al. Ultrasound criteria for lipedema diagnosis. Phlebology, 2021.', nota: 'Descreve a mesma lógica clínica: mulher após a puberdade, depósito simétrico abaixo do quadril, Stemmer negativo, Godet negativo, dor à palpação e fragilidade capilar.' },
+];
+const historia = [
+  ['A1', 'Distribuição desproporcional da gordura corporal', ''],
+  ['A2', 'Pouca ou nenhuma influência da perda de peso sobre a distribuição da gordura', ''],
+  ['A3', 'Dor e equimoses nos membros', ''],
+  ['A4', 'Aumento da sensibilidade ao toque ou fadiga dos membros', ''],
+  ['A5', 'Edema sem cacifo (Godet negativo)', ''],
+  ['A6', 'Sem redução da dor ou do desconforto com a elevação dos membros', ''],
+];
+const exame = [
+  ['B1', 'Membro inferior proximal: distribuição desproporcional da gordura', 'B'],
+  ['B2', 'Membro inferior proximal: gordura cutânea espessada circunferencialmente', 'B'],
+  ['C1', 'Membro inferior distal: espessamento proximal da gordura subcutânea', 'C'],
+  ['C2', 'Membro inferior distal: espessamento distal da gordura com peito do pé fino (sinal do manguito)', 'C'],
+  ['D1', 'Braço proximal: gordura subcutânea claramente espessada em relação à vizinhança', 'D'],
+  ['D2', 'Braço proximal: interrupção súbita no cotovelo', 'D'],
+  ['E', 'Braço distal: gordura espessada com dorso da mão fino (sinal do manguito)', 'E'],
+];
+const extras = [
+  ['F1', 'Dor à palpação bimanual'],
+  ['F2', 'Tendões de gordura distal no joelho (região poplítea)'],
+];
+---
+<Ferramenta slug="criterios-diagnosticos" fontes={fontes}>
+  <h2 class="sub">A. História clínica (critérios de Wold)</h2>
+  <div id="g-a">
+    {historia.map(([id, t]) => <label class="opt"><input type="checkbox" data-k={id} /> <span><b>{id}</b> · {t}</span></label>)}
+  </div>
+
+  <h2 class="sub">B a E. Exame físico</h2>
+  <div id="g-e">
+    {exame.map(([id, t, g]) => <label class="opt"><input type="checkbox" data-k={id} data-g={g} /> <span><b>{id}</b> · {t}</span></label>)}
+  </div>
+
+  <h2 class="sub">F. Critérios extras</h2>
+  <div id="g-f">
+    {extras.map(([id, t]) => <label class="opt"><input type="checkbox" data-k={id} /> <span><b>{id}</b> · {t}</span></label>)}
+  </div>
+
+  <div class="res" id="res">
+    <p class="kicker">Resultado</p>
+    <h3 id="r-tit">Marque os achados</h3>
+    <p id="r-txt">O resultado aparece conforme você marca os critérios.</p>
+    <div id="r-det"></div>
+    <p class="nota">Regra aplicada, conforme Buso et al. (2019): diagnóstico altamente provável quando A1 a A6 estão presentes e, no exame, B (1+2), ou C (1+2), ou D (1+2), ou E. Na ausência de no máximo dois critérios entre A e E, a presença de F1 ou F2 também apoia o diagnóstico. Não é um escore validado de probabilidade. O diagnóstico de lipedema continua clínico e de exclusão.</p>
+  </div>
+  <div class="acoes-ferr">
+    <button class="btn" id="b-copiar" type="button">Copiar para o prontuário</button>
+    <button class="btn sec" id="b-limpar" type="button">Limpar</button>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var caixas = document.querySelectorAll('input[data-k]');
+      var saida = '';
+      function marcado(k) { var e = document.querySelector('input[data-k="' + k + '"]'); return e && e.checked; }
+      function calc() {
+        var A = ['A1','A2','A3','A4','A5','A6'].filter(marcado);
+        var B = marcado('B1') && marcado('B2'), C = marcado('C1') && marcado('C2'), D = marcado('D1') && marcado('D2'), E = marcado('E');
+        var exameOk = B || C || D || E;
+        var nExame = (B ? 1 : 0) + (C ? 1 : 0) + (D ? 1 : 0) + (E ? 1 : 0);
+        var F = ['F1','F2'].filter(marcado);
+        var total = document.querySelectorAll('input[data-k]:checked').length;
+        var tit, txt, cls = '';
+        if (total === 0) { tit = 'Marque os achados'; txt = 'O resultado aparece conforme você marca os critérios.'; }
+        else if (A.length === 6 && exameOk) { tit = 'Diagnóstico altamente provável'; txt = 'A história completa (A1 a A6) está presente e há achado de exame que fecha a regra (' + [B && 'B', C && 'C', D && 'D', E && 'E'].filter(Boolean).join(', ') + ').'; }
+        else if (A.length >= 4 && exameOk && F.length > 0) { tit = 'Sugestivo, com apoio dos critérios extras'; txt = 'Faltam ' + (6 - A.length) + ' critério(s) de história, mas há achado de exame completo e critério extra (' + F.join(', ') + ') que apoia o diagnóstico.'; }
+        else if (A.length >= 4 || exameOk) { tit = 'Parcial: critérios insuficientes para a regra'; txt = 'História: ' + A.length + ' de 6. Exame: ' + (exameOk ? 'achado completo presente' : 'nenhum bloco completo (B, C, D ou E)') + '. Considere completar a avaliação e o diagnóstico diferencial.'; }
+        else { tit = 'Poucos critérios presentes'; txt = 'História: ' + A.length + ' de 6. Exame: sem bloco completo. O quadro não preenche a regra; reavalie hipóteses alternativas (linfedema, obesidade, doença venosa, Dercum).'; }
+        document.getElementById('r-tit').textContent = tit;
+        document.getElementById('r-txt').textContent = txt;
+        document.getElementById('r-det').innerHTML =
+          '<div class="linha"><span>História (A)</span><b>' + A.length + ' de 6</b></div>' +
+          '<div class="linha"><span>Exame, blocos completos (B, C, D, E)</span><b>' + nExame + ' de 4</b></div>' +
+          '<div class="linha"><span>Critérios extras (F)</span><b>' + F.length + ' de 2</b></div>';
+        saida = 'CRITÉRIOS DIAGNÓSTICOS DE LIPEDEMA (Wold / Halk e Damstra, conforme Buso 2019)\n' +
+          'História: ' + A.length + '/6 (' + (A.join(', ') || 'nenhum') + ')\n' +
+          'Exame: B ' + (B ? 'sim' : 'não') + ', C ' + (C ? 'sim' : 'não') + ', D ' + (D ? 'sim' : 'não') + ', E ' + (E ? 'sim' : 'não') + '\n' +
+          'Extras: ' + (F.join(', ') || 'nenhum') + '\n' +
+          'Interpretação: ' + tit + '. ' + txt;
+        if (window.l360caso) window.l360caso.set('criterios', { titulo: tit, A: A.length, exame: nExame, F: F.length, texto: saida });
+      }
+      caixas.forEach(function (c) { c.addEventListener('change', calc); });
+      document.getElementById('b-copiar').addEventListener('click', function () { calc(); window.copiar(saida, this); });
+      document.getElementById('b-limpar').addEventListener('click', function () { caixas.forEach(function (c) { c.checked = false; }); calc(); });
+      var prev = window.l360caso && window.l360caso.get().criterios;
+      calc();
+    })();
+  </script>
+</Ferramenta>

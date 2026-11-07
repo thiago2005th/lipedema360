@@ -1,0 +1,67 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Buso G, et al. Lipedema: a call to action! Obesity, 2019;27(10):1567-1576. Figura 1.', nota: 'Descrição de tipos (distribuição) e estágios (gravidade).' },
+  { ref: 'Amato ACM, et al. Phlebology, 2021. Figura 3.', nota: 'Usa a mesma classificação por distribuição.' },
+];
+const tipos = [
+  ['I', 'Quadris e glúteos'],
+  ['II', 'Dos quadris aos joelhos'],
+  ['III', 'Dos quadris aos tornozelos'],
+  ['IV', 'Braços (cerca de 80% das pacientes têm algum acometimento dos braços)'],
+  ['V', 'Apenas panturrilhas (raro)'],
+];
+const estagios = [
+  ['1', 'Pele lisa e macia, com hipoderme aumentada.'],
+  ['2', 'Pele irregular, com nódulos palpáveis do tamanho de pérolas (aspecto de casca de laranja).'],
+  ['3', 'Dobras e depressões sobre massas de gordura maiores e deformantes, frequentemente com limitação funcional.'],
+  ['4', 'Lipolinfedema: linfedema concomitante. Edema de pés com sinal de Stemmer positivo; pode haver celulite infecciosa ou papilomatose.'],
+];
+---
+<Ferramenta slug="classificacao" fontes={fontes}>
+  <h2 class="sub">Tipo (distribuição), pode haver mais de um</h2>
+  <div>
+    {tipos.map(([id, t]) => <label class="opt"><input type="checkbox" name="tipo" value={id} /> <span><b>Tipo {id}</b> · {t}</span></label>)}
+  </div>
+
+  <h2 class="sub">Estágio (gravidade)</h2>
+  <div>
+    {estagios.map(([id, t]) => <label class="opt"><input type="radio" name="estagio" value={id} /> <span><b>Estágio {id}</b> · {t}</span></label>)}
+  </div>
+
+  <h2 class="sub">Observações</h2>
+  <div class="fld"><textarea id="obs" rows="2" placeholder="Ex.: assimetria, comorbidade venosa, hipermobilidade"></textarea></div>
+
+  <div class="res" id="res">
+    <p class="kicker">Classificação</p>
+    <h3 id="r-tit">Selecione tipo e estágio</h3>
+    <p id="r-txt"></p>
+    <p class="nota">A progressão é heterogênea: algumas mulheres estabilizam, outras pioram, com exacerbações em situações de estresse como gestação ou cirurgia (Buso et al., 2019). Tipo e estágio são descritivos e não equivalem a indicação de conduta.</p>
+  </div>
+  <div class="acoes-ferr">
+    <button class="btn" id="b-copiar" type="button">Copiar para o prontuário</button>
+    <button class="btn sec" id="b-limpar" type="button">Limpar</button>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var saida = '';
+      function calc() {
+        var t = Array.prototype.map.call(document.querySelectorAll('input[name=tipo]:checked'), function (e) { return e.value; });
+        var eEl = document.querySelector('input[name=estagio]:checked'); var e = eEl ? eEl.value : '';
+        var obs = document.getElementById('obs').value.trim();
+        var tit = (t.length || e) ? ('Lipedema ' + (t.length ? 'tipo ' + t.join(' + ') : '') + (e ? (t.length ? ', ' : '') + 'estágio ' + e : '')) : 'Selecione tipo e estágio';
+        var txt = e === '4' ? 'Estágio 4 corresponde ao lipolinfedema. Considere avaliação linfática e manejo combinado.' : '';
+        document.getElementById('r-tit').textContent = tit;
+        document.getElementById('r-txt').textContent = txt;
+        saida = 'CLASSIFICAÇÃO DO LIPEDEMA\n' + tit + (obs ? '\nObservações: ' + obs : '');
+        if ((t.length || e) && window.l360caso) window.l360caso.set('classificacao', { titulo: tit, texto: saida });
+      }
+      document.querySelectorAll('input').forEach(function (i) { i.addEventListener('change', calc); });
+      document.getElementById('obs').addEventListener('input', calc);
+      document.getElementById('b-copiar').addEventListener('click', function () { calc(); window.copiar(saida, this); });
+      document.getElementById('b-limpar').addEventListener('click', function () { document.querySelectorAll('input').forEach(function (i) { i.checked = false; }); document.getElementById('obs').value = ''; calc(); });
+      calc();
+    })();
+  </script>
+</Ferramenta>

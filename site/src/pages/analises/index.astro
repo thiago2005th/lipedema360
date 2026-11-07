@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import { artigos, tituloExibido, fmtData, TIPOS } from '../../lib/data';
+import { ANALISES } from '../../lib/analises';
+const lista = ANALISES.map((an) => ({ an, a: artigos.find((x) => x.pmid === an.pmid)! }));
+---
+<Base titulo="Análises críticas" descricao="Leitura crítica estruturada dos estudos de maior evidência sobre lipedema.">
+  <section class="hero">
+    <p class="eyebrow">Lipedema360 Profissional · exemplos</p>
+    <h1>Do abstract à <em>decisão.</em></h1>
+    <p>Cada análise segue a mesma estrutura: pergunta, desenho, resultado, riscos de viés, aplicabilidade e o que muda na conduta. Estas duas são exemplos do formato do plano Profissional.</p>
+  </section>
+  <div class="grid" style="grid-template-columns:1fr">
+    {lista.map(({ an, a }) => (
+      <article class="card">
+        <div class="meta"><span class="tag">{TIPOS[a.tipo]}</span><span class="tag area">{fmtData(a.data)}</span></div>
+        <h3 style="margin-top:12px"><a href={`/analises/${an.pmid}`}>{an.titulo}</a></h3>
+        <p class="resumo">{an.pergunta}</p>
+        <p class="fonte"><a href={`/analises/${an.pmid}`} style="color:var(--gold)">Ler análise →</a> &nbsp; <span>{tituloExibido(a).slice(0, 90)}…</span></p>
+      </article>
+    ))}
+  </div>
+</Base>

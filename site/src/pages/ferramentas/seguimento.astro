@@ -1,0 +1,141 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Buso G, et al. Obesity, 2019;27(10):1567-1576, citando Reich-Schupke et al. (diretriz S1 alemã, 2017).', nota: 'Parâmetros de acompanhamento recomendados: índice de atividade diária, peso, IMC, relação cintura-quadril, cintura-estatura e medidas de circunferência e volume dos membros.' },
+  { ref: 'Volume por segmentos de cone truncado: método geométrico clássico de estimativa de volume de membro a partir de circunferências.', nota: 'Estimativa. Não substitui a perimetria óptica (perômetro). Não há ponto de corte validado para lipedema, que costuma ser simétrico.' },
+];
+const sitios = [
+  ['cint', 'Cintura', false], ['quad', 'Quadril', false],
+  ['braco', 'Braço', true], ['coxap', 'Coxa proximal', true], ['coxam', 'Coxa média', true], ['joelho', 'Joelho', true], ['pant', 'Panturrilha (maior)', true], ['torn', 'Tornozelo', true],
+];
+---
+<Ferramenta slug="seguimento" fontes={fontes}>
+  <h2 class="sub">Paciente e visita</h2>
+  <div class="campos">
+    <div class="fld"><label for="cod">Código do paciente</label><input id="cod" placeholder="ex.: L-014" autocomplete="off" /><span class="un">use código, não o nome</span></div>
+    <div class="fld"><label for="data">Data da visita</label><input id="data" type="date" /></div>
+    <div class="fld"><label for="peso">Peso (kg)</label><input id="peso" inputmode="decimal" /></div>
+    <div class="fld"><label for="dor">Dor (0 a 10)</label><input id="dor" inputmode="decimal" placeholder="escala numérica" /></div>
+  </div>
+
+  <h2 class="sub">Circunferências (cm)</h2>
+  <div class="tabela-rolavel">
+    <table class="grade">
+      <thead><tr><th>Local</th><th>Direita</th><th>Esquerda</th></tr></thead>
+      <tbody>
+        {sitios.map(([id, nome, par]) => (
+          par
+            ? <tr><td>{nome}</td><td><input id={`${id}D`} inputmode="decimal" /></td><td><input id={`${id}E`} inputmode="decimal" /></td></tr>
+            : <tr><td>{nome}</td><td colspan="2"><input id={`${id}D`} inputmode="decimal" /></td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <div class="acoes-ferr">
+    <button class="btn" id="b-salvar" type="button">Salvar visita</button>
+    <button class="btn sec" id="b-csv" type="button">Exportar CSV</button>
+  </div>
+
+  <div class="res neutro" id="res">
+    <p class="kicker">Evolução</p>
+    <div id="evol"><p>Informe o código do paciente e salve a primeira visita.</p></div>
+    <div id="graf" style="margin-top:14px"></div>
+  </div>
+
+  <h2 class="sub">Calculadora de volume do membro (cones truncados)</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin:0 0 12px">Meça a circunferência em níveis equidistantes, do mais distal ao mais proximal, e informe a distância entre os níveis.</p>
+  <div class="campos">
+    <div class="fld"><label for="vh">Distância entre níveis (cm)</label><input id="vh" inputmode="decimal" value="10" /></div>
+    <div class="fld"><label for="vd">Circunferências, direita (cm)</label><input id="vd" placeholder="22, 28, 33, 36, 38" /></div>
+    <div class="fld"><label for="ve">Circunferências, esquerda (cm)</label><input id="ve" placeholder="22, 28, 33, 36, 38" /></div>
+  </div>
+  <div class="res neutro" style="margin-top:18px"><div id="vout"><p>Informe ao menos dois níveis.</p></div></div>
+
+  <script is:inline>
+    (function () {
+      var SIT = [['cint', false], ['quad', false], ['braco', true], ['coxap', true], ['coxam', true], ['joelho', true], ['pant', true], ['torn', true]];
+      var NOMES = { cint: 'Cintura', quad: 'Quadril', braco: 'Braço', coxap: 'Coxa prox.', coxam: 'Coxa média', joelho: 'Joelho', pant: 'Panturrilha', torn: 'Tornozelo' };
+      document.getElementById('data').value = new Date().toISOString().slice(0, 10);
+      var KS = 'l360_seg';
+      function lerTudo() { try { return JSON.parse(localStorage.getItem(KS) || '{}'); } catch (e) { return {}; } }
+      function gravarTudo(o) { try { localStorage.setItem(KS, JSON.stringify(o)); } catch (e) {} }
+      function cod() { return document.getElementById('cod').value.trim().toUpperCase(); }
+      function fd(iso) { var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+      function d1(a, b) { return (a == null || b == null) ? '—' : ((a - b > 0 ? '+' : '') + f1(a - b)); }
+
+      function visitas() { var t = lerTudo(); return (t[cod()] || []).slice().sort(function (a, b) { return a.data < b.data ? -1 : 1; }); }
+
+      function spark(v, chave, rot) {
+        var pts = v.map(function (x, i) { return { i: i, y: x[chave] }; }).filter(function (p) { return p.y != null; });
+        if (pts.length < 2) return '';
+        var w = 300, h = 60, mn = Math.min.apply(null, pts.map(function (p) { return p.y; })), mx = Math.max.apply(null, pts.map(function (p) { return p.y; }));
+        if (mx === mn) { mx += 1; mn -= 1; }
+        var xs = function (i) { return 8 + i * (w - 16) / (v.length - 1); }, ys = function (y) { return h - 8 - (y - mn) * (h - 16) / (mx - mn); };
+        var d = pts.map(function (p, k) { return (k ? 'L' : 'M') + xs(p.i).toFixed(1) + ' ' + ys(p.y).toFixed(1); }).join(' ');
+        var dots = pts.map(function (p) { return '<circle cx="' + xs(p.i).toFixed(1) + '" cy="' + ys(p.y).toFixed(1) + '" r="3" fill="#e0c48f"/>'; }).join('');
+        return '<div style="display:inline-block;margin-right:28px"><div style="font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">' + rot + ': ' + f1(pts[0].y) + ' → ' + f1(pts[pts.length - 1].y) + '</div><svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '"><path d="' + d + '" fill="none" stroke="#c9a66b" stroke-width="1.5"/>' + dots + '</svg></div>';
+      }
+
+      function desenhar() {
+        var v = visitas();
+        var ev = document.getElementById('evol'), gr = document.getElementById('graf');
+        if (!cod()) { ev.innerHTML = '<p>Informe o código do paciente e salve a primeira visita.</p>'; gr.innerHTML = ''; return; }
+        if (!v.length) { ev.innerHTML = '<p>Nenhuma visita salva para ' + cod() + '.</p>'; gr.innerHTML = ''; return; }
+        var primeira = v[0], ultima = v[v.length - 1], anterior = v.length > 1 ? v[v.length - 2] : null;
+        var h = '<div class="tabela-rolavel"><table class="grade"><thead><tr><th>Medida</th><th>1ª visita</th><th>Anterior</th><th>Atual</th><th>Δ vs 1ª</th><th>Δ vs anterior</th></tr></thead><tbody>';
+        function linha(rot, k) {
+          var a = primeira[k], b = anterior ? anterior[k] : null, c = ultima[k];
+          if (a == null && c == null) return '';
+          return '<tr><td>' + rot + '</td><td>' + f1(a) + '</td><td>' + f1(b) + '</td><td>' + f1(c) + '</td><td>' + d1(c, a) + '</td><td>' + d1(c, b) + '</td></tr>';
+        }
+        h += linha('Peso (kg)', 'peso') + linha('Dor (0 a 10)', 'dor');
+        SIT.forEach(function (s) {
+          if (s[1]) { h += linha(NOMES[s[0]] + ' D (cm)', s[0] + 'D') + linha(NOMES[s[0]] + ' E (cm)', s[0] + 'E'); }
+          else h += linha(NOMES[s[0]] + ' (cm)', s[0] + 'D');
+        });
+        h += '</tbody></table></div><p style="font-size:.84rem;color:var(--muted);margin:10px 0 0">' + v.length + ' visita(s): ' + v.map(function (x) { return fd(x.data) + ' <button type="button" data-rm="' + x.data + '" style="background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-size:.8rem;text-decoration:underline">remover</button>'; }).join(' · ') + '</p>';
+        ev.innerHTML = h;
+        gr.innerHTML = spark(v, 'peso', 'Peso (kg)') + spark(v, 'dor', 'Dor');
+        var t = 'SEGUIMENTO ' + cod() + ' (' + v.length + ' visitas, de ' + fd(primeira.data) + ' a ' + fd(ultima.data) + ')\n' +
+          'Peso: ' + f1(primeira.peso) + ' → ' + f1(ultima.peso) + ' kg. Dor: ' + f1(primeira.dor) + ' → ' + f1(ultima.dor) + '.\n' +
+          SIT.map(function (s) { var a = primeira[s[0] + 'D'], c = ultima[s[0] + 'D']; var ae = primeira[s[0] + 'E'], ce = ultima[s[0] + 'E']; if (a == null && c == null) return ''; return NOMES[s[0]] + ': ' + f1(a) + ' → ' + f1(c) + (s[1] ? ' (D), ' + f1(ae) + ' → ' + f1(ce) + ' (E)' : '') + ' cm'; }).filter(Boolean).join('\n');
+        if (window.l360caso) window.l360caso.set('seguimento', { texto: t, codigo: cod() });
+      }
+
+      document.getElementById('b-salvar').addEventListener('click', function () {
+        if (!cod()) { document.getElementById('cod').focus(); return; }
+        var reg = { data: document.getElementById('data').value, peso: num('peso'), dor: num('dor') };
+        SIT.forEach(function (s) { reg[s[0] + 'D'] = num(s[0] + 'D'); if (s[1]) reg[s[0] + 'E'] = num(s[0] + 'E'); });
+        var t = lerTudo(); var arr = (t[cod()] || []).filter(function (x) { return x.data !== reg.data; }); arr.push(reg); t[cod()] = arr; gravarTudo(t);
+        desenhar();
+      });
+      document.getElementById('evol').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-rm]'); if (!b) return;
+        var t = lerTudo(); t[cod()] = (t[cod()] || []).filter(function (x) { return x.data !== b.getAttribute('data-rm'); }); gravarTudo(t); desenhar();
+      });
+      document.getElementById('cod').addEventListener('input', desenhar);
+      document.getElementById('b-csv').addEventListener('click', function () {
+        var v = visitas(); if (!v.length) return;
+        var cols = ['data', 'peso', 'dor'].concat([].concat.apply([], SIT.map(function (s) { return s[1] ? [s[0] + 'D', s[0] + 'E'] : [s[0] + 'D']; })));
+        var csv = cols.join(';') + '\n' + v.map(function (x) { return cols.map(function (c) { return x[c] == null ? '' : String(x[c]).replace('.', ','); }).join(';'); }).join('\n');
+        var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' })); a.download = 'seguimento-' + cod() + '.csv'; a.click();
+      });
+
+      // volume por cones truncados
+      function lista(id) { return document.getElementById(id).value.split(/[;,\s]+/).map(function (x) { return parseFloat(x.replace(',', '.')); }).filter(function (x) { return !isNaN(x); }); }
+      function vol(c, h) { var s = 0; for (var i = 0; i < c.length - 1; i++) s += h / (12 * Math.PI) * (c[i] * c[i] + c[i] * c[i + 1] + c[i + 1] * c[i + 1]); return s; }
+      function calcVol() {
+        var h = num('vh'), d = lista('vd'), e = lista('ve'), out = '';
+        if (!h || (d.length < 2 && e.length < 2)) { document.getElementById('vout').innerHTML = '<p>Informe ao menos dois níveis.</p>'; return; }
+        var vd = d.length > 1 ? vol(d, h) : null, ve = e.length > 1 ? vol(e, h) : null;
+        if (vd != null) out += '<div class="linha"><span>Direita</span><b>' + Math.round(vd) + ' mL</b></div>';
+        if (ve != null) out += '<div class="linha"><span>Esquerda</span><b>' + Math.round(ve) + ' mL</b></div>';
+        if (vd != null && ve != null) out += '<div class="linha"><span>Diferença entre os lados</span><b>' + Math.round(Math.abs(vd - ve)) + ' mL (' + f1(Math.abs(vd - ve) / Math.max(vd, ve) * 100) + '%)</b></div>';
+        document.getElementById('vout').innerHTML = out;
+      }
+      ['vh', 'vd', 've'].forEach(function (id) { document.getElementById(id).addEventListener('input', calcVol); });
+      var c = window.l360caso.get().seguimento; if (c && c.codigo) document.getElementById('cod').value = c.codigo;
+      desenhar();
+    })();
+  </script>
+</Ferramenta>

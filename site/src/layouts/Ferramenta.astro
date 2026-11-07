@@ -1,0 +1,68 @@
+---
+import Base from './Base.astro';
+import { artigos, tituloExibido, fmtData, nivelEvidencia } from '../lib/data';
+import { AVISO, FERRAMENTAS, type Fonte } from '../lib/ferramentas';
+interface Props { slug: string; fontes: Fonte[]; }
+const { slug, fontes } = Astro.props;
+const f = FERRAMENTAS.find((x) => x.slug === slug)!;
+const novos = f.palavras.length
+  ? artigos
+      .filter((a) => {
+        const t = (a.titulo + ' ' + a.keywords.join(' ') + ' ' + a.mesh.join(' ')).toLowerCase();
+        return f.palavras.some((p) => t.includes(p)) && nivelEvidencia(a) >= 3;
+      })
+      .slice(0, 4)
+  : [];
+---
+<Base titulo={f.nome} descricao={f.resumo}>
+  <script is:inline>
+    (function () {
+      var K = 'l360_caso';
+      function ler() { try { return JSON.parse(localStorage.getItem(K) || '{}'); } catch (e) { return {}; } }
+      window.l360caso = {
+        get: ler,
+        set: function (chave, valor) { var c = ler(); c[chave] = valor; c._atualizado = new Date().toISOString(); try { localStorage.setItem(K, JSON.stringify(c)); } catch (e) {} },
+        limpar: function () { try { localStorage.removeItem(K); } catch (e) {} }
+      };
+      window.copiar = function (texto, botao) {
+        var ok = function () { if (!botao) return; var t = botao.textContent; botao.textContent = 'Copiado'; setTimeout(function () { botao.textContent = t; }, 1800); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(texto).then(ok, function () { prompt('Copie o texto:', texto); });
+        else { var x = document.createElement('textarea'); x.value = texto; document.body.appendChild(x); x.select(); try { document.execCommand('copy'); ok(); } catch (e) {} document.body.removeChild(x); }
+      };
+      window.num = function (id) { var v = parseFloat(String(document.getElementById(id).value).replace(',', '.')); return isNaN(v) ? null : v; };
+      window.f1 = function (n) { return n == null ? '—' : n.toFixed(1).replace('.', ','); };
+      window.f2 = function (n) { return n == null ? '—' : n.toFixed(2).replace('.', ','); };
+    })();
+  </script>
+
+  <div class="ferr">
+    <div class="ferr-main">
+      <p class="eyebrow">{f.categoria} · <span style="color:var(--muted)">Profissional, prévia</span></p>
+      <h1>{f.nome}</h1>
+      <p class="lead">{f.resumo}</p>
+      <p class="aviso-ferr">{AVISO}</p>
+      <slot />
+    </div>
+    <aside class="ferr-lado">
+      <div class="fonte-box">
+        <h4>Baseado em</h4>
+        <ul>
+          {fontes.map((s) => (
+            <li>{s.ref}{s.nota && <em>{s.nota}</em>}</li>
+          ))}
+        </ul>
+      </div>
+      {novos.length > 0 && (
+        <div class="fonte-box novos">
+          <h4>Evidência nova para esta ferramenta</h4>
+          <ul>
+            {novos.map((a) => (
+              <li><a href={`/artigos/${a.pmid}`}>{tituloExibido(a)}</a><span>{fmtData(a.data)}</span></li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <a class="btn sec" href="/ferramentas" style="text-align:center">← Todas as ferramentas</a>
+    </aside>
+  </div>
+</Base>

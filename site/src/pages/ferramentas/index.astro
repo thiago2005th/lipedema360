@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import { FERRAMENTAS, CATEGORIAS } from '../../lib/ferramentas';
+const grupos = Object.keys(CATEGORIAS).map((c) => ({ c, desc: CATEGORIAS[c], itens: FERRAMENTAS.filter((f) => f.categoria === c) }));
+---
+<Base titulo="Ferramentas clínicas" descricao="Calculadoras, checklists e laudos baseados em evidência para usar na consulta de lipedema.">
+  <section class="hero">
+    <p class="eyebrow">Lipedema360 Profissional · prévia</p>
+    <h1>O consultório de lipedema, <em>na ponta dos dedos.</em></h1>
+    <p>Critérios, classificação, ultrassom, antropometria, plano terapêutico e seguimento. Cada ferramenta mostra a fonte em que se baseia e as novas evidências da base, atualizadas todo dia.</p>
+  </section>
+
+  {grupos.map((g) => (
+    <>
+      <h2 class="secao">{g.c} <span style="font-family:var(--sans);font-size:.84rem;color:var(--muted);font-weight:400">{g.desc}</span></h2>
+      <div class="ferr-hub">
+        {g.itens.map((f) => (
+          <a class="ferr-card" href={`/ferramentas/${f.slug}`}>
+            <span class="sel-pro" style="align-self:flex-start">Prévia</span>
+            <h3>{f.nome}</h3>
+            <p>{f.resumo}</p>
+            <span class="ir">Abrir →</span>
+          </a>
+        ))}
+      </div>
+    </>
+  ))}
+
+  <p style="color:var(--muted);font-size:.84rem;margin-top:40px;max-width:70ch">Todas as ferramentas rodam no seu navegador. Nenhum dado de paciente é enviado ou armazenado em servidor. Os critérios vêm de consensos e estudos publicados e estão citados em cada página. São apoio à decisão e não substituem o julgamento clínico.</p>
+</Base>

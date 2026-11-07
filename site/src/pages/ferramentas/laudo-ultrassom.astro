@@ -1,0 +1,110 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Amato ACM, Saucedo DZ, Santos KS, Benitti DA. Ultrasound criteria for lipedema diagnosis. Phlebology, 2021. DOI 10.1177/02683555211002340', nota: 'Pontos de medida, técnica e valores de corte (Tabela 4: AUC, corte ótimo, sensibilidade, especificidade e corte de especificidade máxima). 89 mulheres, 63 com lipedema, estudo unicêntrico.' },
+  { ref: 'Marshall M, Schwahn-Schreiber C. Phlebologie, 2011;40:127-134 (citado por Amato et al.).', nota: 'Classificação de gravidade pela espessura de derme + subcutâneo 6 a 8 cm acima do maléolo medial.' },
+  { ref: 'Naouri M, et al. Br J Dermatol, 2010; Iker E, et al. Lymphat Res Biol, 2019 (citados por Amato et al.).', nota: 'Achados descritivos: junção dermo-hipodérmica crenulada (lipedema) e hipoecogenicidade do subcutâneo do tornozelo, sem ponto de corte validado.' },
+];
+---
+<Ferramenta slug="laudo-ultrassom" fontes={fontes}>
+  <h2 class="sub">Espessura de derme + subcutâneo (mm)</h2>
+  <p style="color:var(--muted);font-size:.88rem;margin:0 0 12px">Medida perpendicular à superfície, da derme até a fáscia. O estudo fez ao menos três medidas por ponto; informe a média.</p>
+  <div class="tabela-rolavel">
+    <table class="grade" id="grade">
+      <thead><tr><th>Ponto</th><th>Direita</th><th>Esquerda</th><th>Corte ótimo (D / E)</th><th>Resultado</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2 class="sub">Opcional: classificação de Marshall e Schwahn-Schreiber</h2>
+  <div class="campos">
+    <div class="fld"><label for="mar">6 a 8 cm acima do maléolo medial</label><input id="mar" inputmode="decimal" placeholder="mm" /><span class="un">derme + subcutâneo, mm</span></div>
+  </div>
+
+  <h2 class="sub">Achados descritivos, sem ponto de corte validado</h2>
+  <div id="desc">
+    <label class="opt"><input type="checkbox" data-d="Junção dermo-hipodérmica crenulada" /> <span>Junção dermo-hipodérmica crenulada <small>proposta por Naouri et al. como possível marcador de lipedema (ultrassom de alta resolução)</small></span></label>
+    <label class="opt"><input type="checkbox" data-d="Subcutâneo do tornozelo hipoecogênico" /> <span>Subcutâneo do tornozelo hipoecogênico <small>descrito por Iker et al. na distinção entre lipedema e linfedema</small></span></label>
+    <label class="opt"><input type="checkbox" data-d="Sinais de líquido intersticial no subcutâneo" /> <span>Sinais de líquido intersticial no subcutâneo <small>mais típico de linfedema</small></span></label>
+    <label class="opt"><input type="checkbox" data-d="Depósito de gordura anteromedial na perna proximal" /> <span>Depósito de gordura anteromedial na perna proximal <small>sugerido por Amato et al. para estudo futuro</small></span></label>
+    <label class="opt"><input type="checkbox" data-d="Veias varicosas ao mapeamento venoso" /> <span>Varizes ao mapeamento venoso <small>não discriminam: ocorreram em 45% das pacientes com lipedema</small></span></label>
+  </div>
+
+  <h2 class="sub">Técnica utilizada</h2>
+  <div class="fld"><textarea id="tec" rows="3">Transdutor linear de alta frequência (7,5 a 13 MHz), com foco no ponto avaliado. Espessura medida perpendicularmente à superfície, da derme à fáscia, com média de pelo menos três medidas por ponto. Pontos: coxa anterior (ponto médio entre a crista ilíaca e a borda inferior da patela), pré-tibial (ponto médio entre a tuberosidade anterior da tíbia e o maléolo medial), face lateral da perna (ponto médio entre o maléolo lateral e a cabeça da fíbula) e supramaleolar medial.</textarea></div>
+
+  <div class="res" id="res">
+    <p class="kicker">Laudo</p>
+    <textarea class="texto-saida" id="laudo" readonly></textarea>
+    <p class="nota">Cortes de Amato et al. (2021): estudo unicêntrico, 89 mulheres, amostra de conveniência; controles principalmente com varizes sem alteração subcutânea (C1 e C2). O desempenho foi melhor no ponto pré-tibial (AUC acima de 0,90), bom na coxa e na face lateral da perna e moderado na região supramaleolar. Com o corte ótimo a sensibilidade foi de 0,67 a 0,79 nos três pontos principais, ou seja, um resultado abaixo do corte não exclui lipedema. O diagnóstico de lipedema permanece clínico; o ultrassom é complementar.</p>
+  </div>
+  <div class="acoes-ferr">
+    <button class="btn" id="b-copiar" type="button">Copiar laudo</button>
+    <button class="btn sec" id="b-imprimir" type="button">Imprimir</button>
+    <button class="btn sec" id="b-limpar" type="button">Limpar</button>
+  </div>
+
+  <script is:inline>
+    (function () {
+      // Amato et al., Phlebology 2021, Tabela 4
+      var S = [
+        { id: 'coxa', nome: 'Coxa anterior', D: { o: 19.5, m: 24.2, se: 0.67, es: 0.92 }, E: { o: 17.9, m: 20.8, se: 0.67, es: 0.92 } },
+        { id: 'lat', nome: 'Face lateral da perna', D: { o: 8.9, m: 12.2, se: 0.78, es: 0.84 }, E: { o: 8.4, m: 10.6, se: 0.76, es: 0.80 } },
+        { id: 'pre', nome: 'Pré-tibial', D: { o: 11.6, m: 12.9, se: 0.79, es: 0.96 }, E: { o: 11.8, m: 14.0, se: 0.77, es: 0.92 } },
+        { id: 'sup', nome: 'Supramaleolar medial', D: { o: 7.1, m: 12.2, se: 0.77, es: 0.73 }, E: { o: 7.0, m: 12.6, se: 0.67, es: 0.61 } }
+      ];
+      var tb = document.querySelector('#grade tbody');
+      tb.innerHTML = S.map(function (s) {
+        return '<tr><td>' + s.nome + '</td><td><input id="' + s.id + 'D" inputmode="decimal" /></td><td><input id="' + s.id + 'E" inputmode="decimal" /></td><td>' + f1(s.D.o) + ' / ' + f1(s.E.o) + ' mm</td><td id="r-' + s.id + '"></td></tr>';
+      }).join('');
+      function pm(n) { return n == null ? null : n; }
+      function pct(x) { return Math.round(x * 100) + '%'; }
+      function avalia(v, c) { if (v == null) return null; return v >= c.m ? 'max' : v >= c.o ? 'opt' : 'abaixo'; }
+      function marshall(v) { if (v == null) return ''; if (v > 30) return 'grave (acima de 30 mm)'; if (v > 20) return 'lipedema indiscutível (acima de 20 mm)'; if (v > 15) return 'lipedema moderado (15 a 20 mm)'; if (v >= 12) return 'lipo-hiperplasia ou lipedema leve (12 a 15 mm)'; return 'abaixo de 12 mm'; }
+      function calc() {
+        var linhas = [], acima = 0, medidas = 0, laudoSites = [];
+        S.forEach(function (s) {
+          var d = num(s.id + 'D'), e = num(s.id + 'E');
+          var rd = avalia(d, s.D), re = avalia(e, s.E);
+          var txt = [];
+          [['direita', d, rd], ['esquerda', e, re]].forEach(function (x) {
+            if (x[1] == null) return; medidas++;
+            if (x[2] !== 'abaixo') acima++;
+            txt.push(x[2] === 'max' ? 'acima do corte de especificidade máxima' : x[2] === 'opt' ? 'acima do corte ótimo' : 'abaixo do corte');
+          });
+          var cel = document.getElementById('r-' + s.id);
+          cel.innerHTML = txt.length ? txt.map(function (t) { return '<span class="' + (t.indexOf('abaixo') === 0 ? 'neg' : 'pos') + '">' + t + '</span>'; }).join('<br>') : '';
+          if (d != null || e != null) {
+            var sim = (d != null && e != null) ? ', diferença entre lados de ' + f1(Math.abs(d - e) / ((d + e) / 2) * 100) + '%' : '';
+            laudoSites.push(s.nome + ': ' + (d != null ? 'direita ' + f1(d) + ' mm' : 'direita não medida') + '; ' + (e != null ? 'esquerda ' + f1(e) + ' mm' : 'esquerda não medida') + sim + '. ' +
+              (d != null ? 'Direita ' + (rd === 'max' ? 'acima do corte de especificidade máxima (' + f1(s.D.m) + ' mm)' : rd === 'opt' ? 'acima do corte ótimo (' + f1(s.D.o) + ' mm)' : 'abaixo do corte (' + f1(s.D.o) + ' mm)') + '. ' : '') +
+              (e != null ? 'Esquerda ' + (re === 'max' ? 'acima do corte de especificidade máxima (' + f1(s.E.m) + ' mm)' : re === 'opt' ? 'acima do corte ótimo (' + f1(s.E.o) + ' mm)' : 'abaixo do corte (' + f1(s.E.o) + ' mm)') + '.' : ''));
+          }
+        });
+        var mar = num('mar');
+        var desc = Array.prototype.map.call(document.querySelectorAll('input[data-d]:checked'), function (e) { return e.getAttribute('data-d'); });
+        var pd = num('preD'), pe = num('preE');
+        var destaque = '';
+        if (pd != null && pe != null) {
+          var ok = pd >= S[2].D.o && pe >= S[2].E.o;
+          destaque = ok ? 'A espessura pré-tibial, ponto de melhor desempenho no estudo de referência (AUC 0,91), está acima do corte ótimo bilateralmente (sensibilidade 0,77 a 0,79 e especificidade 0,92 a 0,96 nesse corte).' : 'A espessura pré-tibial, ponto de melhor desempenho no estudo de referência, não está acima do corte ótimo em ambos os lados.';
+        }
+        var texto = 'ULTRASSONOGRAFIA DE PELE E TECIDO SUBCUTÂNEO DOS MEMBROS INFERIORES (PESQUISA DE LIPEDEMA)\n\n' +
+          'Técnica: ' + document.getElementById('tec').value.trim() + '\n\n' +
+          'Achados (derme + subcutâneo):\n' + (laudoSites.length ? laudoSites.join('\n') : 'Nenhuma medida informada.') + '\n' +
+          (mar != null ? '\nEspessura 6 a 8 cm acima do maléolo medial: ' + f1(mar) + ' mm, classificação de Marshall e Schwahn-Schreiber: ' + marshall(mar) + '.\n' : '') +
+          (desc.length ? '\nAchados descritivos: ' + desc.join('; ') + '.\n' : '') +
+          (medidas ? '\nImpressão: ' + acima + ' de ' + medidas + ' medidas acima do corte ótimo de Amato et al. (2021). ' + destaque + ' O ultrassom é complementar: o diagnóstico de lipedema é clínico e deve considerar história, exame físico e diagnóstico diferencial (linfedema, obesidade, doença venosa).\n' : '') +
+          '\nReferência: Amato ACM et al. Ultrasound criteria for lipedema diagnosis. Phlebology 2021.';
+        document.getElementById('laudo').value = texto;
+        if (medidas && window.l360caso) window.l360caso.set('ultrassom', { texto: 'ULTRASSOM: ' + acima + ' de ' + medidas + ' medidas acima do corte ótimo (Amato 2021). ' + laudoSites.join(' | '), medidas: medidas, acima: acima });
+      }
+      document.querySelectorAll('input').forEach(function (i) { i.addEventListener('input', calc); i.addEventListener('change', calc); });
+      document.getElementById('tec').addEventListener('input', calc);
+      document.getElementById('b-copiar').addEventListener('click', function () { calc(); window.copiar(document.getElementById('laudo').value, this); });
+      document.getElementById('b-imprimir').addEventListener('click', function () { calc(); window.print(); });
+      document.getElementById('b-limpar').addEventListener('click', function () { document.querySelectorAll('.grade input, #mar').forEach(function (i) { i.value = ''; }); document.querySelectorAll('input[data-d]').forEach(function (i) { i.checked = false; }); calc(); });
+      calc();
+    })();
+  </script>
+</Ferramenta>

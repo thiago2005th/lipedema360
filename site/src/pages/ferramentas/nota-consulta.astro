@@ -1,0 +1,66 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Reúne o que foi registrado nas outras ferramentas deste navegador.', nota: 'Critérios diagnósticos, classificação, diferencial, antropometria, ultrassom, escores, plano e seguimento.' },
+];
+---
+<Ferramenta slug="nota-consulta" fontes={fontes}>
+  <h2 class="sub">Dados da consulta</h2>
+  <div class="campos">
+    <div class="fld"><label for="cod">Código do paciente</label><input id="cod" autocomplete="off" /></div>
+    <div class="fld"><label for="data">Data</label><input id="data" type="date" /></div>
+  </div>
+  <div class="fld" style="margin-top:14px"><label for="qp">Queixa e história</label><textarea id="qp" rows="3" placeholder="Resumo da queixa principal e história relevante"></textarea></div>
+  <div class="fld" style="margin-top:14px"><label for="cond">Conduta e orientações</label><textarea id="cond" rows="3" placeholder="Condutas além do plano registrado, retorno, exames"></textarea></div>
+
+  <h2 class="sub">Blocos incluídos</h2>
+  <div id="blocos"></div>
+
+  <div class="res" id="res">
+    <p class="kicker">Nota pronta</p>
+    <textarea class="texto-saida" id="nota" style="min-height:360px"></textarea>
+  </div>
+  <div class="acoes-ferr">
+    <button class="btn" id="b-copiar" type="button">Copiar nota</button>
+    <button class="btn sec" id="b-imprimir" type="button">Imprimir</button>
+    <button class="btn sec" id="b-limpar" type="button">Limpar dados do caso</button>
+  </div>
+  <p style="color:var(--muted);font-size:.8rem;margin-top:14px">Os blocos vêm das ferramentas usadas neste navegador. “Limpar dados do caso” apaga o que foi registrado para começar outro atendimento; o histórico de seguimento por código fica guardado.</p>
+
+  <script is:inline>
+    (function () {
+      var BL = [
+        ['criterios', 'Critérios diagnósticos'], ['classificacao', 'Classificação'], ['diferencial', 'Diagnóstico diferencial'],
+        ['antropometria', 'Antropometria'], ['ultrassom', 'Ultrassom'], ['escores_texto', 'Escores de questionários'],
+        ['plano', 'Plano terapêutico'], ['seguimento', 'Seguimento']
+      ];
+      document.getElementById('data').value = new Date().toISOString().slice(0, 10);
+      function fd(iso) { var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+      function txt(v) { return !v ? '' : (typeof v === 'string' ? v : v.texto || ''); }
+      function monta() {
+        var c = window.l360caso.get();
+        var usados = Array.prototype.map.call(document.querySelectorAll('input[data-b]:checked'), function (e) { return e.getAttribute('data-b'); });
+        var t = 'CONSULTA — LIPEDEMA' + (document.getElementById('cod').value.trim() ? ' — paciente ' + document.getElementById('cod').value.trim().toUpperCase() : '') + ' — ' + fd(document.getElementById('data').value) + '\n';
+        var qp = document.getElementById('qp').value.trim(); if (qp) t += '\nQUEIXA E HISTÓRIA\n' + qp + '\n';
+        BL.forEach(function (b) { if (usados.indexOf(b[0]) > -1 && txt(c[b[0]])) t += '\n' + txt(c[b[0]]) + '\n'; });
+        var cd = document.getElementById('cond').value.trim(); if (cd) t += '\nCONDUTA E ORIENTAÇÕES\n' + cd + '\n';
+        document.getElementById('nota').value = t.trim();
+      }
+      function blocos() {
+        var c = window.l360caso.get();
+        document.getElementById('blocos').innerHTML = BL.map(function (b) {
+          var tem = !!txt(c[b[0]]);
+          return '<label class="opt" style="' + (tem ? '' : 'opacity:.45;cursor:default') + '"><input type="checkbox" data-b="' + b[0] + '" ' + (tem ? 'checked' : 'disabled') + ' /> <span>' + b[1] + (tem ? '' : ' <small>sem registro neste caso</small>') + '</span></label>';
+        }).join('');
+        document.querySelectorAll('input[data-b]').forEach(function (i) { i.addEventListener('change', monta); });
+        monta();
+      }
+      ['cod', 'data', 'qp', 'cond'].forEach(function (id) { document.getElementById(id).addEventListener('input', monta); });
+      var s = window.l360caso.get().seguimento; if (s && s.codigo) document.getElementById('cod').value = s.codigo;
+      document.getElementById('b-copiar').addEventListener('click', function () { window.copiar(document.getElementById('nota').value, this); });
+      document.getElementById('b-imprimir').addEventListener('click', function () { window.print(); });
+      document.getElementById('b-limpar').addEventListener('click', function () { if (confirm('Apagar os dados registrados neste caso (não apaga o histórico de seguimento)?')) { window.l360caso.limpar(); blocos(); } });
+      blocos();
+    })();
+  </script>
+</Ferramenta>

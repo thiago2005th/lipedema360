@@ -1,0 +1,88 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Buso G, et al. Lipedema: a call to action! Obesity, 2019;27(10):1567-1576. Seção de tratamento.', nota: 'Objetivos: reduzir sintomas, melhorar a limitação funcional e prevenir a progressão. Abordagem conservadora como base; cirurgia em casos selecionados.' },
+  { ref: 'Therapeutic applications of ketogenic diets in lipedema: a narrative review of current evidence. Curr Obes Rep, 2025;14:49.', nota: 'Revisão narrativa: amostras pequenas, curto prazo, necessidade de ensaios randomizados. Cita um ensaio em que dieta pobre em carboidratos reduziu a área de gordura subcutânea da panturrilha em relação à dieta pobre em gordura.' },
+  { ref: 'Ketogenic diet: a nutritional therapeutic tool for lipedema? (revisão, 2023).', nota: 'Fonte complementar sobre dieta cetogênica.' },
+];
+// nivel: C = consenso/revisão, E = evidência emergente, I = evidência insuficiente
+const itens = [
+  { g: 'Base do tratamento', id: 'edu', t: 'Educação e manejo de expectativas', d: 'Descrito como essencial: doença crônica e progressiva, sem tratamento curativo.', n: 'C', q: 'lipedema education' },
+  { g: 'Base do tratamento', id: 'psi', t: 'Apoio psicológico', d: 'Recomendado. Há risco aumentado de depressão, transtornos alimentares e queixas psicológicas.', n: 'C', q: 'lipedema psychological' },
+  { g: 'Base do tratamento', id: 'atv', t: 'Estilo de vida ativo, com atividade aquática', d: 'A água favorece a drenagem linfática e reduz a carga articular dos membros inferiores.', n: 'C', q: 'lipedema exercise' },
+  { g: 'Nutrição e peso', id: 'dieta', t: 'Manejo nutricional e prevenção de obesidade', d: 'Não existe dieta específica. A dieta não corrige a distribuição desproporcional, mas pode reduzir inflamação local e sintomas. Evitar perda de massa magra.', n: 'C', q: 'lipedema diet' },
+  { g: 'Nutrição e peso', id: 'iso', t: 'Padrão isoglicêmico (evitar picos glicêmicos e de insulina)', d: 'Proposto por racional fisiopatológico: insulina favorece lipogênese e resistência à insulina piora a formação de edema.', n: 'E', q: 'glycemic lipedema' },
+  { g: 'Nutrição e peso', id: 'keto', t: 'Dieta cetogênica ou pobre em carboidratos', d: 'Evidência emergente: dados de curto prazo, amostras pequenas e revisões narrativas. Individualizar por estágio, estado metabólico e estilo de vida, com acompanhamento.', n: 'E', q: 'ketogenic lipedema' },
+  { g: 'Conservador físico', id: 'comp', t: 'Terapia compressiva', d: 'Pilar do tratamento conservador. Frequentemente reduz dor e desconforto.', n: 'C', q: 'lipedema compression' },
+  { g: 'Conservador físico', id: 'cdt', t: 'Terapia descongestiva complexa (drenagem, compressão multicamadas, cuidados com a pele, exercício)', d: 'Útil sobretudo no lipolinfedema (estágio 4).', n: 'C', q: 'complex decongestive lipedema' },
+  { g: 'Conservador físico', id: 'cpi', t: 'Compressão pneumática intermitente', d: 'Em pacientes selecionadas, associada à terapia descongestiva. Em um estudo comparativo, ambas as abordagens reduziram o volume do membro (6,2% e 8,9%).', n: 'E', q: 'intermittent pneumatic compression lipedema' },
+  { g: 'Fármacos', id: 'farm', t: 'Betaagonistas, corticoides, diuréticos, flavonoides, selênio', d: 'Sugeridos na literatura, mas a eficácia em lipedema não está estabelecida. Sem indicação rotineira.', n: 'I', q: 'lipedema pharmacological' },
+  { g: 'Cirurgia', id: 'cir', t: 'Lipoaspiração com anestesia tumescente (ou técnica equivalente)', d: 'Para quem tem pouca ou nenhuma melhora com o tratamento conservador. Técnica difere da cosmética; deve ser feita em centro com experiência. Estágios avançados costumam exigir várias sessões. Dados de longo prazo ainda são escassos.', n: 'E', q: 'liposuction lipedema' },
+  { g: 'Cirurgia', id: 'lump', t: 'Lipectomia (remoção de grandes depósitos localizados)', d: 'Casos avançados e complicados, com limitação mecânica importante. Pode se associar a linfedema secundário.', n: 'I', q: 'lipectomy lipedema' },
+];
+const niveis = { C: 'Consenso e revisão', E: 'Evidência emergente', I: 'Evidência insuficiente' };
+const grupos = [...new Set(itens.map((i) => i.g))];
+---
+<Ferramenta slug="plano-terapeutico" fontes={fontes}>
+  <p style="color:var(--fg-2);margin:0 0 4px">Marque o que entra no plano desta paciente. Cada item mostra o nível de evidência segundo as fontes citadas e leva aos estudos da base.</p>
+
+  {grupos.map((g) => (
+    <>
+      <h2 class="sub">{g}</h2>
+      <div>
+        {itens.filter((i) => i.g === g).map((i) => (
+          <label class="opt" data-n={i.n}>
+            <input type="checkbox" data-id={i.id} />
+            <span>
+              <b>{i.t}</b>
+              <small>{i.d}</small>
+              <small style="margin-top:6px"><span class="sel-pro" style="font-size:.62rem">{niveis[i.n]}</span> &nbsp;<a href={`/busca?q=${encodeURIComponent(i.q)}`} style="color:var(--gold)" onclick="event.stopPropagation()">estudos na base</a></small>
+            </span>
+          </label>
+        ))}
+      </div>
+    </>
+  ))}
+
+  <h2 class="sub">Antes de indicar cirurgia, revise</h2>
+  <div id="pre">
+    <label class="opt"><input type="checkbox" data-p="Tratamento conservador adequado já tentado, sem melhora satisfatória" /> <span>Tratamento conservador adequado já tentado, sem melhora satisfatória <small>não há critério consistente para o momento ideal da cirurgia (Buso, 2019)</small></span></label>
+    <label class="opt"><input type="checkbox" data-p="Centro e equipe com experiência em técnica específica para lipedema" /> <span>Centro e equipe com experiência em técnica específica para lipedema <small>técnicas antigas, como a lipoaspiração seca, tinham risco inaceitável de lesão linfática</small></span></label>
+    <label class="opt"><input type="checkbox" data-p="Estágio, comorbidade linfática e venosa avaliados" /> <span>Estágio, componente linfático e doença venosa avaliados</span></label>
+    <label class="opt"><input type="checkbox" data-p="Expectativas discutidas: várias sessões e recidiva possível" /> <span>Expectativas discutidas: várias sessões podem ser necessárias e há dados limitados de longo prazo</span></label>
+    <label class="opt"><input type="checkbox" data-p="Peso e risco cirúrgico geral avaliados" /> <span>Peso, comorbidades e risco cirúrgico geral avaliados <small>revisão geral de boa prática, não específica de lipedema</small></span></label>
+  </div>
+
+  <div class="res" id="res">
+    <p class="kicker">Plano</p>
+    <textarea class="texto-saida" id="plano" readonly></textarea>
+    <p class="nota">Os níveis refletem as revisões citadas, não uma graduação formal de evidência de cada intervenção. Decisões terapêuticas devem ser individualizadas.</p>
+  </div>
+  <div class="acoes-ferr">
+    <button class="btn" id="b-copiar" type="button">Copiar plano</button>
+    <button class="btn sec" id="b-limpar" type="button">Limpar</button>
+  </div>
+
+  <script is:inline define:vars={{ itens, niveis }}>
+    (function () {
+      function calc() {
+        var sel = itens.filter(function (i) { return document.querySelector('input[data-id="' + i.id + '"]').checked; });
+        var pre = Array.prototype.map.call(document.querySelectorAll('input[data-p]:checked'), function (e) { return e.getAttribute('data-p'); });
+        var t = 'PLANO TERAPÊUTICO\n';
+        if (!sel.length) t += 'Nenhum item selecionado.';
+        else {
+          var gs = [];
+          sel.forEach(function (i) { if (gs.indexOf(i.g) < 0) gs.push(i.g); });
+          gs.forEach(function (g) { t += '\n' + g + ':\n'; sel.filter(function (i) { return i.g === g; }).forEach(function (i) { t += '- ' + i.t + ' (' + niveis[i.n].toLowerCase() + ')\n'; }); });
+        }
+        if (pre.length) t += '\nRevisão pré-cirúrgica realizada:\n' + pre.map(function (p) { return '- ' + p; }).join('\n') + '\n';
+        document.getElementById('plano').value = t;
+        if (sel.length && window.l360caso) window.l360caso.set('plano', { texto: t });
+      }
+      document.querySelectorAll('input').forEach(function (i) { i.addEventListener('change', calc); });
+      document.getElementById('b-copiar').addEventListener('click', function () { calc(); window.copiar(document.getElementById('plano').value, this); });
+      document.getElementById('b-limpar').addEventListener('click', function () { document.querySelectorAll('input').forEach(function (i) { i.checked = false; }); calc(); });
+      calc();
+    })();
+  </script>
+</Ferramenta>

@@ -1,0 +1,66 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Buso G, et al. Lipedema: a call to action! Obesity, 2019;27(10):1567-1576. Tabela 2 e seção de diagnóstico diferencial.', nota: 'Perfis típicos de lipedema, linfedema, obesidade, doença venosa crônica e doença de Dercum.' },
+  { ref: 'Amato ACM, et al. Phlebology, 2021.', nota: 'Lipedema é confundido com linfedema, desproporção fisiológica, lipo-hipertrofia, obesidade ginoide e insuficiência venosa; diagnósticos podem coexistir.' },
+];
+---
+<Ferramenta slug="diferencial" fontes={fontes}>
+  <h2 class="sub">Achados da paciente</h2>
+  <div id="achados"></div>
+
+  <div class="res neutro" id="res">
+    <p class="kicker">Concordância com o perfil típico</p>
+    <div id="barras"></div>
+    <p class="nota">Compara cada achado marcado com o perfil típico descrito por Buso et al. (2019). Mostra concordâncias e discordâncias; não calcula probabilidade e não é diagnóstico. As condições podem coexistir, sobretudo em estágios avançados (lipolinfedema), e varizes não servem para o diagnóstico diferencial.</p>
+  </div>
+  <div class="acoes-ferr">
+    <button class="btn" id="b-copiar" type="button">Copiar para o prontuário</button>
+    <button class="btn sec" id="b-limpar" type="button">Limpar</button>
+  </div>
+
+  <script is:inline>
+    (function () {
+      // valor: 1 = típico da condição, 0 = atípico (discorda), null = neutro/não descrito
+      var COND = ['Lipedema', 'Linfedema', 'Obesidade', 'Doença venosa', 'Dercum'];
+      var ACH = [
+        ['Distribuição desproporcional (quadris e membros inferiores x tronco)', [1, null, null, null, null]],
+        ['Dor à pressão digital ou à palpação', [1, 0, 0, null, 1]],
+        ['Equimoses fáceis', [1, 0, 0, null, 1]],
+        ['Sinal do manguito (transição abrupta no tornozelo, pés poupados)', [1, 0, 0, 0, null]],
+        ['Edema de pés e tornozelos', [0, 1, null, 1, null]],
+        ['Sinal de Stemmer positivo', [0, 1, 0, 0, null]],
+        ['Edema com cacifo (Godet positivo)', [0, null, null, 1, null]],
+        ['Melhora do edema e dos sintomas com elevação dos membros', [0, null, null, 1, null]],
+        ['Alterações de pele (espessamento, dermite ocre, atrofia branca, úlcera)', [0, 1, 0, 1, null]],
+        ['Distribuição da gordura resistente a dieta, exercício e perda de peso', [1, null, 0, null, null]],
+        ['Acometimento bilateral e simétrico', [1, null, 1, null, null]],
+        ['Múltiplos lipomas dolorosos, cefaleia recorrente ou depressão', [null, null, null, null, 1]],
+        ['Varizes presentes (não discrimina: ocorre em lipedema)', [null, null, null, null, null]]
+      ];
+      var cont = document.getElementById('achados');
+      cont.innerHTML = ACH.map(function (a, i) { return '<label class="opt"><input type="checkbox" data-i="' + i + '" /> <span>' + a[0] + '</span></label>'; }).join('');
+      var saida = '';
+      function calc() {
+        var marc = Array.prototype.map.call(document.querySelectorAll('input[data-i]:checked'), function (e) { return +e.getAttribute('data-i'); });
+        var linhas = [], html = '';
+        COND.forEach(function (c, j) {
+          var tipicos = ACH.filter(function (a) { return a[1][j] === 1; }).length;
+          var conc = marc.filter(function (i) { return ACH[i][1][j] === 1; }).length;
+          var disc = marc.filter(function (i) { return ACH[i][1][j] === 0; }).length;
+          var pct = tipicos ? Math.max(0, conc - disc) / tipicos * 100 : 0;
+          html += '<div class="barra-compat"><span>' + c + '</span><div class="trilho"><i style="width:' + pct.toFixed(0) + '%"></i></div><b>' + pct.toFixed(0) + '%</b></div>' +
+            '<div style="font-size:.76rem;color:var(--muted);margin:-2px 0 6px 184px">' + conc + ' de ' + tipicos + ' achado(s) típico(s) · ' + disc + ' discordante(s)' + (tipicos < 3 ? ' · perfil com poucos achados discriminantes na fonte, interprete com cautela' : '') + '</div>';
+          linhas.push(c + ': ' + conc + ' de ' + tipicos + ' achados típicos, ' + disc + ' discordante(s)');
+        });
+        document.getElementById('barras').innerHTML = marc.length ? html : '<p>Marque os achados para comparar.</p>';
+        saida = 'DIAGNÓSTICO DIFERENCIAL (perfil típico, Buso 2019)\nAchados: ' + (marc.map(function (i) { return ACH[i][0]; }).join('; ') || 'nenhum') + '\n' + linhas.join('\n');
+        if (marc.length && window.l360caso) window.l360caso.set('diferencial', { texto: saida });
+      }
+      cont.addEventListener('change', calc);
+      document.getElementById('b-copiar').addEventListener('click', function () { calc(); window.copiar(saida, this); });
+      document.getElementById('b-limpar').addEventListener('click', function () { document.querySelectorAll('input[data-i]').forEach(function (e) { e.checked = false; }); calc(); });
+      calc();
+    })();
+  </script>
+</Ferramenta>

@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Card from '../../components/Card.astro';
 import { artigos, AREAS, TIPOS, fmtData, tituloExibido, resumoCurto, nivelEvidencia, citacaoVancouver, LISTA_ESPERA_URL } from '../../lib/data';
+import { ANALISES } from '../../lib/analises';
 
 export function getStaticPaths() {
   return artigos.map((a) => ({ params: { pmid: a.pmid }, props: { a } }));
@@ -12,6 +13,7 @@ const relacionados = artigos
   .sort((x, y) => (y.data > x.data ? 1 : -1))
   .slice(0, 3);
 const nivel = nivelEvidencia(a);
+const analise = ANALISES.find((x) => x.pmid === a.pmid);
 const citacao = citacaoVancouver(a);
 const ris = [
   'TY  - JOUR',
@@ -103,11 +105,12 @@ const ris = [
       </div>
 
       <div class="pro-lock">
-        <span class="sel">Profissional · em breve</span>
+        <span class="sel">{analise ? 'Profissional · exemplo' : 'Profissional · em breve'}</span>
         <h4>Análise crítica Lipedema360</h4>
         <p>Desenho, risco de viés, tamanho de efeito, limitações e o que isso muda na conduta.</p>
-        <div class="fantasma"><i></i><i></i><i></i></div>
-        <a class="btn" href="/premium">Conhecer o plano</a>
+        {analise
+          ? <a class="btn" href={`/analises/${a.pmid}`}>Ler a análise</a>
+          : <><div class="fantasma"><i></i><i></i><i></i></div><a class="btn" href="/premium">Conhecer o plano</a></>}
       </div>
     </aside>
   </div>

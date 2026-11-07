@@ -1,0 +1,65 @@
+---
+import Ferramenta from '../../layouts/Ferramenta.astro';
+const fontes = [
+  { ref: 'Amato ACM, et al. Tradução, adaptação cultural e validação do questionário de avaliação sintomática do lipedema (QuASiL). J Vasc Bras, 2020;19:1-8.', nota: 'Versão em português, citada no estudo de ultrassom de Amato et al. (2021).' },
+  { ref: 'Versão turca do Lipedema Screening Questionnaire (T-LSQ): confiabilidade e validade.', nota: 'Estudo de validação na base do Lipedema360, que comparou o T-LSQ com LEFS, LLIS e Lymph-ICF-LL.' },
+];
+const inst = [
+  { id: 'QuASiL', nome: 'QuASiL, questionário de avaliação sintomática do lipedema', uso: 'Padroniza as perguntas clínicas da avaliação de sintomas. Existe versão traduzida, adaptada e validada em português.', busca: 'QuASiL' },
+  { id: 'LSQ', nome: 'LSQ, Lipedema Screening Questionnaire', uso: 'Triagem de lipedema. A versão turca (T-LSQ) mostrou boa reprodutibilidade, mas consistência interna limitada em um estudo de 59 mulheres.', busca: 'screening questionnaire' },
+  { id: 'LEFS', nome: 'LEFS, Lower Extremity Functional Scale', uso: 'Função dos membros inferiores. Usada como comparador na validação do T-LSQ.', busca: 'LEFS' },
+  { id: 'LLIS', nome: 'LLIS, Lymphoedema Life Impact Scale', uso: 'Impacto do linfedema na qualidade de vida. Usada como comparador na validação do T-LSQ.', busca: 'LLIS' },
+  { id: 'Lymph-ICF-LL', nome: 'Lymph-ICF-LL, funcionamento e incapacidade no linfedema de membros inferiores', uso: 'Funcionamento e incapacidade em linfedema de membros inferiores. Usada como comparador na validação do T-LSQ.', busca: 'Lymph-ICF' },
+  { id: 'NRS', nome: 'Escala numérica de dor (0 a 10)', uso: 'Dor atual ou média da semana. Simples e adequada para acompanhar a resposta ao tratamento a cada visita.', busca: '' },
+];
+---
+<Ferramenta slug="instrumentos" fontes={fontes}>
+  <h2 class="sub">Instrumentos usados em lipedema</h2>
+  <div class="grid" style="grid-template-columns:1fr">
+    {inst.map((i) => (
+      <div class="card">
+        <h3 style="font-size:1.15rem">{i.nome}</h3>
+        <p class="resumo">{i.uso}</p>
+        {i.busca && <p class="fonte"><a href={`/busca?q=${encodeURIComponent(i.busca)}`} style="color:var(--gold)">Ver estudos na base →</a></p>}
+      </div>
+    ))}
+  </div>
+  <p style="color:var(--muted);font-size:.84rem;margin-top:16px">Os itens dos questionários têm direitos autorais e licenças próprias. O Lipedema360 não os reproduz: use a versão oficial da fonte original. Para licenças e versões em português, consulte os autores dos estudos de validação.</p>
+
+  <h2 class="sub">Registrar um escore</h2>
+  <div class="campos">
+    <div class="fld"><label for="ins">Instrumento</label>
+      <select id="ins">{inst.map((i) => <option value={i.id}>{i.id}</option>)}</select></div>
+    <div class="fld"><label for="esc">Escore</label><input id="esc" inputmode="decimal" placeholder="valor total" /></div>
+    <div class="fld"><label for="dt">Data</label><input id="dt" type="date" /></div>
+  </div>
+  <div class="acoes-ferr"><button class="btn" id="b-add" type="button">Adicionar ao caso atual</button></div>
+  <div class="res neutro" id="res"><p class="kicker">Escores registrados neste caso</p><div id="lista"><p>Nenhum escore registrado.</p></div></div>
+
+  <script is:inline>
+    (function () {
+      document.getElementById('dt').value = new Date().toISOString().slice(0, 10);
+      function fmtd(iso) { var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+      function desenhar() {
+        var c = window.l360caso.get().escores || [];
+        document.getElementById('lista').innerHTML = c.length ? c.map(function (e, i) { return '<div class="linha"><span>' + e.ins + ' · ' + fmtd(e.dt) + '</span><b>' + e.esc + ' <button type="button" data-rm="' + i + '" style="background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-size:.8rem;text-decoration:underline">remover</button></b></div>'; }).join('') : '<p>Nenhum escore registrado.</p>';
+      }
+      document.getElementById('b-add').addEventListener('click', function () {
+        var v = num('esc'); if (v == null) return;
+        var c = window.l360caso.get().escores || [];
+        c.push({ ins: document.getElementById('ins').value, esc: v, dt: document.getElementById('dt').value });
+        window.l360caso.set('escores', c);
+        window.l360caso.set('escores_texto', 'ESCORES: ' + c.map(function (e) { return e.ins + ' ' + e.esc + ' (' + fmtd(e.dt) + ')'; }).join('; '));
+        document.getElementById('esc').value = ''; desenhar();
+      });
+      document.getElementById('lista').addEventListener('click', function (e) {
+        var b = e.target.closest('[data-rm]'); if (!b) return;
+        var c = window.l360caso.get().escores || []; c.splice(+b.getAttribute('data-rm'), 1);
+        window.l360caso.set('escores', c);
+        window.l360caso.set('escores_texto', c.length ? 'ESCORES: ' + c.map(function (x) { return x.ins + ' ' + x.esc + ' (' + fmtd(x.dt) + ')'; }).join('; ') : '');
+        desenhar();
+      });
+      desenhar();
+    })();
+  </script>
+</Ferramenta>
