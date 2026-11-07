@@ -1,17 +1,28 @@
 ---
-import { AREAS, TIPOS, fmtData, autoresCurto, tituloExibido, resumoCurto, type Artigo } from '../lib/data';
+import { AREAS, TIPOS, fmtData, autoresCurto, tituloExibido, resumoCurto, nivelEvidencia, type Artigo } from '../lib/data';
 interface Props { a: Artigo; grande?: boolean }
 const { a, grande = false } = Astro.props;
-const forte = ['guideline', 'meta', 'rct'].includes(a.tipo);
+const nivel = nivelEvidencia(a);
 ---
 <article class={`card ${grande ? 'card-grande' : ''}`}>
-  <div class="meta">
-    <a class={`tag tipo-${a.tipo}`} href={`/tipos/${a.tipo}`}>{TIPOS[a.tipo]}</a>
-    <a class="tag area" href={`/areas/${a.area}`}>{AREAS[a.area]?.curto}</a>
-    {forte && <span class="tag forte">Alta evidência</span>}
+  <div class="card-topo">
+    <div class="meta">
+      <a class="tag" href={`/tipos/${a.tipo}`}>{TIPOS[a.tipo]}</a>
+      <a class="tag area" href={`/areas/${a.area}`}>{AREAS[a.area]?.curto}</a>
+    </div>
+    <span class={`evid ${nivel >= 4 ? 'alta' : ''}`} title={`Nível de evidência estimado pelo tipo de estudo: ${nivel} de 5`}>
+      <span class="barras" aria-hidden="true">{[1, 2, 3, 4, 5].map((i) => <i class={i <= nivel ? 'on' : ''}></i>)}</span>
+      <span class="sr-only" style="position:absolute;left:-9999px">Nível de evidência {nivel} de 5</span>
+    </span>
   </div>
   <h3><a href={`/artigos/${a.pmid}`}>{tituloExibido(a)}</a></h3>
   {a.titulo_pt && <p class="orig">{a.titulo}</p>}
-  <p class="resumo">{resumoCurto(a, grande ? 420 : 240) || <em>Sem abstract disponível no PubMed.</em>}</p>
-  <p class="fonte">{autoresCurto(a)} · <i>{a.revista}</i> · {fmtData(a.data)}</p>
+  <p class="resumo">{resumoCurto(a, grande ? 460 : 230) || <em>Sem abstract disponível no PubMed.</em>}</p>
+  <div class="card-topo" style="margin:0">
+    <p class="fonte">{autoresCurto(a)} · <i>{a.revista}</i> · {fmtData(a.data)}</p>
+    <div class="card-acoes">
+      <button class="comparar" type="button" data-comp={a.pmid} aria-pressed="false">Comparar</button>
+      <button class="salvar" type="button" data-save={a.pmid} aria-pressed="false">Salvar</button>
+    </div>
+  </div>
 </article>

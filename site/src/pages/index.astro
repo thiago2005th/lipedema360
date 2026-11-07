@@ -1,46 +1,54 @@
 ---
 import Base from '../layouts/Base.astro';
 import Card from '../components/Card.astro';
-import { artigos, AREAS } from '../lib/data';
+import Capa from '../components/Capa.astro';
+import { artigos, AREAS, TIPOS } from '../lib/data';
 
 const hoje = new Date();
 const corte = new Date(hoje.getTime() - 30 * 86400000).toISOString().slice(0, 10);
 const corte365 = new Date(hoje.getTime() - 365 * 86400000).toISOString().slice(0, 10);
 const recentes = artigos.filter((a) => a.data >= corte);
-const noAno = artigos.filter((a) => a.data >= corte365).length;
-const ultimos = artigos.slice(0, 24);
-const destaques = artigos
-  .filter((a) => a.data >= corte365 && (a.destaque || ['guideline', 'meta', 'rct'].includes(a.tipo)))
-  .slice(0, 6);
+const ultimos = artigos.slice(0, 12);
+const fortesAno = artigos.filter((a) => a.data >= corte365 && (a.destaque || ['guideline', 'meta', 'rct'].includes(a.tipo)));
+const [principal, ...lado] = fortesAno;
+const laterais = lado.slice(0, 3);
 const contagem: Record<string, number> = {};
 for (const a of artigos) contagem[a.area] = (contagem[a.area] || 0) + 1;
+const porTipo = Object.entries(TIPOS).map(([k, nome]) => ({ k, nome, n: artigos.filter((a) => a.tipo === k).length })).filter((t) => t.n > 0);
+const maxTipo = Math.max(...porTipo.map((t) => t.n), 1);
 ---
 <Base>
-  <section class="hero">
-    <h1>A ciência do lipedema, atualizada todo dia.</h1>
-    <p>Tudo o que sai no PubMed sobre lipedema, selecionado por tipo de evidência e área clínica, para médicos, nutricionistas e fisioterapeutas.</p>
-    <div class="stats">
-      <div><b>{recentes.length}</b> artigos nos últimos 30 dias</div>
-      <div><b>{noAno}</b> no último ano</div>
-      <div><b>{artigos.length}</b> na base completa</div>
-    </div>
-  </section>
+  <Capa slot="capa" total={artigos.length} recentes={recentes.length} noAno={0} altos={fortesAno.length} />
 
-  {destaques.length > 0 && (
+  {principal && (
     <>
-      <h2 class="secao">Melhor evidência do ano <a href="/destaques">ver todos →</a></h2>
-      <div class="grid">
-        {destaques.map((a) => <Card a={a} />)}
+      <h2 class="secao" style="margin-top:96px">Evidência de ponta <a href="/destaques">Ver todos →</a></h2>
+      <div class="destaque">
+        <Card a={principal} grande />
+        <div class="destaque-lado">
+          {laterais.map((a) => <Card a={a} />)}
+        </div>
       </div>
     </>
   )}
 
-  <h2 class="secao">Publicados recentemente <a href="/boletim">ver boletim semanal →</a></h2>
+  <h2 class="secao">Por tipo de estudo <a href="/destaques">Ver por tipo →</a></h2>
+  <div class="mapa">
+    {porTipo.map((t) => (
+      <a href={`/tipos/${t.k}`}>
+        <span class="nome">{t.nome}</span>
+        <span class="trilho"><i style={`width:${Math.max(4, Math.round(Math.sqrt(t.n / maxTipo) * 100))}%`}></i></span>
+        <span class="n">{t.n}</span>
+      </a>
+    ))}
+  </div>
+
+  <h2 class="secao">Acabou de sair <a href="/boletim">Boletim semanal →</a></h2>
   <div class="grid">
     {ultimos.map((a) => <Card a={a} />)}
   </div>
 
-  <h2 class="secao">Explorar por área</h2>
+  <h2 class="secao">Áreas clínicas</h2>
   <div class="areas-grid">
     {Object.entries(AREAS).map(([k, v]) => (
       <a class="area-box" href={`/areas/${k}`}>
@@ -50,4 +58,19 @@ for (const a of artigos) contagem[a.area] = (contagem[a.area] || 0) + 1;
       </a>
     ))}
   </div>
+
+  <section class="faixa-pro">
+    <div>
+      <p class="eyebrow">Lipedema360 Profissional</p>
+      <h2>Do abstract à <em>decisão.</em></h2>
+      <p>A leitura crítica dos estudos que importam, pronta para a sua consulta.</p>
+      <a class="btn" href="/premium">Conhecer o plano</a>
+    </div>
+    <ul>
+      <li>Análise crítica de cada estudo de alta evidência</li>
+      <li>Comparação lado a lado e coleções</li>
+      <li>Alertas por e-mail por área clínica</li>
+      <li>Boletim semanal curado</li>
+    </ul>
+  </section>
 </Base>

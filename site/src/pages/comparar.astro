@@ -1,0 +1,68 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base titulo="Comparar estudos" descricao="Compare até três estudos sobre lipedema lado a lado: tipo, nível de evidência, população e resultados.">
+  <section class="hero" style="padding-bottom:40px;margin-bottom:40px">
+    <p class="eyebrow">Comparar estudos</p>
+    <h1 style="font-size:clamp(2rem,4vw,3.2rem);max-width:none">Três estudos, <em>lado a lado.</em></h1>
+    <p>Marque “Comparar” em até três artigos, em qualquer lista do site, e veja desenho, evidência e resultados na mesma tela.</p>
+  </section>
+  <div id="comp-area"><p class="comp-vazio">Carregando…</p></div>
+
+  <script is:inline>
+    (function () {
+      var area = document.getElementById('comp-area');
+      var meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+      var fmt = function (iso) { var p = iso.split('-'); return Number(p[2]) + ' ' + meses[Number(p[1]) - 1] + ' ' + p[0]; };
+      var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+      var dados = null;
+
+      function ids() {
+        var q = new URLSearchParams(location.search).get('ids');
+        if (q) { var l = q.split(',').filter(Boolean).slice(0, 3); if (window.l360c) window.l360c.grava(l); return l; }
+        return window.l360c ? window.l360c.lista() : [];
+      }
+      function barras(n) { var h = ''; for (var i = 1; i <= 5; i++) h += '<i class="' + (i <= n ? 'on' : '') + '"></i>'; return '<span class="evid ' + (n >= 4 ? 'alta' : '') + '"><span class="barras">' + h + '</span> ' + n + ' de 5</span>'; }
+
+      function desenhar() {
+        var sel = ids();
+        var itens = sel.map(function (id) { return dados.find(function (a) { return a.p === id; }); }).filter(Boolean);
+        if (itens.length < 2) {
+          area.innerHTML = '<div class="comp-vazio">' + (itens.length ? 'Escolha mais um estudo para comparar.' : 'Nenhum estudo selecionado ainda.') + '<br><a class="btn" href="/busca">Escolher estudos</a></div>';
+          if (itens.length) area.innerHTML += '<div class="comp-tab">' + linhas(itens) + '</div>';
+          return;
+        }
+        area.innerHTML = '<div class="comp-tab">' + linhas(itens) + '</div><div class="botoes"><a class="btn sec" href="/busca">Adicionar outro estudo</a><button class="btn sec" type="button" id="copiar-link">Copiar link desta comparação</button></div>';
+        var bl = document.getElementById('copiar-link');
+        if (bl) bl.addEventListener('click', function () {
+          var url = location.origin + '/comparar?ids=' + itens.map(function (a) { return a.p; }).join(',');
+          (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { bl.textContent = 'Link copiado'; }, function () { prompt('Copie o link:', url); });
+        });
+      }
+
+      function linhas(itens) {
+        var cols = 'grid-template-columns: 150px repeat(' + itens.length + ', 1fr)';
+        function lin(rot, fn, cls) { return '<div class="comp-lin ' + (cls || '') + '" style="' + cols + '"><div>' + rot + '</div>' + itens.map(function (a) { return '<div>' + fn(a) + '</div>'; }).join('') + '</div>'; }
+        return lin('Estudo', function (a) { return '<h3><a href="/artigos/' + a.p + '">' + esc(a.t) + '</a></h3><button class="rm" type="button" data-rm="' + a.p + '">Remover</button>'; }, 'cab') +
+          lin('Tipo de estudo', function (a) { return esc(a.ty); }) +
+          lin('Nível de evidência', function (a) { return barras(a.e) + '<div style="font-size:.74rem;color:var(--muted);margin-top:6px">Estimado pelo tipo de estudo</div>'; }) +
+          lin('Área clínica', function (a) { return esc(a.ar); }) +
+          lin('Publicação', function (a) { return '<i>' + esc(a.r) + '</i><br>' + fmt(a.d) + '<br><span style="color:var(--muted)">' + esc(a.au) + '</span>'; }) +
+          lin('Resumo', function (a) { return esc(a.rs) + (a.rs.length >= 900 ? '…' : '') + (a.pt ? '' : '<div style="font-size:.74rem;color:var(--muted);margin-top:8px">Abstract original, em inglês</div>'); }) +
+          lin('Pontos-chave', function (a) { return a.k.length ? '<ul>' + a.k.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : '<span style="color:var(--muted)">Disponível quando o resumo em português for gerado.</span>'; }) +
+          lin('Links', function (a) { return '<a href="' + esc(a.url) + '" target="_blank" rel="noopener" style="color:var(--gold)">PubMed</a>' + (a.doi ? ' · <a href="https://doi.org/' + esc(a.doi) + '" target="_blank" rel="noopener" style="color:var(--gold)">DOI</a>' : ''); });
+      }
+
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('[data-rm]');
+        if (!b) return;
+        var c = window.l360c.lista().filter(function (x) { return x !== b.getAttribute('data-rm'); });
+        window.l360c.grava(c); history.replaceState(null, '', '/comparar'); desenhar();
+      });
+      document.addEventListener('l360:comp', function () { if (dados) desenhar(); });
+
+      fetch('/compare.json').then(function (r) { return r.json(); }).then(function (d) { dados = d; desenhar(); })
+        .catch(function () { area.innerHTML = '<p class="comp-vazio">Não foi possível carregar a comparação. Recarregue a página.</p>'; });
+    })();
+  </script>
+</Base>

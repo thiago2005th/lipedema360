@@ -2,43 +2,166 @@
 import { AREAS, artigos, ultimaAtualizacao, fmtData } from '../lib/data';
 interface Props { titulo?: string; descricao?: string }
 const { titulo, descricao } = Astro.props;
-const tituloFull = titulo ? `${titulo} · Lipedema360` : 'Lipedema360 · A ciência do lipedema, atualizada todo dia';
-const desc = descricao || 'Boletim científico sobre lipedema para médicos, nutricionistas e fisioterapeutas. Artigos do PubMed selecionados e resumidos em português, atualizados diariamente.';
+const tituloFull = titulo ? `${titulo} · Lipedema360` : 'Lipedema360 · A literatura sobre lipedema, curada todo dia';
+const desc = descricao || 'Inteligência científica sobre lipedema para médicos, nutricionistas e fisioterapeutas. Artigos do PubMed classificados por nível de evidência e resumidos em português, todos os dias.';
 const path = Astro.url.pathname;
+const nav = [
+  { href: '/boletim', rotulo: 'Boletim', ativo: path.startsWith('/boletim') },
+  { href: '/destaques', rotulo: 'Evidência', ativo: path.startsWith('/destaques') },
+  { href: '/areas', rotulo: 'Áreas', ativo: path.startsWith('/areas') },
+  { href: '/comparar', rotulo: 'Comparar', ativo: path.startsWith('/comparar') },
+  { href: '/alertas', rotulo: 'Alertas', ativo: path.startsWith('/alertas') },
+  { href: '/sobre', rotulo: 'Sobre', ativo: path.startsWith('/sobre') },
+];
 ---
 <!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0f0e0d" />
   <title>{tituloFull}</title>
   <meta name="description" content={desc} />
+  <meta property="og:title" content={tituloFull} />
+  <meta property="og:description" content={desc} />
+  <meta property="og:type" content="website" />
   <link rel="alternate" type="application/rss+xml" title="Lipedema360" href="/rss.xml" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..600&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/extra.css" />
 </head>
 <body>
   <header class="topo">
     <div class="wrap">
-      <a class="logo" href="/"><span class="logo-mark">L</span> Lipedema<b>360</b></a>
-      <nav>
-        <a href="/" class={path === '/' ? 'ativo' : ''}>Últimos</a>
-        <a href="/boletim" class={path.startsWith('/boletim') ? 'ativo' : ''}>Boletim semanal</a>
-        <a href="/destaques" class={path.startsWith('/destaques') ? 'ativo' : ''}>Melhor evidência</a>
-        <a href="/areas" class={path.startsWith('/areas') ? 'ativo' : ''}>Áreas</a>
-        <a href="/sobre" class={path.startsWith('/sobre') ? 'ativo' : ''}>Sobre</a>
+      <a class="logo" href="/" aria-label="Lipedema360, início">Lipedema<b>360</b></a>
+      <nav aria-label="Principal">
+        {nav.map((n) => <a href={n.href} class={n.ativo ? 'ativo' : ''}>{n.rotulo}</a>)}
       </nav>
+      <div class="acoes">
+        <a class="btn-busca" href="/busca" aria-label="Buscar artigos">
+          <span class="t">Buscar</span> <kbd>/</kbd>
+        </a>
+        <a class="cta-pro" href="/premium">Profissional</a>
+      </div>
     </div>
   </header>
+  <slot name="capa" />
   <main class="wrap">
     <slot />
   </main>
   <footer class="rodape">
     <div class="wrap">
-      <p><b>Lipedema360</b> · {artigos.length} artigos indexados · última atualização {ultimaAtualizacao ? fmtData(ultimaAtualizacao) : '—'} · <a href="/rss.xml">RSS</a></p>
-      <p class="mini">Conteúdo destinado a profissionais de saúde. Resumos são apoio à leitura e não substituem o artigo original. Fonte dos dados: PubMed / NLM.</p>
-      <p class="mini">Áreas: {Object.entries(AREAS).map(([k, v], i) => (<><a href={`/areas/${k}`}>{v.curto}</a>{i < 6 ? ' · ' : ''}</>))}</p>
+      <div class="cols">
+        <div>
+          <a class="logo" href="/">Lipedema<b>360</b></a>
+          <p>A literatura científica sobre lipedema, organizada por nível de evidência e atualizada todos os dias para quem atende pacientes.</p>
+          <p>{artigos.length} artigos indexados · atualizado em {ultimaAtualizacao ? fmtData(ultimaAtualizacao) : '—'}</p>
+        </div>
+        <div>
+          <h5>Explorar</h5>
+          <ul>
+            <li><a href="/busca">Busca avançada</a></li>
+            <li><a href="/busca?salvos=1">Meus salvos <span class="badge-salvos" data-contagem-salvos></span></a></li>
+            <li><a href="/comparar">Comparar estudos</a></li>
+            <li><a href="/alertas">Alertas por área</a></li>
+            <li><a href="/destaques">Melhor evidência</a></li>
+            <li><a href="/boletim">Boletim semanal</a></li>
+            <li><a href="/rss.xml">RSS</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5>Áreas clínicas</h5>
+          <ul>
+            {Object.entries(AREAS).map(([k, v]) => <li><a href={`/areas/${k}`}>{v.curto}</a></li>)}
+          </ul>
+        </div>
+      </div>
+      <p class="mini">Conteúdo destinado a profissionais de saúde. Resumos em português são gerados por inteligência artificial como apoio à leitura e não substituem o artigo original nem o julgamento clínico. O nível de evidência indicado é estimado pelo tipo de publicação, não avalia a qualidade metodológica de cada estudo. Fonte dos dados: PubMed / NLM.</p>
     </div>
   </footer>
+
+  <div class="barra-comp" id="barra-comp" hidden>
+    <span><b id="comp-n">0</b> <span id="comp-txt">estudo para comparar</span></span>
+    <a class="btn" id="comp-abrir" href="/comparar">Comparar</a>
+    <button class="x" id="comp-limpar" type="button" aria-label="Limpar seleção">Limpar</button>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var CK = 'l360_comp';
+      function lerC() { try { return JSON.parse(localStorage.getItem(CK) || '[]'); } catch (e) { return []; } }
+      function gravarC(v) { try { localStorage.setItem(CK, JSON.stringify(v)); } catch (e) {} }
+      function syncC() {
+        var c = lerC();
+        document.querySelectorAll('[data-comp]').forEach(function (b) {
+          var on = c.indexOf(b.getAttribute('data-comp')) > -1;
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          b.textContent = on ? 'Na comparação' : 'Comparar';
+        });
+        var barra = document.getElementById('barra-comp');
+        if (barra) {
+          var naPagina = location.pathname.indexOf('/comparar') === 0;
+          barra.hidden = !c.length || naPagina;
+          document.getElementById('comp-n').textContent = c.length;
+          document.getElementById('comp-txt').textContent = c.length === 1 ? 'estudo para comparar (escolha até 3)' : 'estudos para comparar';
+          document.getElementById('comp-abrir').style.display = c.length >= 2 ? '' : 'none';
+        }
+      }
+      window.l360c = { lista: lerC, grava: gravarC, sync: syncC };
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('[data-comp]');
+        if (b) {
+          e.preventDefault();
+          var id = b.getAttribute('data-comp'), c = lerC(), i = c.indexOf(id);
+          if (i > -1) c.splice(i, 1);
+          else { if (c.length >= 3) c.shift(); c.push(id); }
+          gravarC(c); syncC(); document.dispatchEvent(new CustomEvent('l360:comp'));
+          return;
+        }
+        if (e.target.id === 'comp-limpar') { gravarC([]); syncC(); document.dispatchEvent(new CustomEvent('l360:comp')); }
+      });
+      window.addEventListener('load', syncC);
+      syncC();
+    })();
+  </script>
+
+  <script is:inline>
+    (function () {
+      var KEY = 'l360_salvos';
+      function ler() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { return []; } }
+      function gravar(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} }
+      function sync() {
+        var s = ler();
+        document.querySelectorAll('[data-save]').forEach(function (b) {
+          var on = s.indexOf(b.getAttribute('data-save')) > -1;
+          b.setAttribute('aria-pressed', on ? 'true' : 'false');
+          b.textContent = on ? 'Salvo' : 'Salvar';
+        });
+        document.querySelectorAll('[data-contagem-salvos]').forEach(function (el) { el.textContent = s.length ? '(' + s.length + ')' : ''; });
+      }
+      window.l360 = { salvos: ler, sync: function () { sync(); if (window.l360c) window.l360c.sync(); } };
+      document.addEventListener('click', function (e) {
+        var b = e.target.closest && e.target.closest('[data-save]');
+        if (!b) return;
+        e.preventDefault();
+        var id = b.getAttribute('data-save'), s = ler(), i = s.indexOf(id);
+        if (i > -1) s.splice(i, 1); else s.push(id);
+        gravar(s); sync();
+        document.dispatchEvent(new CustomEvent('l360:salvos'));
+      });
+      document.addEventListener('keydown', function (e) {
+        var t = e.target, tag = t && t.tagName;
+        if (e.key === '/' && tag !== 'INPUT' && tag !== 'TEXTAREA' && tag !== 'SELECT' && !e.ctrlKey && !e.metaKey) {
+          e.preventDefault();
+          var campo = document.getElementById('q');
+          if (campo) campo.focus(); else location.href = '/busca';
+        }
+      });
+      sync();
+    })();
+  </script>
 </body>
 </html>

@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import { AREAS, artigos, nivelEvidencia } from '../lib/data';
+const feeds = [
+  { slug: 'alta-evidencia', nome: 'Alta evidência', desc: 'Diretrizes, metanálises e ensaios clínicos randomizados', n: artigos.filter((a) => nivelEvidencia(a) >= 4).length },
+  ...Object.entries(AREAS).map(([slug, v]) => ({ slug, nome: v.nome, desc: v.desc, n: artigos.filter((a) => a.area === slug).length })),
+];
+---
+<Base titulo="Alertas por área" descricao="Receba os novos estudos sobre lipedema da sua área de interesse no leitor de RSS.">
+  <section class="hero" style="padding-bottom:40px;margin-bottom:40px">
+    <p class="eyebrow">Alertas por área</p>
+    <h1 style="font-size:clamp(2rem,4vw,3.2rem);max-width:none">Só o que <em>importa</em> para a sua prática.</h1>
+    <p>Assine o feed da sua área e receba cada estudo novo no leitor de RSS (Feedly, Inoreader, Reeder ou o app de e-mail do seu celular).</p>
+  </section>
+
+  <div class="passos">
+    <div><b>01</b><p>Escolha a área abaixo e copie o link do feed.</p></div>
+    <div><b>02</b><p>Cole no seu leitor de RSS, como o Feedly ou o Inoreader.</p></div>
+    <div><b>03</b><p>Pronto: os estudos novos chegam sozinhos, todos os dias.</p></div>
+  </div>
+
+  <h2 class="secao">Escolha seus feeds</h2>
+  <div class="feeds">
+    {feeds.map((f) => (
+      <div class="feed">
+        <div><h3>{f.nome}</h3><p>{f.desc} · {f.n} estudos</p></div>
+        <button class="btn sec" type="button" data-feed={`/rss/${f.slug}.xml`}>Copiar link do feed</button>
+      </div>
+    ))}
+  </div>
+
+  <section class="faixa-pro" style="margin-top:80px">
+    <div>
+      <p class="eyebrow">Profissional · em breve</p>
+      <h2>Alertas direto no <em>seu e-mail.</em></h2>
+      <p>Sem leitor de RSS: escolha as áreas e o Lipedema360 envia um resumo quando houver estudo novo relevante.</p>
+      <a class="btn" href="/premium">Conhecer o plano</a>
+    </div>
+    <ul>
+      <li>E-mail por área clínica ou por tema</li>
+      <li>Prioridade para estudos de alta evidência</li>
+      <li>Resumo em português no próprio e-mail</li>
+    </ul>
+  </section>
+
+  <script is:inline>
+    document.addEventListener('click', function (e) {
+      var b = e.target.closest && e.target.closest('[data-feed]');
+      if (!b) return;
+      var url = location.origin + b.getAttribute('data-feed');
+      var ok = function () { var t = b.textContent; b.textContent = 'Link copiado'; setTimeout(function () { b.textContent = t; }, 2000); };
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(ok, function () { prompt('Copie o link:', url); });
+      else prompt('Copie o link:', url);
+    });
+  </script>
+</Base>

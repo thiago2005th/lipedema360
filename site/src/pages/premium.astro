@@ -1,0 +1,126 @@
+---
+import Base from '../layouts/Base.astro';
+import { artigos, nivelEvidencia, LISTA_ESPERA_URL } from '../lib/data';
+
+const total = artigos.length;
+const anos = new Set(artigos.map((a) => a.data.slice(0, 4)));
+const corte365 = new Date(Date.now() - 365 * 86400000).toISOString().slice(0, 10);
+const noAno = artigos.filter((a) => a.data >= corte365).length;
+const porMes = Math.round(noAno / 12);
+const pctAlta = Math.round((artigos.filter((a) => nivelEvidencia(a) >= 4).length / total) * 100);
+
+const recursos = [
+  { t: 'Análise crítica dos estudos que importam', d: 'Cada diretriz, metanálise e ensaio randomizado ganha uma leitura estruturada, do desenho ao que muda na conduta.' },
+  { t: 'Comparação lado a lado', d: 'Coloque até três estudos na mesma tela e veja evidência, população e resultados sem abrir dez abas.' },
+  { t: 'Alertas por e-mail', d: 'Escolha suas áreas e receba um resumo em português quando sair algo relevante.' },
+  { t: 'Coleções e referências', d: 'Organize estudos por tema ou paciente e exporte citações em Vancouver, BibTeX e RIS.' },
+  { t: 'Boletim semanal curado', d: 'Em poucos minutos, o que mudou na semana e o que merece a sua atenção.' },
+];
+
+const modelo = [
+  ['Pergunta clínica', 'O que o estudo tentou responder, em uma frase.'],
+  ['Desenho e população', 'Quem foi estudado, como e por quanto tempo.'],
+  ['Resultado principal', 'O efeito encontrado, com os números que importam.'],
+  ['Riscos de viés', 'Onde o resultado pode estar enganando.'],
+  ['Aplicabilidade', 'Se vale para o seu paciente e o seu contexto.'],
+  ['O que muda na conduta', 'A conclusão prática, sem rodeio.'],
+];
+
+const faq = [
+  ['Os resumos substituem a leitura do artigo?', 'Não. Eles economizam tempo na triagem e apontam o que merece leitura completa. Sempre há link para o abstract original, o DOI e, quando existe, o texto completo gratuito.'],
+  ['Como a inteligência artificial entra no processo?', 'Ela ajuda a organizar e resumir o volume de estudos, e isso é sinalizado em cada resumo. A análise crítica do plano Profissional foi desenhada para ter curadoria do Dr. Thiago Cabral.'],
+  ['O que é o nível de evidência exibido?', 'É uma estimativa pelo tipo de publicação (diretriz, metanálise, ensaio, estudo original, revisão, relato de caso). Ele orienta a leitura, mas não avalia a qualidade metodológica de cada estudo.'],
+  ['A base gratuita continua aberta?', 'Sim. Busca, filtros, resumos, salvar estudos, alertas por RSS e o boletim semanal seguem gratuitos.'],
+  ['Quanto custa e quando começa?', 'Valores e data de lançamento ainda não foram definidos. Quem entrar na lista de espera será avisado primeiro.'],
+];
+---
+<Base titulo="Profissional" descricao="Lipedema360 Profissional: análise crítica dos estudos, comparação, alertas por e-mail e coleções para quem atende lipedema.">
+  <section class="hero">
+    <p class="eyebrow">Lipedema360 Profissional</p>
+    <h1>Pare de caçar estudo. <em>Decida com evidência.</em></h1>
+    <p>A leitura crítica da literatura sobre lipedema, pronta para usar entre um paciente e outro.</p>
+    <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap">
+      {LISTA_ESPERA_URL
+        ? <a class="btn" href={LISTA_ESPERA_URL} target="_blank" rel="noopener">Entrar na lista de espera</a>
+        : <span class="btn off">Lista de espera abre em breve</span>}
+      <a class="btn sec" href="/busca">Explorar a base gratuita</a>
+    </div>
+  </section>
+
+  <h2 class="secao" style="margin-top:0">O volume é o problema</h2>
+  <div class="dores">
+    <div><span class="num">{total}</span><p>estudos sobre lipedema já publicados, em {anos.size} anos de literatura.</p></div>
+    <div><span class="num">~{porMes}</span><p>novos artigos por mês chegando ao PubMed, em média no último ano.</p></div>
+    <div><span class="num">{pctAlta}%</span><p>é evidência de alto nível. O resto exige saber o que descartar rápido.</p></div>
+  </div>
+
+  <h2 class="secao">Cada estudo importante, <em style="font-style:italic;color:var(--gold-2)">analisado.</em></h2>
+  <div class="analise">
+    <div>
+      <p style="color:var(--fg-2);font-size:1.06rem;line-height:1.75;margin:0 0 18px">Um abstract não diz se o resultado vale para o seu paciente. A análise crítica Lipedema360 responde isso com a mesma estrutura em todos os estudos, para você comparar e decidir sem recomeçar do zero a cada leitura.</p>
+      <p style="color:var(--fg-2);font-size:1.06rem;line-height:1.75;margin:0">É o tipo de leitura que se faz em jornal clube e raramente cabe na rotina de consultório. Aqui ela fica pronta e acessível.</p>
+    </div>
+    <div class="modelo">
+      <h4>Estrutura de cada análise</h4>
+      <dl>
+        {modelo.map(([t, d]) => <><dt>{t}</dt><dd>{d}</dd></>)}
+      </dl>
+    </div>
+  </div>
+
+  <h2 class="secao">O que o plano inclui</h2>
+  <div class="areas-grid">
+    {recursos.map((r) => (
+      <div class="area-box" style="cursor:default">
+        <h3>{r.t}</h3>
+        <p>{r.d}</p>
+      </div>
+    ))}
+  </div>
+
+  <h2 class="secao">Gratuito e Profissional</h2>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))">
+    <div class="card" style="padding:36px">
+      <p class="eyebrow" style="margin-bottom:10px">Gratuito</p>
+      <h3 style="font-size:1.8rem;margin:0 0 18px">Base aberta</h3>
+      <ul class="pontos" style="color:var(--fg-2);line-height:1.9;padding-left:18px;margin:0">
+        <li>{total} estudos do PubMed, atualizados todo dia</li>
+        <li>Resumos em português e nível de evidência</li>
+        <li>Busca, filtros e estudos salvos</li>
+        <li>Comparação de até 3 estudos</li>
+        <li>Alertas por RSS e boletim no site</li>
+      </ul>
+    </div>
+    <div class="card" style="padding:36px;box-shadow:inset 0 0 0 1px var(--gold-dim)">
+      <p class="eyebrow" style="margin-bottom:10px">Profissional</p>
+      <h3 style="font-size:1.8rem;margin:0 0 18px">Tudo do gratuito, e mais</h3>
+      <ul class="pontos" style="color:var(--fg-2);line-height:1.9;padding-left:18px;margin:0">
+        <li>Análise crítica dos estudos de alta evidência</li>
+        <li>Alertas por e-mail por área e tema</li>
+        <li>Coleções e exportação de referências</li>
+        <li>Boletim semanal curado por e-mail</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2 class="secao">Perguntas frequentes</h2>
+  <div class="faq">
+    {faq.map(([q, r]) => <details><summary>{q}</summary><p>{r}</p></details>)}
+  </div>
+
+  <section class="faixa-pro">
+    <div>
+      <p class="eyebrow">Seja um dos primeiros</p>
+      <h2>Entre na lista de <em>espera.</em></h2>
+      <p>Quem entrar primeiro será avisado do lançamento e das condições de entrada.</p>
+      {LISTA_ESPERA_URL
+        ? <a class="btn" href={LISTA_ESPERA_URL} target="_blank" rel="noopener">Quero ser avisado</a>
+        : <span class="btn off">Abre em breve</span>}
+    </div>
+    <ul>
+      <li>Aviso antecipado do lançamento</li>
+      <li>Condições para os primeiros assinantes</li>
+      <li>Sem compromisso</li>
+    </ul>
+  </section>
+</Base>

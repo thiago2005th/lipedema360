@@ -48,6 +48,21 @@ export const TIPOS: Record<string, string> = {
   carta: 'Carta / editorial',
 };
 
+// Link do formulário da lista de espera Premium (Google Forms, Tally etc.). Vazio = mostra "em breve".
+export const LISTA_ESPERA_URL = '';
+
+// Nível de evidência de 1 a 5, estimado pelo TIPO de publicação (não avalia a qualidade do estudo).
+const NIVEIS: Record<string, number> = { guideline: 5, meta: 5, rct: 4, ensaio: 3, observacional: 3, revisao: 2, caso: 1, carta: 1 };
+export function nivelEvidencia(a: Artigo): number {
+  return NIVEIS[a.tipo] ?? 1;
+}
+
+export function citacaoVancouver(a: Artigo): string {
+  const aut = a.autores.length > 6 ? a.autores.slice(0, 6).join(', ') + ', et al' : a.autores.join(', ');
+  const ano = a.data.slice(0, 4);
+  return `${aut}. ${a.titulo.replace(/\.$/, '')}. ${a.revista}. ${ano}.${a.doi ? ` doi:${a.doi}.` : ''} PMID: ${a.pmid}.`;
+}
+
 export function fmtData(iso: string): string {
   const [y, m, d] = iso.split('-').map(Number);
   const meses = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];

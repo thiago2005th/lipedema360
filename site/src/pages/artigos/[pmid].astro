@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Card from '../../components/Card.astro';
-import { artigos, AREAS, TIPOS, fmtData, tituloExibido, resumoCurto } from '../../lib/data';
+import { artigos, AREAS, TIPOS, fmtData, tituloExibido, resumoCurto, nivelEvidencia, citacaoVancouver, LISTA_ESPERA_URL } from '../../lib/data';
 
 export function getStaticPaths() {
   return artigos.map((a) => ({ params: { pmid: a.pmid }, props: { a } }));
@@ -11,61 +11,106 @@ const relacionados = artigos
   .filter((x) => x.pmid !== a.pmid && x.area === a.area)
   .sort((x, y) => (y.data > x.data ? 1 : -1))
   .slice(0, 3);
+const nivel = nivelEvidencia(a);
+const citacao = citacaoVancouver(a);
+const ris = [
+  'TY  - JOUR',
+  `TI  - ${a.titulo}`,
+  ...a.autores.map((x) => `AU  - ${x}`),
+  `JO  - ${a.revista}`,
+  `PY  - ${a.data.slice(0, 4)}`,
+  a.doi ? `DO  - ${a.doi}` : '',
+  `AN  - ${a.pmid}`,
+  `UR  - ${a.url}`,
+  'ER  - ',
+].filter(Boolean).join('\n');
 ---
 <Base titulo={tituloExibido(a)} descricao={resumoCurto(a, 160)}>
-  <article class="artigo">
-    <div class="meta">
-      <a class={`tag tipo-${a.tipo}`} href={`/tipos/${a.tipo}`}>{TIPOS[a.tipo]}</a>
-      <a class="tag area" href={`/areas/${a.area}`}>{AREAS[a.area]?.nome}</a>
-    </div>
-    <h1>{tituloExibido(a)}</h1>
-    {a.titulo_pt && <p class="orig">{a.titulo}</p>}
-    <p class="fonte">
-      {a.autores.join(', ')}<br />
-      <i>{a.revista}</i> · {fmtData(a.data)}
-      {a.doi && <> · DOI <a href={`https://doi.org/${a.doi}`} target="_blank" rel="noopener">{a.doi}</a></>}
-      · PMID {a.pmid}
-    </p>
-
-    {a.resumo_pt ? (
-      <>
-        <h2>Resumo em português</h2>
-        <div class="bloco pt">
-          <p>{a.resumo_pt}</p>
-          {a.pontos_chave && a.pontos_chave.length > 0 && (
-            <>
-              <p><b>Pontos-chave</b></p>
-              <ul class="pontos">{a.pontos_chave.map((p) => <li>{p}</li>)}</ul>
-            </>
-          )}
-          {a.relevancia_clinica && <p style="margin-top:10px"><b>Relevância clínica.</b> {a.relevancia_clinica}</p>}
-        </div>
-        <h2>Abstract original</h2>
-        <div class="bloco"><p class="abstract">{a.resumo_original}</p></div>
-      </>
-    ) : (
-      <>
-        <h2>Abstract original</h2>
-        {a.resumo_original ? (
-          <div class="bloco"><p class="abstract">{a.resumo_original}</p></div>
-        ) : (
-          <p class="aviso">Este registro não tem abstract no PubMed. Consulte o artigo completo pelo link abaixo.</p>
-        )}
-      </>
-    )}
-
-    <div class="botoes">
-      <a class="btn" href={a.url} target="_blank" rel="noopener">Ver no PubMed</a>
-      {a.doi && <a class="btn sec" href={`https://doi.org/${a.doi}`} target="_blank" rel="noopener">Artigo completo (DOI)</a>}
-      {a.pmcid && <a class="btn sec" href={`https://pmc.ncbi.nlm.nih.gov/articles/${a.pmcid}/`} target="_blank" rel="noopener">Texto completo gratuito (PMC)</a>}
-    </div>
-
-    {(a.keywords.length > 0 || a.mesh.length > 0) && (
-      <div class="kw">
-        {[...a.keywords, ...a.mesh].slice(0, 14).map((k) => <span class="tag">{k}</span>)}
+  <div class="artigo">
+    <article class="artigo-main">
+      <div class="meta">
+        <a class="tag" href={`/tipos/${a.tipo}`}>{TIPOS[a.tipo]}</a>
+        <a class="tag area" href={`/areas/${a.area}`}>{AREAS[a.area]?.nome}</a>
       </div>
-    )}
-  </article>
+      <h1>{tituloExibido(a)}</h1>
+      {a.titulo_pt && <p class="orig">{a.titulo}</p>}
+      <p class="fonte">
+        {a.autores.join(', ')}<br />
+        <i>{a.revista}</i> · {fmtData(a.data)}
+        {a.doi && <> · DOI <a href={`https://doi.org/${a.doi}`} target="_blank" rel="noopener">{a.doi}</a></>}
+        · PMID {a.pmid}
+      </p>
+
+      {a.resumo_pt ? (
+        <>
+          <h2>Resumo em português</h2>
+          <div class="bloco pt">
+            <p class="ia-nota">Gerado por inteligência artificial a partir do abstract. Confira o texto original.</p>
+            <p>{a.resumo_pt}</p>
+            {a.pontos_chave && a.pontos_chave.length > 0 && (
+              <>
+                <p><b>Pontos-chave</b></p>
+                <ul class="pontos">{a.pontos_chave.map((p) => <li>{p}</li>)}</ul>
+              </>
+            )}
+            {a.relevancia_clinica && <p><b>Relevância clínica.</b> {a.relevancia_clinica}</p>}
+          </div>
+          <h2>Abstract original</h2>
+          <div class="bloco"><p class="abstract">{a.resumo_original}</p></div>
+        </>
+      ) : (
+        <>
+          <h2>Abstract original</h2>
+          {a.resumo_original ? (
+            <div class="bloco"><p class="abstract">{a.resumo_original}</p></div>
+          ) : (
+            <p class="aviso">Este registro não tem abstract no PubMed. Consulte o artigo completo pelo link abaixo.</p>
+          )}
+        </>
+      )}
+
+      <div class="botoes">
+        <a class="btn" href={a.url} target="_blank" rel="noopener">Ver no PubMed</a>
+        {a.doi && <a class="btn sec" href={`https://doi.org/${a.doi}`} target="_blank" rel="noopener">Artigo completo (DOI)</a>}
+        {a.pmcid && <a class="btn sec" href={`https://pmc.ncbi.nlm.nih.gov/articles/${a.pmcid}/`} target="_blank" rel="noopener">Texto completo gratuito (PMC)</a>}
+      </div>
+
+      {(a.keywords.length > 0 || a.mesh.length > 0) && (
+        <div class="kw">
+          {[...a.keywords, ...a.mesh].slice(0, 14).map((k) => <a class="tag" href={`/busca?q=${encodeURIComponent(k)}`}>{k}</a>)}
+        </div>
+      )}
+    </article>
+
+    <aside class="lateral">
+      <div class="painel">
+        <h4>Nível de evidência</h4>
+        <span class={`evid ${nivel >= 4 ? 'alta' : ''}`} style="font-size:.8rem">
+          <span class="barras" aria-hidden="true">{[1, 2, 3, 4, 5].map((i) => <i class={i <= nivel ? 'on' : ''}></i>)}</span>
+          {nivel} de 5
+        </span>
+        <p style="margin:12px 0 0;font-size:.8rem;color:var(--muted);line-height:1.5">Estimado pelo tipo de publicação ({TIPOS[a.tipo]}). Não avalia a qualidade metodológica deste estudo.</p>
+      </div>
+
+      <div class="painel">
+        <h4>Usar este estudo</h4>
+        <div class="acoes-art">
+          <button class="salvar btn sec" type="button" data-save={a.pmid} aria-pressed="false" style="text-transform:none;letter-spacing:0;font-size:.84rem;border-radius:999px">Salvar</button>
+          <button class="comparar btn sec" type="button" data-comp={a.pmid} aria-pressed="false" style="text-transform:none;letter-spacing:0;font-size:.84rem;border-radius:999px;padding:10px 14px">Comparar</button>
+          <button class="btn sec" type="button" id="copiar-cit" data-citacao={citacao}>Copiar citação (Vancouver)</button>
+          <a class="btn sec" id="baixar-ris" href={`data:application/x-research-info-systems;charset=utf-8,${encodeURIComponent(ris)}`} download={`lipedema360-${a.pmid}.ris`}>Exportar RIS</a>
+        </div>
+      </div>
+
+      <div class="pro-lock">
+        <span class="sel">Profissional · em breve</span>
+        <h4>Análise crítica Lipedema360</h4>
+        <p>Desenho, risco de viés, tamanho de efeito, limitações e o que isso muda na conduta.</p>
+        <div class="fantasma"><i></i><i></i><i></i></div>
+        <a class="btn" href="/premium">Conhecer o plano</a>
+      </div>
+    </aside>
+  </div>
 
   {relacionados.length > 0 && (
     <>
@@ -73,4 +118,17 @@ const relacionados = artigos
       <div class="grid">{relacionados.map((r) => <Card a={r} />)}</div>
     </>
   )}
+
+  <script is:inline>
+    (function () {
+      var b = document.getElementById('copiar-cit');
+      if (!b) return;
+      b.addEventListener('click', function () {
+        var t = b.getAttribute('data-citacao');
+        var ok = function () { b.textContent = 'Citação copiada'; setTimeout(function () { b.textContent = 'Copiar citação (Vancouver)'; }, 2000); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(ok);
+        else { var x = document.createElement('textarea'); x.value = t; document.body.appendChild(x); x.select(); document.execCommand('copy'); document.body.removeChild(x); ok(); }
+      });
+    })();
+  </script>
 </Base>
