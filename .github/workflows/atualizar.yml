@@ -6,7 +6,12 @@ name: Atualizar artigos
 on:
   schedule:
     - cron: "0 9 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      limite:
+        description: "Quantos artigos resumir nesta rodada (padrao 60)"
+        required: false
+        default: "60"
 
 permissions:
   contents: write
@@ -25,7 +30,7 @@ jobs:
       - name: Resumir em portugues
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: python pipeline/summarize.py --limite 60
+        run: python pipeline/summarize.py --limite ${{ github.event.inputs.limite || '60' }}
       - name: Salvar
         run: |
           git config user.name "lipedema360-bot"
