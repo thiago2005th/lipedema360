@@ -3,3 +3,4 @@ site/dist/
 site/.astro/
 .env
 __pycache__/
+site/.vercel/

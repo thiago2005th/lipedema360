@@ -8,6 +8,10 @@ const grupos = Object.keys(CATEGORIAS).map((c) => ({ c, desc: CATEGORIAS[c], ite
     <p class="eyebrow">Lipedema360 Profissional · prévia</p>
     <h1>O consultório de lipedema, <em>na ponta dos dedos.</em></h1>
     <p>Critérios, classificação, ultrassom, antropometria, plano terapêutico e seguimento. Cada ferramenta mostra a fonte em que se baseia e as novas evidências da base, atualizadas todo dia.</p>
+    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn" href="/entrar?next=/ferramentas">Já sou assinante: entrar</a>
+      <a class="btn sec" href="/premium">Conhecer o plano Profissional</a>
+    </div>
   </section>
 
   {grupos.map((g) => (
@@ -16,7 +20,7 @@ const grupos = Object.keys(CATEGORIAS).map((c) => ({ c, desc: CATEGORIAS[c], ite
       <div class="ferr-hub">
         {g.itens.map((f) => (
           <a class="ferr-card" href={`/ferramentas/${f.slug}`}>
-            <span class="sel-pro" style="align-self:flex-start">Prévia</span>
+            <span class="sel-pro" style="align-self:flex-start">Profissional</span>
             <h3>{f.nome}</h3>
             <p>{f.resumo}</p>
             <span class="ir">Abrir →</span>

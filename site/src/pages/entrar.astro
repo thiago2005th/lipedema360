@@ -1,0 +1,138 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base titulo="Entrar" descricao="Acesso às ferramentas do Lipedema360 Profissional.">
+  <div style="max-width:520px;margin:0 auto;padding-top:24px">
+    <p class="eyebrow">Lipedema360 Profissional</p>
+    <h1 style="font-size:clamp(2rem,4vw,3rem);line-height:1.08;margin:0 0 16px">Entrar</h1>
+
+    <p id="aviso" class="aviso-ferr" style="font-size:.88rem;color:var(--fg-2);border-left:2px solid var(--gold-dim);padding:6px 0 6px 16px;margin:0 0 24px;line-height:1.6" hidden></p>
+
+    <div id="painel-form" hidden>
+      <p style="color:var(--fg-2);margin:0 0 20px">Informe o e-mail da sua assinatura. Enviamos um link de acesso, sem senha.</p>
+      <form id="form" class="campos" style="grid-template-columns:1fr">
+        <div class="fld"><label for="email">E-mail</label><input id="email" type="email" autocomplete="email" required placeholder="voce@email.com" /></div>
+        <div><button class="btn" id="enviar" type="submit">Enviar link de acesso</button></div>
+      </form>
+      <p id="msg" style="margin-top:18px;color:var(--fg-2);font-size:.92rem" hidden></p>
+    </div>
+
+    <div id="painel-logado" hidden>
+      <p style="color:var(--fg-2);margin:0 0 20px">Você entrou como <b id="quem" style="color:var(--fg)"></b>.</p>
+      <div class="acoes-ferr" style="margin-top:0">
+        <a class="btn" id="ir" href="/ferramentas">Abrir as ferramentas</a>
+        <button class="btn sec" id="sair" type="button">Sair</button>
+      </div>
+    </div>
+
+    <div id="painel-sem" hidden>
+      <p style="color:var(--fg-2);margin:0 0 20px">Você entrou como <b id="quem2" style="color:var(--fg)"></b>, mas este e-mail ainda não tem assinatura Profissional ativa. Se você acabou de assinar, aguarde alguns minutos e tente de novo. Se usou outro e-mail na compra, entre com ele.</p>
+      <div class="acoes-ferr" style="margin-top:0">
+        <a class="btn" href="/premium">Conhecer o plano</a>
+        <button class="btn sec" id="sair2" type="button">Entrar com outro e-mail</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import { createClient } from '@supabase/supabase-js';
+
+    const URL_ = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
+    const KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
+    const $ = (id: string) => document.getElementById(id) as HTMLElement;
+    const params = new URLSearchParams(location.search);
+    const erro = params.get('erro');
+    const proximo = (() => {
+      const n = params.get('next') || '';
+      return n.startsWith('/') && !n.startsWith('//') ? n : '/ferramentas';
+    })();
+
+    const avisos: Record<string, string> = {
+      'sem-login': 'As ferramentas são exclusivas para assinantes. Entre para continuar.',
+      sessao: 'Sua sessão expirou. Entre novamente.',
+      expirada: 'Sua assinatura expirou. Renove para continuar usando as ferramentas.',
+      erro: 'Não foi possível verificar seu acesso agora. Tente novamente em instantes.',
+      config: 'O acesso Profissional ainda não foi ativado neste site.',
+    };
+    function aviso(t: string) { const a = $('aviso'); a.textContent = t; a.hidden = !t; }
+    function mostrar(qual: 'form' | 'logado' | 'sem' | 'nenhum') {
+      $('painel-form').hidden = qual !== 'form';
+      $('painel-logado').hidden = qual !== 'logado';
+      $('painel-sem').hidden = qual !== 'sem';
+    }
+    function cookie(sessao: { access_token: string; expires_at?: number } | null) {
+      const seguro = location.protocol === 'https:' ? '; Secure' : '';
+      if (!sessao) { document.cookie = `l360_at=; path=/; max-age=0; SameSite=Lax${seguro}`; return; }
+      const ttl = Math.max(60, (sessao.expires_at ?? Math.floor(Date.now() / 1000) + 3600) - Math.floor(Date.now() / 1000));
+      document.cookie = `l360_at=${sessao.access_token}; path=/; max-age=${ttl}; SameSite=Lax${seguro}`;
+    }
+
+    if (!URL_ || !KEY) {
+      aviso(avisos.config);
+      mostrar('nenhum');
+    } else {
+      const sb = createClient(URL_, KEY, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+
+      // evita laço de redirecionamentos: no máximo 2 tentativas em 60 s
+      const k = 'l360_tent';
+      const agora = Date.now();
+      let tent: number[] = [];
+      try { tent = JSON.parse(sessionStorage.getItem(k) || '[]').filter((t: number) => agora - t < 60000); } catch {}
+      const podeRedirecionar = tent.length < 2;
+
+      async function onSessao(sessao: any) {
+        cookie(sessao);
+        const email = sessao?.user?.email || '';
+        if (erro === 'sem-assinatura' || erro === 'expirada') {
+          $('quem2').textContent = email; aviso(erro === 'expirada' ? avisos.expirada : ''); mostrar('sem'); return;
+        }
+        if (podeRedirecionar) {
+          tent.push(agora); try { sessionStorage.setItem(k, JSON.stringify(tent)); } catch {}
+          location.replace(proximo);
+        } else {
+          $('quem').textContent = email; ($('ir') as HTMLAnchorElement).href = proximo; mostrar('logado');
+        }
+      }
+
+      // Sai de verdade mesmo se a chamada ao servidor falhar: apaga a sessão local e o cookie.
+      async function sairDeVez() {
+        try { await sb.auth.signOut(); } catch {}
+        try { Object.keys(localStorage).filter((x) => x.startsWith('sb-')).forEach((x) => localStorage.removeItem(x)); } catch {}
+        cookie(null);
+      }
+      $('sair').addEventListener('click', async () => { await sairDeVez(); location.href = '/entrar'; });
+      $('sair2').addEventListener('click', async () => { await sairDeVez(); location.href = '/entrar'; });
+
+      $('form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = (document.getElementById('email') as HTMLInputElement).value.trim().toLowerCase();
+        const msg = $('msg'); msg.hidden = false; msg.textContent = 'Enviando…';
+        const { error } = await sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true, emailRedirectTo: `${location.origin}/entrar?next=${encodeURIComponent(proximo)}` } });
+        msg.textContent = error
+          ? 'Não foi possível enviar o link agora. Confira o e-mail e tente de novo em alguns minutos.'
+          : `Enviamos o link para ${email}. Abra o e-mail neste mesmo navegador e clique no link. Confira também o spam.`;
+      });
+
+      (async () => {
+        if (params.get('sair')) { await sairDeVez(); }
+        const { data } = await sb.auth.getSession();
+        if (data.session && !params.get('sair')) {
+          if (erro === 'sessao') {
+            const r = await sb.auth.refreshSession();
+            if (r.data.session) return onSessao(r.data.session);
+            await sairDeVez();
+            aviso(avisos.sessao); mostrar('form'); return;
+          }
+          return onSessao(data.session);
+        }
+        if (erro && avisos[erro]) aviso(avisos[erro]);
+        mostrar('form');
+      })();
+
+      sb.auth.onAuthStateChange((evt, sessao) => {
+        if (evt === 'SIGNED_IN' && sessao) onSessao(sessao);
+        if (evt === 'TOKEN_REFRESHED' && sessao) cookie(sessao);
+      });
+    }
+  </script>
+</Base>
