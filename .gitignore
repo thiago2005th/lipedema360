@@ -4,3 +4,5 @@ site/.astro/
 .env
 __pycache__/
 site/.vercel/
+video/trabalho/
+video/saida/
