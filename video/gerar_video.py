@@ -10,6 +10,11 @@ from playwright.sync_api import sync_playwright
 
 RAIZ = os.path.dirname(os.path.abspath(__file__))
 FFMPEG = imageio_ffmpeg.get_ffmpeg_exe()
+_env = os.path.join(RAIZ, ".env")
+if os.path.exists(_env):                                   # chaves locais (arquivo fora do git)
+    for _l in open(_env, encoding="utf-8"):
+        if "=" in _l and not _l.startswith("#"):
+            _k, _v = _l.strip().split("=", 1); os.environ.setdefault(_k, _v)
 SITE = os.environ.get("SITE", "https://www.lipedema360.com.br")
 VOZ = os.environ.get("VOZ", "pt-BR-AntonioNeural")
 ELEVEN_KEY = os.environ.get("ELEVEN_API_KEY")          # opcional: voz humana (ElevenLabs)
