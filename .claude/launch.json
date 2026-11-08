@@ -4,7 +4,7 @@
     {
       "name": "lipedema360",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["astro", "preview", "--port", "4321"],
+      "runtimeArgs": ["astro", "dev", "--port", "4321"],
       "cwd": "site",
       "port": 4321
     }
