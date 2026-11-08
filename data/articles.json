@@ -453,6 +453,48 @@
   "destaque": false
  },
  {
+  "pmid": "42997034",
+  "titulo": "Rare adipose disorders: a review of clinical presentation, pathophysiology, and management with illustrative case series",
+  "resumo_original": "Rare adipose disorders are abnormal subcutaneous adipose tissue diseases that present as a spectrum of soft tissue abnormalities that may be encountered by plastic surgeons. Presentation ranges from distinct subcutaneous masses in characteristic distributions in the body to large generalized fatty deposits. It is imperative to recognize these rare adipose disorders, as they are typically refractory to standard treatment approaches to obesity, such as weight loss, lifestyle modifications, pharmacologic therapy, and bariatric surgery. In this review, we provide a complete and updated review of lipedema, Madelung disease, familial multiple lipomatosis, and Dercum's disease as well as present a case series highlighting our surgical approach to rare adipose disorders.",
+  "autores": [
+   "Huang H",
+   "Kim DK",
+   "Gu K",
+   "Green TC",
+   "Engdahl R"
+  ],
+  "revista": "JPRAS open",
+  "data": "2026-10-21",
+  "doi": "10.2147/CCID.S368273",
+  "pmcid": "PMC9851055",
+  "idioma": "eng",
+  "tipos_publicacao": [
+   "Journal Article",
+   "Review"
+  ],
+  "keywords": [
+   "Lipedema",
+   "Lipomatosis",
+   "Rare adipose disorders"
+  ],
+  "mesh": [],
+  "tipo": "revisao",
+  "area": "cirurgia",
+  "peso": 55,
+  "url": "https://pubmed.ncbi.nlm.nih.gov/42997034/",
+  "coletado_em": "2026-11-08",
+  "titulo_pt": "Doenças adiposas raras: revisão sobre apresentação clínica, fisiopatologia e manejo com série de casos ilustrativos",
+  "resumo_pt": "Trata-se de revisão que aborda lipedema, doença de Madelung, lipomatose múltipla familiar e doença de Dercum, distúrbios raros do tecido adiposo subcutâneo que se manifestam como espectro de alterações de partes moles, desde massas subcutâneas distintas em distribuições características até grandes depósitos generalizados de gordura. Os autores destacam que essas condições costumam ser refratárias às abordagens convencionais da obesidade, como perda de peso, modificação do estilo de vida, farmacoterapia e cirurgia bariátrica. A revisão aborda apresentação clínica, fisiopatologia e manejo, e é acompanhada de série de casos que ilustra a abordagem cirúrgica dos autores. O resumo disponível não informa número de casos, desfechos quantitativos, valores de p ou intervalos de confiança.",
+  "pontos_chave": [
+   "Lipedema, doença de Madelung, lipomatose múltipla familiar e doença de Dercum são doenças adiposas raras relevantes para a cirurgia plástica.",
+   "Essas condições tendem a ser refratárias a dieta, mudança de estilo de vida, farmacoterapia e cirurgia bariátrica.",
+   "A série de casos ilustra a abordagem cirúrgica dos autores para esses distúrbios."
+  ],
+  "relevancia_clinica": "Reforça a importância de reconhecer essas doenças para evitar condutas voltadas apenas à obesidade e considerar o tratamento cirúrgico em centros experientes. As limitações são o desenho de revisão narrativa com série de casos, sem dados comparativos ou desfechos quantitativos no resumo, o que limita a força da evidência.",
+  "area_ia": "cirurgia",
+  "destaque": false
+ },
+ {
   "pmid": "42897246",
   "titulo": "Internal Inconsistencies in \"Liposuction for Lipedema Significantly Reduces Benzodiazepine Dependence: A Prospective Cohort Study\"",
   "resumo_original": "This Letter to the Editor documents several verifiable internal inconsistencies in the article by Bruno and D'Antimi, including contradictory statements on study design, a level-of-evidence rating incompatible with the stated methods, contradictory informed-consent statements, and references to a procedure and outcome domain that do not correspond to the study performed. A correction or clarification is requested.Level of Evidence V This journal requires that authors assign a level of evidence to each article. For a full description of these Evidence-Based Medicine ratings, please refer to the Table of Contents or the online Instructions to Authors www.springer.com/00266.",
