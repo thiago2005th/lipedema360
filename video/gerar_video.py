@@ -135,7 +135,7 @@ VIDEOS = {
         ("Seguimento do paciente", "Registre as medidas a cada retorno e acompanhe a evolução do paciente ao longo do tempo.", c_ferr_seg),
         ("Plano terapêutico", "Monte o plano terapêutico a partir das opções, com cada conduta ligada à evidência.", c_ferr_plano),
         ("Nota de consulta", "E ao final, a nota de consulta pronta, reunindo tudo o que foi feito.", c_ferr_nota),
-        ("lipedema360.com.br/premium", "Lipedema360 Profissional. Acesso completo às ferramentas, com sete dias de garantia. Conheça em lipedema360 ponto com ponto br, barra premium. As ferramentas apoiam a decisão do profissional, não a substituem.", c_ferr_final),
+        ("Lipedema360 Profissional", "Conheça em lipedema360 ponto com ponto br, barra premium. Sete dias de garantia. Ferramentas de apoio à decisão do profissional.", c_ferr_final),
     ],
 
 }
