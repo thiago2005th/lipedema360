@@ -1,0 +1,187 @@
+---
+// Vitrine: documentos reais que as ferramentas geram, com dados fictícios, para mostrar o valor antes da assinatura.
+import { barras, linhas } from '../lib/svg';
+
+const us = [
+  ['Coxa anterior', 24.8, 22.1, 19.5, 17.9],
+  ['Face lateral da perna', 10.2, 9.6, 8.9, 8.4],
+  ['Pré-tibial', 14.1, 13.8, 11.6, 11.8],
+  ['Supramaleolar medial', 8.0, 7.4, 7.1, 7.0],
+] as const;
+const gUS = barras(us.flatMap(([n, d, e, cd, ce]) => [
+  { rotulo: `${n} (dir.)`, valor: d, corte: cd, max: 30, un: ' mm' },
+  { rotulo: `${n} (esq.)`, valor: e, corte: ce, max: 30, un: ' mm' },
+]));
+const gAnt = barras([
+  { rotulo: 'IMC (corte: sobrepeso)', valor: 28.8, corte: 25, max: 45, un: ' kg/m²' },
+  { rotulo: 'Cintura-quadril (OMS)', valor: 0.71, corte: 0.85, max: 1.2 },
+  { rotulo: 'Cintura-estatura', valor: 0.48, corte: 0.5, max: 0.9 },
+  { rotulo: 'Gordura das pernas ÷ IMC', valor: 0.49, corte: 0.46, max: 1.0 },
+]);
+const gSeg = linhas(['jan', 'mar', 'mai', 'jul'], [
+  { nome: 'Coxa D', pontos: [62.0, 61.2, 60.4, 59.6] },
+  { nome: 'Perna D', pontos: [41.0, 40.6, 40.1, 39.8] },
+  { nome: 'Peso', pontos: [78.4, 77.0, 75.9, 75.1] },
+], 560, 190, '');
+
+const abas = [
+  { id: 'us', nome: 'Laudo de ultrassom' },
+  { id: 'ant', nome: 'Antropometria' },
+  { id: 'seg', nome: 'Seguimento' },
+  { id: 'nota', nome: 'Nota de consulta' },
+];
+---
+<section class="exemplos" id="exemplos" aria-label="Exemplos de documentos gerados pelas ferramentas">
+  <div class="exemplos-abas" role="tablist">
+    {abas.map((a, i) => <button type="button" role="tab" data-aba={a.id} aria-selected={i === 0 ? 'true' : 'false'}>{a.nome}</button>)}
+  </div>
+
+  <div class="exemplos-painel" data-painel="us">
+    <div class="exemplos-grade">
+      <div class="folha">
+        <span class="marca-exemplo">Exemplo · dados fictícios</span>
+        <div class="fo-timbre-ex"><i>seu logo</i><span>Sua clínica · Dra. Fulana de Tal · CRM 000000<br />contato e endereço</span></div>
+        <h4>Ultrassonografia de pele e tecido subcutâneo dos membros inferiores</h4>
+        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Data:</b> 08/11/2026</span></div>
+        <h6>Gráfico</h6>
+        <Fragment set:html={gUS} />
+        <h6>Achados (derme + subcutâneo)</h6>
+        <table>
+          <thead><tr><th>Ponto</th><th>Direita</th><th>Esquerda</th><th>Corte ótimo D / E</th></tr></thead>
+          <tbody>
+            {us.map(([n, d, e, cd, ce]) => <tr><td>{n}</td><td class="ok">{String(d).replace('.', ',')} mm</td><td class="ok">{String(e).replace('.', ',')} mm</td><td>{String(cd).replace('.', ',')} / {String(ce).replace('.', ',')} mm</td></tr>)}
+          </tbody>
+        </table>
+        <h6>Impressão</h6>
+        <p>8 de 8 medidas acima do corte ótimo de Amato et al. (2021), incluindo o ponto pré-tibial, de melhor desempenho no estudo. O ultrassom é complementar: o diagnóstico de lipedema é clínico.</p>
+        <div class="fo-rod">Referência: Amato ACM et al. Ultrasound criteria for lipedema diagnosis. Phlebology 2021. Gerado em Lipedema360 Profissional.</div>
+      </div>
+      <div class="exemplos-texto">
+        <h3>Laudo de ultrassom com gráfico e cortes da literatura</h3>
+        <p>Você digita as espessuras; o laudo sai redigido, com a comparação aos cortes publicados e o gráfico pronto.</p>
+        <ul>
+          <li>Texto do laudo editável, pronto para copiar</li>
+          <li>Gráfico de cada ponto contra o corte ótimo</li>
+          <li>Seu logo, clínica e registro no cabeçalho</li>
+          <li>Imprima ou salve em PDF com um clique</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="exemplos-painel" data-painel="ant" hidden>
+    <div class="exemplos-grade">
+      <div class="folha">
+        <span class="marca-exemplo">Exemplo · dados fictícios</span>
+        <div class="fo-timbre-ex"><i>seu logo</i><span>Sua clínica · Dra. Fulana de Tal · CRM 000000<br />contato e endereço</span></div>
+        <h4>Antropometria</h4>
+        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Data:</b> 08/11/2026</span></div>
+        <h6>Gráfico</h6>
+        <Fragment set:html={gAnt} />
+        <h6>Resultado</h6>
+        <table>
+          <tbody>
+            <tr><td>Peso / altura</td><td>78,4 kg · 165 cm</td></tr>
+            <tr><td>IMC</td><td>28,8 kg/m² · sobrepeso</td></tr>
+            <tr><td>Relação cintura-quadril</td><td>0,71 · abaixo do corte da OMS (0,85)</td></tr>
+            <tr><td>Relação cintura-estatura</td><td>0,48 · abaixo de 0,5</td></tr>
+            <tr><td>Gordura das pernas (DXA) ÷ IMC</td><td class="ok">0,49 · acima de 0,46</td></tr>
+          </tbody>
+        </table>
+        <p>IMC elevado com cintura-quadril baixa e razão gordura de pernas/IMC acima de 0,46: padrão compatível com acúmulo de gordura nas pernas, a interpretar com o exame físico.</p>
+        <div class="fo-rod">Referências: Buso et al., Obesity 2019; Dietzel et al., 2015. Gerado em Lipedema360 Profissional.</div>
+      </div>
+      <div class="exemplos-texto">
+        <h3>Índices com o corte ao lado, sem conta de cabeça</h3>
+        <p>IMC, cintura-quadril, cintura-estatura e a razão gordura de pernas/IMC calculados na hora e desenhados contra o valor de referência.</p>
+        <ul>
+          <li>Interpretação já redigida, com a fonte citada</li>
+          <li>Copie para o prontuário em um clique</li>
+          <li>Documento para entregar ao paciente, com o seu timbre</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="exemplos-painel" data-painel="seg" hidden>
+    <div class="exemplos-grade">
+      <div class="folha">
+        <span class="marca-exemplo">Exemplo · dados fictícios</span>
+        <div class="fo-timbre-ex"><i>seu logo</i><span>Sua clínica · Dra. Fulana de Tal · CRM 000000<br />contato e endereço</span></div>
+        <h4>Seguimento de medidas</h4>
+        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Período:</b> jan a jul/2026</span></div>
+        <h6>Evolução</h6>
+        <Fragment set:html={gSeg} />
+        <h6>Resumo</h6>
+        <table>
+          <thead><tr><th>Medida</th><th>Jan</th><th>Jul</th><th>Variação</th></tr></thead>
+          <tbody>
+            <tr><td>Circunferência da coxa D</td><td>62,0 cm</td><td>59,6 cm</td><td class="ok">−2,4 cm</td></tr>
+            <tr><td>Circunferência da perna D</td><td>41,0 cm</td><td>39,8 cm</td><td class="ok">−1,2 cm</td></tr>
+            <tr><td>Peso</td><td>78,4 kg</td><td>75,1 kg</td><td class="ok">−3,3 kg</td></tr>
+          </tbody>
+        </table>
+        <div class="fo-rod">Gerado em Lipedema360 Profissional.</div>
+      </div>
+      <div class="exemplos-texto">
+        <h3>A evolução do paciente numa página só</h3>
+        <p>Registre peso, dor e circunferências a cada visita. O gráfico e a variação aparecem sozinhos, prontos para mostrar ao paciente.</p>
+        <ul>
+          <li>Histórico guardado por paciente, só você vê</li>
+          <li>Comparação com a avaliação anterior</li>
+          <li>Cálculo de volume dos membros</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="exemplos-painel" data-painel="nota" hidden>
+    <div class="exemplos-grade">
+      <div class="folha">
+        <span class="marca-exemplo">Exemplo · dados fictícios</span>
+        <div class="fo-timbre-ex"><i>seu logo</i><span>Sua clínica · Dra. Fulana de Tal · CRM 000000<br />contato e endereço</span></div>
+        <h4>Nota de consulta</h4>
+        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Data:</b> 08/11/2026</span></div>
+        <div class="fo-texto">QUEIXA E HISTÓRIA
+Dor e peso nas pernas há 8 anos, hematomas fáceis, pouca resposta da gordura das pernas à dieta.
+
+CRITÉRIOS DIAGNÓSTICOS
+Acometimento simétrico de pernas e coxas, poupando os pés; dor à palpação; hematomas fáceis; sinal de Stemmer negativo.
+
+CLASSIFICAÇÃO
+Tipo III (quadris até os tornozelos), estágio 2.
+
+ANTROPOMETRIA
+IMC 28,8 · cintura-quadril 0,71 · gordura das pernas/IMC 0,49.
+
+ULTRASSOM
+8 de 8 medidas acima do corte ótimo (Amato 2021).
+
+PLANO
+Compressão, exercício resistido, orientação nutricional e reavaliação em 90 dias.</div>
+        <div class="fo-rod">Gerado em Lipedema360 Profissional.</div>
+      </div>
+      <div class="exemplos-texto">
+        <h3>Tudo que você registrou, num texto pronto para o prontuário</h3>
+        <p>A nota reúne critérios, classificação, medidas, ultrassom, plano e seguimento do paciente, na ordem que você escolher.</p>
+        <ul>
+          <li>Copie e cole no prontuário, ou salve em PDF</li>
+          <li>Carrega as últimas avaliações do paciente</li>
+          <li>Você edita antes de finalizar</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var abas = document.querySelectorAll('.exemplos-abas button');
+      abas.forEach(function (b) {
+        b.addEventListener('click', function () {
+          abas.forEach(function (x) { x.setAttribute('aria-selected', x === b ? 'true' : 'false'); });
+          document.querySelectorAll('.exemplos-painel').forEach(function (p) { p.hidden = p.getAttribute('data-painel') !== b.getAttribute('data-aba'); });
+        });
+      });
+    })();
+  </script>
+</section>

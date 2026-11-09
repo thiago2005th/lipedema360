@@ -1,19 +1,61 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ExemplosDocs from '../../components/ExemplosDocs.astro';
 import { FERRAMENTAS, CATEGORIAS } from '../../lib/ferramentas';
+import { CHECKOUT_URL, CHECKOUT_URL_ANUAL } from '../../lib/data';
 const grupos = Object.keys(CATEGORIAS).map((c) => ({ c, desc: CATEGORIAS[c], itens: FERRAMENTAS.filter((f) => f.categoria === c) }));
+const beneficios = [
+  ['Documentos com a sua marca', 'Logo, clínica, registro e contato no cabeçalho de todo laudo, nota e plano.'],
+  ['PDF e impressão em um clique', 'Do resultado ao documento para o paciente ou para o prontuário, sem editar nada.'],
+  ['Gráficos e comparações', 'Medidas contra os cortes da literatura e evolução entre visitas, prontas para mostrar.'],
+  ['Histórico por paciente', 'Salve avaliações, compare com as anteriores e carregue tudo na nota de consulta.'],
+  ['Fonte citada em cada ferramenta', 'Cada critério mostra o estudo de origem e a evidência nova que saiu na base.'],
+  ['Acesso que não pede senha', 'Entre uma vez com o e-mail da assinatura e continue logado neste navegador.'],
+];
 ---
-<Base titulo="Ferramentas clínicas" descricao="Calculadoras, checklists e laudos baseados em evidência para usar na consulta de lipedema.">
+<Base titulo="Ferramentas clínicas" descricao="Calculadoras, checklists e laudos baseados em evidência para usar na consulta de lipedema, com PDF e o timbre da sua clínica.">
   <section class="hero">
-    <p class="eyebrow">Lipedema360 Profissional · prévia</p>
-    <h1>O consultório de lipedema, <em>na ponta dos dedos.</em></h1>
-    <p>Critérios, classificação, ultrassom, antropometria, plano terapêutico e seguimento. Cada ferramenta mostra a fonte em que se baseia e as novas evidências da base, atualizadas todo dia.</p>
-    <div style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
-      <a class="btn" href="/entrar?next=/ferramentas">Já sou assinante: entrar</a>
-      <a class="btn sec" href="/premium">Conhecer o plano Profissional</a>
+    <p class="eyebrow">Lipedema360 Profissional</p>
+    <h1 data-so-visitante>O consultório de lipedema, <em>na ponta dos dedos.</em></h1>
+    <h1 data-so-assinante>Suas ferramentas, <em>prontas para a consulta.</em></h1>
+    <p data-so-visitante>Critérios, classificação, ultrassom, antropometria, plano terapêutico e seguimento. Cada ferramenta mostra a fonte em que se baseia e gera um documento profissional, com o logo da sua clínica.</p>
+    <p data-so-assinante>Você está dentro<span id="eu-email"></span>. O acesso fica ativo neste navegador, sem pedir senha de novo. Abra qualquer ferramenta e configure o timbre da sua clínica para sair nos documentos.</p>
+    <div data-so-visitante style="margin-top:28px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn" href={CHECKOUT_URL} target="_blank" rel="noopener">Assinar · R$ 97/mês</a>
+      <a class="btn sec" href="#exemplos">Ver exemplos de documentos</a>
+      <a class="btn sec" href="/entrar?next=/ferramentas">Já sou assinante</a>
     </div>
   </section>
 
+  <div data-so-visitante>
+    <h2 class="secao" style="margin-top:0">O que sai de cada ferramenta</h2>
+    <ExemplosDocs />
+
+    <h2 class="secao">Pensado para a rotina do consultório</h2>
+    <div class="beneficios">
+      {beneficios.map(([t, d]) => <div><h4>{t}</h4><p>{d}</p></div>)}
+    </div>
+
+    <section class="faixa-pro" style="margin-top:72px">
+      <div>
+        <p class="eyebrow">Lipedema360 Profissional</p>
+        <h2>Pare de montar documento <em>na mão.</em></h2>
+        <p>R$ 97,00 por mês ou R$ 897,00 por ano. Garantia de 7 dias, cancele quando quiser. Acesso por e-mail, sem senha.</p>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <a class="btn" href={CHECKOUT_URL} target="_blank" rel="noopener">Assinar mensal · R$ 97</a>
+          <a class="btn sec" href={CHECKOUT_URL_ANUAL} target="_blank" rel="noopener">Assinar anual · R$ 897</a>
+        </div>
+      </div>
+      <ul>
+        <li>9 ferramentas clínicas com fonte citada</li>
+        <li>Laudos, notas e planos em PDF com o seu timbre</li>
+        <li>Pacientes e histórico de avaliações</li>
+        <li>Análise crítica dos estudos e alertas por e-mail</li>
+      </ul>
+    </section>
+  </div>
+
+  <h2 class="secao" data-so-visitante>As 9 ferramentas</h2>
   {grupos.map((g) => (
     <>
       <h2 class="secao">{g.c} <span style="font-family:var(--sans);font-size:.84rem;color:var(--muted);font-weight:400">{g.desc}</span></h2>
@@ -30,5 +72,13 @@ const grupos = Object.keys(CATEGORIAS).map((c) => ({ c, desc: CATEGORIAS[c], ite
     </>
   ))}
 
-  <p style="color:var(--muted);font-size:.84rem;margin-top:40px;max-width:70ch">Todas as ferramentas rodam no seu navegador. Nenhum dado de paciente é enviado ou armazenado em servidor. Os critérios vêm de consensos e estudos publicados e estão citados em cada página. São apoio à decisão e não substituem o julgamento clínico.</p>
+  <p style="color:var(--muted);font-size:.84rem;margin-top:40px;max-width:70ch">Todas as ferramentas rodam no seu navegador. Nenhum dado de paciente é enviado ou armazenado em servidor, a menos que você escolha salvar a avaliação de um paciente cadastrado. Os critérios vêm de consensos e estudos publicados e estão citados em cada página. São apoio à decisão e não substituem o julgamento clínico.</p>
+
+  <script is:inline>
+    (function () {
+      function mostra(j) { var e = document.getElementById('eu-email'); if (e && j && j.email) e.textContent = ' como ' + j.email; }
+      if (window.l360eu) mostra(window.l360eu);
+      document.addEventListener('l360:eu', function (ev) { mostra(ev.detail); });
+    })();
+  </script>
 </Base>

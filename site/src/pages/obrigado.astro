@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base titulo="Assinatura confirmada" descricao="Sua assinatura do Lipedema360 Profissional foi confirmada.">
+  <div style="max-width:620px;margin:0 auto;padding-top:24px">
+    <p class="eyebrow">Lipedema360 Profissional</p>
+    <h1 style="font-size:clamp(2rem,4vw,3rem);line-height:1.08;margin:0 0 16px">Assinatura <em>confirmada.</em></h1>
+    <p style="color:var(--fg-2);font-size:1.06rem;margin:0 0 28px">Obrigado por assinar. Seu acesso já está liberado no e-mail que você usou na compra. Não existe senha: você entra por um link enviado a esse e-mail.</p>
+
+    <ol class="passos">
+      <li><b>Abra o e-mail que acabamos de enviar</b>, com o assunto sobre o seu acesso. Se não aparecer em um minuto, olhe o spam ou a aba Promoções.</li>
+      <li><b>Clique no botão do e-mail.</b> Você entra direto nas ferramentas e continua logado neste navegador.</li>
+      <li><b>Configure o timbre da sua clínica</b> dentro de qualquer ferramenta: logo, nome e registro saem em todos os PDFs.</li>
+    </ol>
+
+    <p style="margin:32px 0 12px;color:var(--fg-2)">Não recebeu o e-mail? Peça um novo link com o e-mail da compra:</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn" href="/entrar?next=/ferramentas">Receber meu link de acesso</a>
+      <a class="btn sec" href="/ferramentas">Abrir as ferramentas</a>
+    </div>
+    <p style="margin-top:28px;font-size:.84rem;color:var(--muted)">Garantia de 7 dias: se não fizer sentido para você, peça o reembolso nesse prazo, pelo contato indicado no recibo que o Stripe envia ao seu e-mail.</p>
+  </div>
+  <style>
+    .passos { list-style: none; counter-reset: p; padding: 0; margin: 0; }
+    .passos li { counter-increment: p; position: relative; padding: 18px 0 18px 56px; border-bottom: 1px solid var(--line); color: var(--fg-2); line-height: 1.6; }
+    .passos li::before { content: counter(p); position: absolute; left: 0; top: 16px; width: 34px; height: 34px; border: 1px solid var(--gold-dim); color: var(--gold-2); border-radius: 50%; display: grid; place-items: center; font-family: var(--serif); font-size: 1.1rem; }
+    .passos b { color: var(--fg); font-weight: 600; }
+  </style>
+</Base>

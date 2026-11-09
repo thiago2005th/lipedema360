@@ -1,0 +1,81 @@
+/* ---------- estado de login (visitante x assinante) ---------- */
+html:not(.assinante) [data-so-assinante] { display: none !important; }
+html.assinante [data-so-visitante] { display: none !important; }
+
+/* ---------- timbre da clínica (painel dentro das ferramentas) ---------- */
+.timbre { border: 1px solid var(--line-2); background: var(--surface); margin: 0 0 18px; }
+.timbre > summary { cursor: pointer; padding: 14px 20px; font-size: .86rem; font-weight: 600; color: var(--fg); list-style: none; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+.timbre > summary::-webkit-details-marker { display: none; }
+.timbre > summary small { font-weight: 400; color: var(--muted); font-size: .78rem; }
+.timbre > summary::after { content: "+"; color: var(--gold); font-size: 1.2rem; }
+.timbre[open] > summary::after { content: "–"; }
+.timbre-corpo { padding: 4px 20px 20px; border-top: 1px solid var(--line); }
+.timbre-corpo p.dica { font-size: .8rem; color: var(--muted); margin: 14px 0; line-height: 1.55; }
+.timbre-grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.timbre-logo { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 14px; }
+.timbre-logo img { max-height: 56px; max-width: 160px; background: #fff; padding: 6px; border-radius: 2px; }
+.timbre-logo .btn { padding: 8px 16px; font-size: .8rem; }
+.timbre-logo input[type=file] { display: none; }
+.timbre-ok { font-size: .78rem; color: var(--gold-2); margin-left: 4px; }
+
+.doc-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line); align-items: center; }
+.doc-bar .btn { padding: 10px 20px; font-size: .84rem; }
+.doc-bar span { font-size: .78rem; color: var(--muted); }
+
+.grafico-papel { background: #fffdf9; border: 1px solid #e6e1d8; padding: 16px 18px; margin: 18px 0 4px; border-radius: 2px; }
+.grafico-papel h5 { margin: 0 0 8px; font: 600 .68rem var(--sans); letter-spacing: .14em; text-transform: uppercase; color: #6b645b; }
+.grafico-papel:empty { display: none; }
+
+/* ---------- folha de papel (exemplos e impressão) ---------- */
+.folha { background: #fffdf9; color: #1d1a16; font-family: var(--sans); padding: 34px 38px; border-radius: 2px; box-shadow: 0 18px 50px rgba(0,0,0,.45); position: relative; font-size: .9rem; line-height: 1.55; }
+.folha * { box-sizing: border-box; }
+.folha h4 { font: 600 1.05rem/1.3 var(--serif); margin: 0 0 4px; color: #1d1a16; }
+.folha h6 { font: 600 .66rem var(--sans); letter-spacing: .16em; text-transform: uppercase; color: #8a6d3b; margin: 18px 0 6px; }
+.folha p { margin: 0 0 8px; color: #2c2823; }
+.folha table { width: 100%; border-collapse: collapse; font-size: .82rem; margin: 6px 0 10px; }
+.folha th { text-align: left; font: 600 .62rem var(--sans); letter-spacing: .1em; text-transform: uppercase; color: #6b645b; padding: 6px 8px; border-bottom: 1.5px solid #1d1a16; }
+.folha td { padding: 6px 8px; border-bottom: 1px solid #e6e1d8; color: #2c2823; }
+.folha td.ok { color: #8a6d3b; font-weight: 600; }
+.folha .fo-cab { display: flex; gap: 16px; align-items: center; padding-bottom: 14px; margin-bottom: 14px; border-bottom: 2px solid #1d1a16; min-height: 58px; }
+.folha .fo-logo { max-height: 62px; max-width: 170px; object-fit: contain; }
+.folha .fo-clin { font: 600 1.1rem var(--serif); color: #1d1a16; }
+.folha .fo-prof, .folha .fo-ct { font-size: .8rem; color: #4d463e; }
+.folha .fo-meta { display: flex; flex-wrap: wrap; gap: 4px 22px; font-size: .78rem; color: #4d463e; margin: 8px 0 4px; }
+.folha .fo-meta b { color: #1d1a16; }
+.folha .fo-texto { white-space: pre-wrap; font-size: .86rem; line-height: 1.6; color: #2c2823; }
+.folha .fo-rod { margin-top: 22px; padding-top: 10px; border-top: 1px solid #cfc8bd; font-size: .68rem; color: #6b645b; line-height: 1.5; }
+.folha .fo-rod ul { margin: 4px 0 6px; padding-left: 16px; }
+.folha .fo-assin { margin-top: 38px; width: 260px; border-top: 1px solid #1d1a16; font-size: .74rem; color: #4d463e; padding-top: 4px; }
+.folha .fo-timbre-ex { display: flex; gap: 14px; align-items: center; padding: 10px 14px; border: 1.5px dashed #b9b1a4; margin-bottom: 14px; color: #8a8175; font-size: .78rem; }
+.folha .fo-timbre-ex i { width: 54px; height: 42px; border: 1.5px dashed #b9b1a4; display: grid; place-items: center; font-style: normal; font-size: .6rem; text-transform: uppercase; letter-spacing: .08em; }
+.folha .marca-exemplo { position: absolute; top: 14px; right: 16px; font: 700 .6rem var(--sans); letter-spacing: .16em; text-transform: uppercase; color: #a8372f; border: 1.5px solid #a8372f; padding: 2px 8px; transform: rotate(3deg); opacity: .85; }
+
+.exemplos-abas { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 22px; }
+.exemplos-abas button { cursor: pointer; border: 1px solid var(--line-2); background: none; color: var(--fg-2); font: 500 .86rem var(--sans); padding: 8px 18px; border-radius: 999px; transition: all .15s; }
+.exemplos-abas button:hover { border-color: var(--gold-dim); }
+.exemplos-abas button[aria-selected="true"] { background: var(--gold); color: #17130c; border-color: var(--gold); font-weight: 600; }
+.exemplos-painel[hidden] { display: none; }
+.exemplos-grade { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+.exemplos-texto h3 { font-family: var(--serif); font-weight: 400; font-size: 1.7rem; line-height: 1.15; margin: 0 0 14px; }
+.exemplos-texto p { color: var(--fg-2); margin: 0 0 14px; }
+.exemplos-texto ul { list-style: none; margin: 0 0 22px; padding: 0; }
+.exemplos-texto li { padding: 9px 0 9px 26px; border-bottom: 1px solid var(--line); position: relative; font-size: .94rem; color: var(--fg-2); }
+.exemplos-texto li::before { content: ""; position: absolute; left: 0; top: 19px; width: 12px; height: 1px; background: var(--gold); }
+.beneficios { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin: 0; }
+.beneficios > div { background: var(--bg); padding: 22px 24px; }
+.beneficios h4 { margin: 0 0 6px; font: 600 .98rem var(--sans); color: var(--gold-2); }
+.beneficios p { margin: 0; font-size: .88rem; color: var(--fg-2); }
+@media (max-width: 900px) { .exemplos-grade { grid-template-columns: 1fr; gap: 28px; } .folha { padding: 24px 20px; } }
+
+/* ---------- impressão: só a folha ---------- */
+#doc-folha { display: none; }
+@media print {
+  @page { margin: 13mm 14mm; }
+  body > *:not(#doc-folha) { display: none !important; }
+  html, body { background: #fff !important; }
+  #doc-folha { display: block !important; }
+  #doc-folha .folha { box-shadow: none; padding: 0; font-size: 11pt; }
+  #doc-folha .fo-texto { font-size: 10.5pt; }
+  #doc-folha svg { max-width: 640px; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

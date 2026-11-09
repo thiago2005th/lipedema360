@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import ExemplosDocs from '../components/ExemplosDocs.astro';
 import { artigos, nivelEvidencia, LISTA_ESPERA_URL, CHECKOUT_URL, CHECKOUT_URL_ANUAL } from '../lib/data';
 
 const total = artigos.length;
@@ -10,7 +11,7 @@ const porMes = Math.round(noAno / 12);
 const pctAlta = Math.round((artigos.filter((a) => nivelEvidencia(a) >= 4).length / total) * 100);
 
 const recursos = [
-  { t: 'Ferramentas clínicas para a consulta', d: 'Critérios diagnósticos, tipo e estágio, diagnóstico diferencial, antropometria, laudo de ultrassom, plano terapêutico, seguimento de medidas e nota de consulta, cada um com a fonte citada.' },
+  { t: 'Ferramentas clínicas para a consulta', d: 'Critérios diagnósticos, tipo e estágio, diagnóstico diferencial, antropometria, laudo de ultrassom, plano terapêutico, seguimento de medidas e nota de consulta, cada um com a fonte citada. Laudos e notas saem em PDF, com gráficos e o logo da sua clínica.' },
   { t: 'Análise crítica dos estudos que importam', d: 'Cada diretriz, metanálise e ensaio randomizado ganha uma leitura estruturada, do desenho ao que muda na conduta.' },
   { t: 'Comparação lado a lado', d: 'Coloque até três estudos na mesma tela e veja evidência, população e resultados sem abrir dez abas.' },
   { t: 'Alertas por e-mail', d: 'Escolha suas áreas e receba um resumo em português quando sair algo relevante.' },
@@ -39,20 +40,26 @@ const faq = [
   <section class="hero">
     <p class="eyebrow">Lipedema360 Profissional</p>
     <h1>Pare de caçar estudo. <em>Decida com evidência.</em></h1>
-    <p>A leitura crítica da literatura sobre lipedema, pronta para usar entre um paciente e outro.</p>
-    <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap">
+    <p>A leitura crítica da literatura sobre lipedema e as ferramentas para a consulta, com laudos em PDF no timbre da sua clínica.</p>
+    <div data-so-assinante style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap">
+      <a class="btn" href="/ferramentas">Abrir minhas ferramentas</a>
+    </div>
+    <div data-so-visitante style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap">
       {CHECKOUT_URL
         ? <><a class="btn" href={CHECKOUT_URL} target="_blank" rel="noopener">Assinar mensal · R$ 97</a><a class="btn sec" href={CHECKOUT_URL_ANUAL} target="_blank" rel="noopener">Assinar anual · R$ 897</a></>
         : LISTA_ESPERA_URL
           ? <a class="btn" href={LISTA_ESPERA_URL} target="_blank" rel="noopener">Entrar na lista de espera</a>
           : <span class="btn off">Lista de espera abre em breve</span>}
       <a class="btn sec" href="/entrar">Já sou assinante</a>
-      <a class="btn sec" href="/ferramentas">Ver as ferramentas</a>
+      <a class="btn sec" href="#exemplos">Ver exemplos de documentos</a>
       <a class="btn sec" href="/analises">Ver análises de exemplo</a>
     </div>
   </section>
 
-  <h2 class="secao" style="margin-top:0">O volume é o problema</h2>
+  <h2 class="secao" style="margin-top:0" data-so-visitante>Veja o que sai das ferramentas</h2>
+  <div data-so-visitante><ExemplosDocs /></div>
+
+  <h2 class="secao">O volume é o problema</h2>
   <div class="dores">
     <div><span class="num">{total}</span><p>estudos sobre lipedema já publicados, em {anos.size} anos de literatura.</p></div>
     <div><span class="num">~{porMes}</span><p>novos artigos por mês chegando ao PubMed, em média no último ano.</p></div>
@@ -100,6 +107,9 @@ const faq = [
       <p class="eyebrow" style="margin-bottom:10px">Profissional</p>
       <h3 style="font-size:1.8rem;margin:0 0 18px">Tudo do gratuito, e mais</h3>
       <ul class="pontos" style="color:var(--fg-2);line-height:1.9;padding-left:18px;margin:0">
+        <li>9 ferramentas clínicas com fonte citada</li>
+        <li>Laudos, notas e planos em PDF com o seu timbre</li>
+        <li>Pacientes e histórico de avaliações</li>
         <li>Análise crítica dos estudos de alta evidência</li>
         <li>Alertas por e-mail por área e tema</li>
         <li>Coleções e exportação de referências</li>
@@ -113,7 +123,7 @@ const faq = [
     {faq.map(([q, r]) => <details><summary>{q}</summary><p>{r}</p></details>)}
   </div>
 
-  <section class="faixa-pro">
+  <section class="faixa-pro" data-so-visitante>
     <div>
       <p class="eyebrow">Lipedema360 Profissional</p>
       <h2>Chegue à consulta com a evidência <em>pronta.</em></h2>

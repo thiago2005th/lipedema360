@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { env, cabecalhoServico } from '../../lib/acesso';
+import { env, cabecalhoServico, configSupabase } from '../../lib/acesso';
 
 export const prerender = false;
 
@@ -48,7 +48,7 @@ export const POST: APIRoute = async ({ request }) => {
   const agora = new Date().toISOString();
   const cabecalho = { ...cabecalhoServico(servico), 'Content-Type': 'application/json' };
 
-  async function liberar(email: string, nome: string, cliente: string) {
+  async function liberar(email: string, nome: string, cliente: string, avisar = false) {
     email = email.toLowerCase().trim();
     if (!email) return json({ error: 'E-mail não encontrado' }, 400);
     const r = await fetch(`${base}/rest/v1/assinaturas_lipedema360?on_conflict=email`, {
@@ -56,7 +56,24 @@ export const POST: APIRoute = async ({ request }) => {
       headers: { ...cabecalho, Prefer: 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify({ email, name: nome, active: true, source: 'stripe', hotmart_transaction: cliente, expires_at: null, updated_at: agora }),
     });
-    return r.ok ? json({ success: true, email, acesso: true }) : json({ error: 'Falha ao gravar assinatura' }, 500);
+    if (!r.ok) return json({ error: 'Falha ao gravar assinatura' }, 500);
+    // Primeira compra: manda o e-mail com o link de acesso (sem senha). Falha de envio não derruba o webhook.
+    let enviado = false;
+    if (avisar) {
+      const cfg = configSupabase();
+      if (cfg) {
+        try {
+          const destino = encodeURIComponent('https://www.lipedema360.com.br/entrar?next=/ferramentas');
+          const e = await fetch(`${cfg.url}/auth/v1/otp?redirect_to=${destino}`, {
+            method: 'POST',
+            headers: { apikey: cfg.anon, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, create_user: true }),
+          });
+          enviado = e.ok;
+        } catch { /* ignora */ }
+      }
+    }
+    return json({ success: true, email, acesso: true, emailEnviado: enviado });
   }
 
   async function bloquear(cliente: string) {
@@ -72,7 +89,7 @@ export const POST: APIRoute = async ({ request }) => {
   switch (ev.type) {
     case 'checkout.session.completed':
       if (o.payment_status !== 'paid') return json({ message: 'Aguardando pagamento' });
-      return liberar(o.customer_details?.email || o.customer_email || '', o.customer_details?.name || '', String(o.customer || ''));
+      return liberar(o.customer_details?.email || o.customer_email || '', o.customer_details?.name || '', String(o.customer || ''), true);
     case 'invoice.paid':
       return liberar(o.customer_email || '', o.customer_name || '', String(o.customer || ''));
     case 'customer.subscription.deleted':

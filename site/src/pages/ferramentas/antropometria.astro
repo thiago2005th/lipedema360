@@ -21,6 +21,7 @@ const fontes = [
   <div class="res neutro" id="res">
     <p class="kicker">Resultados</p>
     <div id="out"><p>Preencha peso e altura para começar.</p></div>
+    <div class="grafico-papel" id="grafico"></div>
     <p class="nota" id="nota-dxa"></p>
   </div>
   <div class="acoes-ferr">
@@ -32,9 +33,20 @@ const fontes = [
     (function () {
       var saida = '';
       function classeIMC(v) { return v < 18.5 ? 'abaixo do peso' : v < 25 ? 'eutrofia' : v < 30 ? 'sobrepeso' : v < 35 ? 'obesidade grau I' : v < 40 ? 'obesidade grau II' : 'obesidade grau III'; }
+      function grafico() {
+        var p = num('peso'), a = num('alt'), c = num('cint'), q = num('quad'), g = num('gper'), rows = [];
+        var imc = (p && a) ? p / Math.pow(a / 100, 2) : null;
+        if (imc) rows.push({ rotulo: 'IMC (corte: sobrepeso)', valor: imc, corte: 25, max: 45, un: ' kg/m²' });
+        if (c && q) rows.push({ rotulo: 'Cintura-quadril (OMS, mulheres)', valor: c / q, corte: 0.85, max: 1.2 });
+        if (c && a) rows.push({ rotulo: 'Cintura-estatura', valor: c / a, corte: 0.5, max: 0.9 });
+        if (g && imc) rows.push({ rotulo: 'Gordura das pernas ÷ IMC', valor: g / imc, corte: 0.46, max: 1.0 });
+        return rows.length && window.l360doc ? window.l360doc.barras(rows) : '';
+      }
+      window.l360grafico = grafico;
       function calc() {
         var p = num('peso'), a = num('alt'), c = num('cint'), q = num('quad'), g = num('gper');
         var linhas = [], html = '';
+        var gr = grafico(); document.getElementById('grafico').innerHTML = gr ? '<h5>Índices x corte da literatura (traço preto)</h5>' + gr : '';
         function add(rot, val, extra) { html += '<div class="linha"><span>' + rot + '</span><b>' + val + (extra ? ' · ' + extra : '') + '</b></div>'; linhas.push(rot + ': ' + val + (extra ? ' (' + extra + ')' : '')); }
         var imc = (p && a) ? p / Math.pow(a / 100, 2) : null;
         if (imc) add('IMC', f1(imc) + ' kg/m²', classeIMC(imc));
@@ -55,6 +67,7 @@ const fontes = [
   <script is:inline>
 window.l360tool = {
   slug: 'antropometria',
+  grafico: function () { return window.l360grafico ? window.l360grafico() : ''; },
   rotulos: { peso: 'Peso (kg)', altura: 'Altura (cm)', cintura: 'Cintura (cm)', quadril: 'Quadril (cm)', gordura_pernas: 'Gordura das pernas, DXA (kg)', imc: 'IMC (kg/m²)', rcq: 'Relação cintura-quadril', rce: 'Relação cintura-estatura' },
   coletar: function () {
     var p = num('peso'), a = num('alt'), c = num('cint'), q = num('quad'), g = num('gper');

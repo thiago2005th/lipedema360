@@ -38,14 +38,39 @@ const novos = f.palavras.length
     })();
   </script>
 
+  <script is:inline src="/doc.js"></script>
+
   <div class="ferr">
     <div class="ferr-main">
       <p class="eyebrow">{f.categoria} · <span style="color:var(--muted)">Profissional</span></p>
       <h1>{f.nome}</h1>
       <p class="lead">{f.resumo}</p>
       <p class="aviso-ferr">{AVISO}</p>
+      <details class="timbre" id="timbre">
+        <summary><span>Seu timbre: logo e dados da clínica <small id="pf-resumo">· ainda não configurado</small></span></summary>
+        <div class="timbre-corpo">
+          <p class="dica">Aparece no cabeçalho de todo laudo, nota e plano que você imprimir ou salvar em PDF. Fica salvo neste navegador; não é enviado a nenhum servidor.</p>
+          <div class="timbre-grade">
+            <div class="fld"><label for="pf-clinica">Clínica ou consultório</label><input id="pf-clinica" autocomplete="off" placeholder="Clínica Exemplo" /></div>
+            <div class="fld"><label for="pf-prof">Profissional</label><input id="pf-prof" autocomplete="off" placeholder="Dra. Maria Souza" /></div>
+            <div class="fld"><label for="pf-reg">Registro</label><input id="pf-reg" autocomplete="off" placeholder="CRM-SP 000000 · RQE 0000" /></div>
+            <div class="fld"><label for="pf-contato">Contato</label><input id="pf-contato" autocomplete="off" placeholder="(11) 90000-0000 · @suaclinica · endereço" /></div>
+          </div>
+          <div class="timbre-logo">
+            <img id="pf-logo-img" alt="Seu logo" hidden />
+            <label class="btn sec" for="pf-logo" style="cursor:pointer">Escolher logo</label>
+            <input id="pf-logo" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" />
+            <button class="btn sec" id="pf-logo-rm" type="button" hidden>Remover logo</button>
+            <span class="timbre-ok" id="pf-msg"></span>
+          </div>
+        </div>
+      </details>
       <PacienteBarra />
       <slot />
+      <div class="doc-bar" id="doc-bar">
+        <button class="btn" id="doc-pdf" type="button">Imprimir / salvar PDF</button>
+        <span>No diálogo de impressão, escolha “Salvar como PDF”. O documento sai com o seu timbre.</span>
+      </div>
     </div>
     <aside class="ferr-lado">
       <div class="fonte-box">

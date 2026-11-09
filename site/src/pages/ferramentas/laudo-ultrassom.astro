@@ -37,6 +37,7 @@ const fontes = [
   <div class="res" id="res">
     <p class="kicker">Laudo</p>
     <textarea class="texto-saida" id="laudo" readonly></textarea>
+    <div class="grafico-papel" id="grafico"></div>
     <p class="nota">Cortes de Amato et al. (2021): estudo unicêntrico, 89 mulheres, amostra de conveniência; controles principalmente com varizes sem alteração subcutânea (C1 e C2). O desempenho foi melhor no ponto pré-tibial (AUC acima de 0,90), bom na coxa e na face lateral da perna e moderado na região supramaleolar. Com o corte ótimo a sensibilidade foi de 0,67 a 0,79 nos três pontos principais, ou seja, um resultado abaixo do corte não exclui lipedema. O diagnóstico de lipedema permanece clínico; o ultrassom é complementar.</p>
   </div>
   <div class="acoes-ferr">
@@ -62,6 +63,20 @@ const fontes = [
       function pct(x) { return Math.round(x * 100) + '%'; }
       function avalia(v, c) { if (v == null) return null; return v >= c.m ? 'max' : v >= c.o ? 'opt' : 'abaixo'; }
       function marshall(v) { if (v == null) return ''; if (v > 30) return 'grave (acima de 30 mm)'; if (v > 20) return 'lipedema indiscutível (acima de 20 mm)'; if (v > 15) return 'lipedema moderado (15 a 20 mm)'; if (v >= 12) return 'lipo-hiperplasia ou lipedema leve (12 a 15 mm)'; return 'abaixo de 12 mm'; }
+      function grafico() {
+        var rows = [], mx = 0;
+        S.forEach(function (s) {
+          [['D', 'direita'], ['E', 'esquerda']].forEach(function (l) {
+            var v = num(s.id + l[0]); if (v == null) return;
+            rows.push({ rotulo: s.nome + ' (' + l[1] + ')', valor: v, corte: s[l[0]].o, un: ' mm' });
+            mx = Math.max(mx, v, s[l[0]].o);
+          });
+        });
+        if (!rows.length || !window.l360doc) return '';
+        rows.forEach(function (r) { r.max = mx * 1.12; });
+        return window.l360doc.barras(rows);
+      }
+      window.l360grafico = grafico;
       function calc() {
         var linhas = [], acima = 0, medidas = 0, laudoSites = [];
         S.forEach(function (s) {
@@ -98,6 +113,7 @@ const fontes = [
           (medidas ? '\nImpressão: ' + acima + ' de ' + medidas + ' medidas acima do corte ótimo de Amato et al. (2021). ' + destaque + ' O ultrassom é complementar: o diagnóstico de lipedema é clínico e deve considerar história, exame físico e diagnóstico diferencial (linfedema, obesidade, doença venosa).\n' : '') +
           '\nReferência: Amato ACM et al. Ultrasound criteria for lipedema diagnosis. Phlebology 2021.';
         document.getElementById('laudo').value = texto;
+        document.getElementById('grafico').innerHTML = grafico() ? '<h5>Espessura medida x corte ótimo (traço preto)</h5>' + grafico() : '';
         if (medidas && window.l360caso) window.l360caso.set('ultrassom', { texto: 'ULTRASSOM: ' + acima + ' de ' + medidas + ' medidas acima do corte ótimo (Amato 2021). ' + laudoSites.join(' | '), medidas: medidas, acima: acima });
       }
       document.querySelectorAll('input').forEach(function (i) { i.addEventListener('input', calc); i.addEventListener('change', calc); });
@@ -111,6 +127,7 @@ const fontes = [
   <script is:inline>
 window.l360tool = {
   slug: 'laudo-ultrassom',
+  grafico: function () { return window.l360grafico ? window.l360grafico() : ''; },
   rotulos: function () {
     var r = { coxaD: 'Coxa anterior, direita (mm)', coxaE: 'Coxa anterior, esquerda (mm)', latD: 'Face lateral da perna, direita (mm)', latE: 'Face lateral da perna, esquerda (mm)', preD: 'Pré-tibial, direita (mm)', preE: 'Pré-tibial, esquerda (mm)', supD: 'Supramaleolar medial, direita (mm)', supE: 'Supramaleolar medial, esquerda (mm)', mar: '6 a 8 cm acima do maléolo medial (mm)', acima: 'Medidas acima do corte ótimo', medidas: 'Medidas informadas' };
     document.querySelectorAll('input[data-d]').forEach(function (i, k) { r['d' + k] = i.getAttribute('data-d'); });

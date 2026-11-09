@@ -5,6 +5,8 @@ const { titulo, descricao } = Astro.props;
 const tituloFull = titulo ? `${titulo} · Lipedema360` : 'Lipedema360 · A literatura sobre lipedema, curada todo dia';
 const desc = descricao || 'Inteligência científica sobre lipedema para médicos, nutricionistas e fisioterapeutas. Artigos do PubMed classificados por nível de evidência e resumidos em português, todos os dias.';
 const path = Astro.url.pathname;
+const SB_URL = (import.meta.env.PUBLIC_SUPABASE_URL || '').replace(/\/$/, '');
+const SB_KEY = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || '';
 const nav = [
   { href: '/boletim', rotulo: 'Boletim', ativo: path.startsWith('/boletim') },
   { href: '/destaques', rotulo: 'Evidência', ativo: path.startsWith('/destaques') },
@@ -34,6 +36,11 @@ const nav = [
   <link rel="stylesheet" href="/styles.css" />
   <link rel="stylesheet" href="/extra.css" />
   <link rel="stylesheet" href="/tools.css" />
+  <link rel="stylesheet" href="/doc.css" />
+  <script is:inline>
+    // evita "piscar" a versão de visitante para quem já é assinante
+    try { if (/(?:^|; )l360_at=/.test(document.cookie)) { var c = JSON.parse(sessionStorage.getItem('l360_eu') || 'null'); if (c && c.ok) document.documentElement.classList.add('assinante'); } } catch (e) {}
+  </script>
 </head>
 <body>
   <header class="topo">
@@ -46,7 +53,7 @@ const nav = [
         <a class="btn-busca" href="/busca" aria-label="Buscar artigos">
           <span class="t">Buscar</span> <kbd>/</kbd>
         </a>
-        <a class="cta-pro" href="/premium">Profissional</a>
+        <a class="cta-pro" href="/premium" data-cta-pro>Profissional</a>
       </div>
     </div>
   </header>
@@ -72,6 +79,7 @@ const nav = [
             <li><a href="/destaques">Melhor evidência</a></li>
             <li><a href="/boletim">Boletim semanal</a></li>
             <li><a href="/rss.xml">RSS</a></li>
+            <li><a href="/metodologia">Como lemos a evidência</a></li>
             <li><a href="/termos">Termos e privacidade</a></li>
           </ul>
         </div>
@@ -164,6 +172,49 @@ const nav = [
         }
       });
       sync();
+    })();
+  </script>
+
+  <script define:vars={{ SB_URL, SB_KEY }}>
+    // Mantém o assinante logado: renova a sessão em segundo plano e mostra a versão certa do site.
+    (function () {
+      var de = document.documentElement;
+      function ck(n) { var m = document.cookie.match(new RegExp('(?:^|; )' + n + '=([^;]*)')); return m ? m[1] : null; }
+      function setCk(t, exp) { var seg = location.protocol === 'https:' ? '; Secure' : ''; var ttl = Math.max(60, exp - Math.floor(Date.now() / 1000)); document.cookie = 'l360_at=' + t + '; path=/; max-age=' + ttl + '; SameSite=Lax' + seg; }
+      function chaveSB() { try { for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (/^sb-.*-auth-token$/.test(k)) return k; } } catch (e) {} return null; }
+      function aplicar(ok) {
+        de.classList.toggle('assinante', !!ok);
+        var b = document.querySelector('[data-cta-pro]');
+        if (b) { b.textContent = ok ? 'Minhas ferramentas' : 'Profissional'; b.setAttribute('href', ok ? '/ferramentas' : '/premium'); }
+      }
+      function renovar() {
+        var k = chaveSB(); if (!k || !SB_URL || !SB_KEY) return Promise.resolve(false);
+        var s; try { s = JSON.parse(localStorage.getItem(k)); } catch (e) { return Promise.resolve(false); }
+        if (!s || !s.refresh_token) return Promise.resolve(false);
+        var agora = Math.floor(Date.now() / 1000);
+        if (ck('l360_at') && s.expires_at && s.expires_at - agora > 300) return Promise.resolve(true);
+        return fetch(SB_URL + '/auth/v1/token?grant_type=refresh_token', { method: 'POST', headers: { apikey: SB_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ refresh_token: s.refresh_token }) })
+          .then(function (r) { return r.ok ? r.json() : null; })
+          .then(function (n) {
+            if (!n || !n.access_token) return false;
+            var exp = n.expires_at || (agora + (n.expires_in || 3600));
+            var novo = Object.assign({}, s, { access_token: n.access_token, refresh_token: n.refresh_token, expires_in: n.expires_in, expires_at: exp, token_type: n.token_type, user: n.user || s.user });
+            try { localStorage.setItem(k, JSON.stringify(novo)); } catch (e) {}
+            setCk(novo.access_token, exp);
+            return true;
+          }).catch(function () { return false; });
+      }
+      function verificar() {
+        if (!ck('l360_at')) { aplicar(false); return; }
+        fetch('/api/eu', { cache: 'no-store' }).then(function (r) { return r.json(); }).then(function (j) {
+          aplicar(j.ok); window.l360eu = j;
+          try { sessionStorage.setItem('l360_eu', JSON.stringify({ ok: !!j.ok, t: Date.now() })); } catch (e) {}
+          document.dispatchEvent(new CustomEvent('l360:eu', { detail: j }));
+        }).catch(function () {});
+      }
+      if (location.pathname.indexOf('/entrar') === 0) return;
+      if (de.classList.contains('assinante')) aplicar(true);
+      renovar().then(verificar);
     })();
   </script>
 </body>

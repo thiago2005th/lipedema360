@@ -1,0 +1,84 @@
+---
+import Base from '../layouts/Base.astro';
+import { artigos, TIPOS, nivelEvidencia, ultimaAtualizacao, fmtData } from '../lib/data';
+const total = artigos.length;
+const n = (t: string) => artigos.filter((a) => a.tipo === t).length;
+const altos = artigos.filter((a) => nivelEvidencia(a) >= 4).length;
+const escala = [
+  { nivel: 5, nome: 'Muito alta', tipos: 'Diretrizes, consensos, metanálises e revisões sistemáticas', t: ['guideline', 'meta'] },
+  { nivel: 4, nome: 'Alta', tipos: 'Ensaios clínicos randomizados', t: ['rct'] },
+  { nivel: 3, nome: 'Moderada', tipos: 'Ensaios clínicos e estudos originais (coortes, caso-controle, transversais)', t: ['ensaio', 'observacional'] },
+  { nivel: 2, nome: 'Limitada', tipos: 'Revisões narrativas', t: ['revisao'] },
+  { nivel: 1, nome: 'Muito limitada', tipos: 'Relatos de caso, cartas e editoriais', t: ['caso', 'carta'] },
+];
+const passos = [
+  ['1. Coleta diária', 'Todos os dias o sistema consulta o PubMed (National Library of Medicine, EUA) por artigos que mencionem lipedema (ou lipoedema) no título, no resumo ou nos termos MeSH. Nada é escolhido a dedo na entrada: o que foi publicado e indexado entra na base.'],
+  ['2. Classificação', 'Cada artigo recebe o tipo de publicação e a área clínica a partir dos metadados do PubMed (tipos de publicação, termos MeSH, título e palavras-chave).'],
+  ['3. Resumo em português', 'Um modelo de inteligência artificial resume o abstract em português e extrai pontos-chave. Todo resumo é sinalizado como gerado por IA e nunca substitui o artigo original.'],
+  ['4. Rastreabilidade', 'Cada resumo mostra o PMID, o DOI e o link para o artigo. Você sempre consegue chegar à fonte para conferir.'],
+];
+const limites = [
+  'O nível de evidência é estimado pelo tipo de publicação. Ele não avalia a qualidade metodológica de cada estudo: uma metanálise ruim continua “nível 5” na escala.',
+  'Resumos gerados por IA podem conter imprecisões. Confira o abstract e, para decidir conduta, o texto completo.',
+  'A base reflete o que o PubMed indexa; estudos em preprint, congressos e literatura cinzenta ficam de fora.',
+  'As ferramentas clínicas são apoio à decisão e não substituem o exame do paciente nem o julgamento profissional.',
+];
+---
+<Base titulo="Como lemos a evidência" descricao="Metodologia do Lipedema360: de onde vêm os estudos, como classificamos o nível de evidência e quais são os limites.">
+  <section class="hero">
+    <p class="eyebrow">Metodologia</p>
+    <h1>Como lemos <em>a evidência.</em></h1>
+    <p>Transparência sobre de onde vêm os estudos, como cada um é classificado e onde estão os limites. Quem atende paciente precisa saber o quanto confiar no que lê.</p>
+  </section>
+
+  <div class="met-nums">
+    <div><span>{total}</span><p>estudos sobre lipedema na base</p></div>
+    <div><span>{altos}</span><p>de evidência alta ou muito alta (níveis 4 e 5)</p></div>
+    <div><span>Diária</span><p>atualização a partir do PubMed{ultimaAtualizacao ? `, última em ${fmtData(ultimaAtualizacao)}` : ''}</p></div>
+    <div><span>PMID + DOI</span><p>em todo resumo, para chegar à fonte</p></div>
+  </div>
+
+  <h2 class="secao">Do PubMed à sua tela</h2>
+  <div class="beneficios">
+    {passos.map(([t, d]) => <div><h4>{t}</h4><p>{d}</p></div>)}
+  </div>
+
+  <h2 class="secao">Escala de nível de evidência</h2>
+  <p style="color:var(--fg-2);max-width:68ch;margin:0 0 24px">Cinco níveis, do mais forte ao mais fraco, estimados pelo tipo de publicação. A hierarquia segue a lógica usual da medicina baseada em evidências.</p>
+  <div class="escala">
+    {escala.map((e) => (
+      <div class="escala-linha">
+        <span class="escala-n">{e.nivel}</span>
+        <div><b>{e.nome}</b><p>{e.tipos}</p></div>
+        <span class="escala-q">{e.t.reduce((s, k) => s + n(k), 0)} estudos</span>
+      </div>
+    ))}
+  </div>
+
+  <h2 class="secao">Limites que você precisa conhecer</h2>
+  <ul class="limites">
+    {limites.map((l) => <li>{l}</li>)}
+  </ul>
+
+  <h2 class="secao">Padrão das ferramentas clínicas</h2>
+  <p style="color:var(--fg-2);max-width:68ch;margin:0 0 14px">Cada ferramenta cita, na própria página, o estudo ou consenso de onde vêm os critérios e os pontos de corte, e mostra a evidência nova da base relacionada ao tema. Quando um achado não tem corte validado, a ferramenta diz isso em vez de inventar um número.</p>
+  <p style="color:var(--fg-2);max-width:68ch;margin:0 0 14px">Os dados de pacientes só são gravados quando o profissional escolhe salvar. O nome completo do paciente não é exibido à equipe do produto.</p>
+  <p style="margin-top:24px"><a class="btn sec" href="/ferramentas">Ver as ferramentas</a> <a class="btn sec" href="/sobre">Sobre o projeto</a></p>
+
+  <style>
+    .met-nums { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); margin-bottom: 8px; }
+    .met-nums > div { background: var(--bg); padding: 26px 24px; }
+    .met-nums span { font-family: var(--serif); font-size: 2.2rem; color: var(--gold-2); line-height: 1; }
+    .met-nums p { margin: 10px 0 0; font-size: .86rem; color: var(--fg-2); }
+    .escala { border: 1px solid var(--line); }
+    .escala-linha { display: grid; grid-template-columns: 56px 1fr auto; gap: 18px; align-items: center; padding: 16px 22px; border-bottom: 1px solid var(--line); }
+    .escala-linha:last-child { border-bottom: 0; }
+    .escala-n { font-family: var(--serif); font-size: 1.8rem; color: var(--gold-2); border: 1px solid var(--gold-dim); width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; }
+    .escala-linha b { color: var(--fg); font-weight: 600; }
+    .escala-linha p { margin: 2px 0 0; color: var(--fg-2); font-size: .9rem; }
+    .escala-q { font-size: .8rem; color: var(--muted); white-space: nowrap; }
+    .limites { list-style: none; margin: 0; padding: 0; max-width: 72ch; }
+    .limites li { padding: 14px 0 14px 28px; border-bottom: 1px solid var(--line); color: var(--fg-2); position: relative; }
+    .limites li::before { content: ""; position: absolute; left: 0; top: 25px; width: 14px; height: 1px; background: var(--gold); }
+  </style>
+</Base>
