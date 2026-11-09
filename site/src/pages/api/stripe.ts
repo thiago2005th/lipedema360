@@ -63,7 +63,7 @@ export const POST: APIRoute = async ({ request }) => {
       const cfg = configSupabase();
       if (cfg) {
         try {
-          const destino = encodeURIComponent('https://www.lipedema360.com.br/entrar?next=/ferramentas');
+          const destino = encodeURIComponent('https://www.lipedema360.com.br/entrar?next=%2Fferramentas');
           const e = await fetch(`${cfg.url}/auth/v1/otp?redirect_to=${destino}`, {
             method: 'POST',
             headers: { apikey: cfg.anon, 'Content-Type': 'application/json' },
