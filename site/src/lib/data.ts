@@ -50,8 +50,9 @@ export const TIPOS: Record<string, string> = {
 
 // Link do formulário da lista de espera Premium (Google Forms, Tally etc.). Vazio = mostra "em breve".
 export const LISTA_ESPERA_URL = '';
-// Checkout da assinatura Profissional na Hotmart (produto 8911711). Preenchido = botões de assinar.
-export const CHECKOUT_URL = 'https://pay.hotmart.com/U108384219S?off=xgtxd9u4';
+// Checkout da assinatura Profissional no Stripe (Payment Links). Preenchido = botões de assinar.
+export const CHECKOUT_URL = 'https://buy.stripe.com/eVq00c7DV9oh7bvcCZ4AU00'; // mensal R$ 97,00
+export const CHECKOUT_URL_ANUAL = 'https://buy.stripe.com/8x2aEQgarasl7bvcCZ4AU01'; // anual R$ 897,00
 
 // Nível de evidência de 1 a 5, estimado pelo TIPO de publicação (não avalia a qualidade do estudo).
 const NIVEIS: Record<string, number> = { guideline: 5, meta: 5, rct: 4, ensaio: 3, observacional: 3, revisao: 2, caso: 1, carta: 1 };
