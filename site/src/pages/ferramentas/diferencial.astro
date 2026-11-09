@@ -42,6 +42,16 @@ const fontes = [
       var cont = document.getElementById('achados');
       cont.innerHTML = ACH.map(function (a, i) { return '<label class="opt"><input type="checkbox" data-i="' + i + '" /> <span>' + a[0] + '</span></label>'; }).join('');
       var saida = '';
+      function grafico() {
+        var marc = Array.prototype.map.call(document.querySelectorAll('input[data-i]:checked'), function (e) { return +e.getAttribute('data-i'); });
+        if (!marc.length || !window.l360doc) return '';
+        return window.l360doc.barras(COND.map(function (c, j) {
+          var tip = ACH.filter(function (a) { return a[1][j] === 1; }).length;
+          var conc = marc.filter(function (i) { return ACH[i][1][j] === 1; }).length, disc = marc.filter(function (i) { return ACH[i][1][j] === 0; }).length;
+          return { rotulo: c, valor: tip ? Math.max(0, conc - disc) / tip * 100 : 0, corte: null, max: 100, un: '%' };
+        }));
+      }
+      window.l360grafico = grafico;
       function calc() {
         var marc = Array.prototype.map.call(document.querySelectorAll('input[data-i]:checked'), function (e) { return +e.getAttribute('data-i'); });
         var linhas = [], html = '';

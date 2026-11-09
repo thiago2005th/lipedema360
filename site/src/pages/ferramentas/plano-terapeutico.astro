@@ -57,6 +57,7 @@ const grupos = [...new Set(itens.map((i) => i.g))];
   <div class="res" id="res">
     <p class="kicker">Plano</p>
     <textarea class="texto-saida" id="plano" readonly></textarea>
+    <div class="grafico-papel" id="grafico"></div>
     <p class="nota">Os níveis refletem as revisões citadas, não uma graduação formal de evidência de cada intervenção. Decisões terapêuticas devem ser individualizadas.</p>
   </div>
   <div class="acoes-ferr">
@@ -66,6 +67,14 @@ const grupos = [...new Set(itens.map((i) => i.g))];
 
   <script is:inline define:vars={{ itens, niveis }}>
     (function () {
+      function grafico() {
+        var sel = itens.filter(function (i) { return document.querySelector('input[data-id="' + i.id + '"]').checked; });
+        if (!sel.length || !window.l360doc) return '';
+        return window.l360doc.barras(['C', 'E', 'I'].map(function (n) {
+          return { rotulo: niveis[n], valor: sel.filter(function (i) { return i.n === n; }).length, corte: null, max: itens.filter(function (i) { return i.n === n; }).length, un: ' itens' };
+        }));
+      }
+      window.l360grafico = grafico;
       function calc() {
         var sel = itens.filter(function (i) { return document.querySelector('input[data-id="' + i.id + '"]').checked; });
         var pre = Array.prototype.map.call(document.querySelectorAll('input[data-p]:checked'), function (e) { return e.getAttribute('data-p'); });
@@ -78,6 +87,7 @@ const grupos = [...new Set(itens.map((i) => i.g))];
         }
         if (pre.length) t += '\nRevisão pré-cirúrgica realizada:\n' + pre.map(function (p) { return '- ' + p; }).join('\n') + '\n';
         document.getElementById('plano').value = t;
+        var gp = grafico(); document.getElementById('grafico').innerHTML = gp ? '<h5>Itens do plano por nível de evidência (do total disponível)</h5>' + gp : '';
         if (sel.length && window.l360caso) window.l360caso.set('plano', { texto: t });
       }
       document.querySelectorAll('input').forEach(function (i) { i.addEventListener('change', calc); });

@@ -22,6 +22,7 @@ const fontes = [
     <p class="kicker">Resultados</p>
     <div id="out"><p>Preencha peso e altura para começar.</p></div>
     <div class="grafico-papel" id="grafico"></div>
+    <div id="leitura" class="leitura"></div>
     <p class="nota" id="nota-dxa"></p>
   </div>
   <div class="acoes-ferr">
@@ -55,7 +56,14 @@ const fontes = [
         if (g && imc) { var r = g / imc; add('Gordura das pernas (kg) ÷ IMC', f2(r), r >= 0.46 ? 'igual ou acima de 0,46' : 'abaixo de 0,46'); }
         document.getElementById('out').innerHTML = html || '<p>Preencha peso e altura para começar.</p>';
         document.getElementById('nota-dxa').textContent = (g && imc) ? 'Razão gordura das pernas/IMC: em Dietzel et al. (2015, citado por Buso 2019), valores acima de 0,46 identificaram lipedema em relação à obesidade. Útil em casos duvidosos; depende de DXA e da unidade usada no estudo original (kg), e não substitui a avaliação clínica.' : (imc && imc >= 25 ? 'IMC elevado não exclui nem confirma lipedema: o IMC ignora a distribuição da gordura. Interprete junto com a desproporção corporal e o exame físico.' : '');
-        saida = 'ANTROPOMETRIA\n' + (p ? 'Peso ' + f1(p) + ' kg, ' : '') + (a ? 'altura ' + a + ' cm' : '') + '\n' + linhas.join('\n');
+        var le = [];
+        if (imc && imc >= 25) le.push('IMC ' + f1(imc) + ' (' + classeIMC(imc) + '): o IMC ignora a distribuição da gordura e, sozinho, não exclui nem confirma lipedema.');
+        if (imc && imc < 25) le.push('IMC ' + f1(imc) + ' (' + classeIMC(imc) + '): peso global dentro da faixa; avalie a desproporção corporal ao exame.');
+        if (c && q) { var rq = c / q; le.push('Cintura-quadril ' + f2(rq) + (rq < 0.85 ? ': abaixo de 0,85' + (imc && imc >= 25 ? '. Com IMC elevado, indica gordura concentrada abaixo da cintura, padrão compatível com lipedema, a ser confirmado pelo exame físico.' : '.') : ': igual ou acima de 0,85, mais próximo de adiposidade central; não sugere desproporção inferior isoladamente.')); }
+        if (c && a) { var re = c / a; le.push('Cintura-estatura ' + f2(re) + (re >= 0.5 ? ': igual ou acima de 0,5, risco cardiometabólico aumentado.' : ': abaixo de 0,5, sem sinal de adiposidade central.')); }
+        if (g && imc) { var rg = g / imc; le.push('Gordura das pernas ÷ IMC ' + f2(rg) + (rg >= 0.46 ? ': igual ou acima de 0,46, valor que no estudo de Dietzel separou lipedema de obesidade.' : ': abaixo de 0,46, o que não exclui lipedema.')); }
+        document.getElementById('leitura').innerHTML = le.length ? '<h5>O que o gráfico mostra</h5><ul>' + le.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : '';
+        saida = 'ANTROPOMETRIA\n' + (p ? 'Peso ' + f1(p) + ' kg, ' : '') + (a ? 'altura ' + a + ' cm' : '') + '\n' + linhas.join('\n') + (le.length ? '\n\nLeitura:\n- ' + le.join('\n- ') : '');
         if (linhas.length && window.l360caso) window.l360caso.set('antropometria', { texto: saida });
       }
       ['peso', 'alt', 'cint', 'quad', 'gper'].forEach(function (id) { document.getElementById(id).addEventListener('input', calc); });

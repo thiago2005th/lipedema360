@@ -41,6 +41,8 @@ const sitios = [
     <p class="kicker">Evolução</p>
     <div id="evol"><p>Informe o código do paciente e salve a primeira visita.</p></div>
     <div id="graf" style="margin-top:14px"></div>
+    <div class="grafico-papel" id="grafico"></div>
+    <div id="leitura" class="leitura"></div>
   </div>
 
   <h2 class="sub">Calculadora de volume do membro (cones truncados)</h2>
@@ -77,11 +79,43 @@ const sitios = [
         return '<div style="display:inline-block;margin-right:28px"><div style="font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px">' + rot + ': ' + f1(pts[0].y) + ' → ' + f1(pts[pts.length - 1].y) + '</div><svg width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '"><path d="' + d + '" fill="none" stroke="#c9a66b" stroke-width="1.5"/>' + dots + '</svg></div>';
       }
 
+      function ddmm(iso) { var p = iso.split('-'); return p[2] + '/' + p[1]; }
+      var CIRC = [['coxamD', 'Coxa média D'], ['coxamE', 'Coxa média E'], ['pantD', 'Panturrilha D'], ['pantE', 'Panturrilha E'], ['tornD', 'Tornozelo D'], ['tornE', 'Tornozelo E'], ['quadD', 'Quadril'], ['cintD', 'Cintura']];
+      function graficoSeg() {
+        var v = visitas(); if (v.length < 2 || !window.l360doc) return '';
+        var datas = v.map(function (x) { return ddmm(x.data); }), out = '';
+        var series = [];
+        CIRC.forEach(function (c) {
+          var base = null; v.forEach(function (x) { if (base == null && x[c[0]] != null) base = x[c[0]]; });
+          if (base == null) return;
+          var pts = v.map(function (x) { return x[c[0]] == null ? null : +(x[c[0]] - base).toFixed(1); });
+          if (pts.filter(function (p) { return p != null; }).length >= 2) series.push({ nome: c[1], pontos: pts });
+        });
+        series = series.slice(0, 4);
+        if (series.length) out += '<h5>Circunferências: variação desde a 1ª visita (cm)</h5>' + window.l360doc.linhas(datas, series, 560, 200, ' cm');
+        var pp = v.map(function (x) { return x.peso; });
+        if (pp.filter(function (p) { return p != null; }).length >= 2) out += '<h5 style="margin-top:14px">Peso (kg)</h5>' + window.l360doc.linhas(datas, [{ nome: 'Peso', pontos: pp }], 560, 160, ' kg');
+        return out;
+      }
+      window.l360grafico = graficoSeg;
+      function leituraSeg() {
+        var v = visitas(); if (v.length < 2) return [];
+        var a = v[0], u = v[v.length - 1], le = [];
+        CIRC.forEach(function (c) {
+          var x = a[c[0]], y = u[c[0]]; if (x == null || y == null) return;
+          var d = y - x, p = d / x * 100;
+          le.push(c[1] + ': ' + (d === 0 ? 'sem variação' : (d < 0 ? 'redução de ' : 'aumento de ') + f1(Math.abs(d)) + ' cm (' + f1(Math.abs(p)) + '%)') + ' entre ' + fd(a.data) + ' e ' + fd(u.data) + '.');
+        });
+        if (u.coxamD != null && u.coxamE != null) { var as = Math.abs(u.coxamD - u.coxamE) / ((u.coxamD + u.coxamE) / 2) * 100; le.push('Assimetria da coxa média na última visita: ' + f1(as) + '% entre os lados' + (as < 3 ? ' (simétrico, como costuma ser no lipedema).' : ' (assimetria a investigar, por exemplo componente linfático).')); }
+        if (a.dor != null && u.dor != null) le.push('Dor: ' + f1(a.dor) + ' → ' + f1(u.dor) + ' (escala 0 a 10).');
+        le.push('Dado descritivo: não há ponto de corte validado para resposta ao tratamento no lipedema; variações pequenas podem refletir erro de medida (reproduza o ponto de aferição).');
+        return le;
+      }
       function desenhar() {
         var v = visitas();
         var ev = document.getElementById('evol'), gr = document.getElementById('graf');
-        if (!cod()) { ev.innerHTML = '<p>Informe o código do paciente e salve a primeira visita.</p>'; gr.innerHTML = ''; return; }
-        if (!v.length) { ev.innerHTML = '<p>Nenhuma visita salva para ' + cod() + '.</p>'; gr.innerHTML = ''; return; }
+        if (!cod()) { ev.innerHTML = '<p>Informe o código do paciente e salve a primeira visita.</p>'; gr.innerHTML = ''; document.getElementById('grafico').innerHTML = ''; document.getElementById('leitura').innerHTML = ''; return; }
+        if (!v.length) { ev.innerHTML = '<p>Nenhuma visita salva para ' + cod() + '.</p>'; gr.innerHTML = ''; document.getElementById('grafico').innerHTML = ''; document.getElementById('leitura').innerHTML = ''; return; }
         var primeira = v[0], ultima = v[v.length - 1], anterior = v.length > 1 ? v[v.length - 2] : null;
         var h = '<div class="tabela-rolavel"><table class="grade"><thead><tr><th>Medida</th><th>1ª visita</th><th>Anterior</th><th>Atual</th><th>Δ vs 1ª</th><th>Δ vs anterior</th></tr></thead><tbody>';
         function linha(rot, k) {
@@ -96,10 +130,13 @@ const sitios = [
         });
         h += '</tbody></table></div><p style="font-size:.84rem;color:var(--muted);margin:10px 0 0">' + v.length + ' visita(s): ' + v.map(function (x) { return fd(x.data) + ' <button type="button" data-rm="' + x.data + '" style="background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-size:.8rem;text-decoration:underline">remover</button>'; }).join(' · ') + '</p>';
         ev.innerHTML = h;
-        gr.innerHTML = spark(v, 'peso', 'Peso (kg)') + spark(v, 'dor', 'Dor');
+        gr.innerHTML = spark(v, 'dor', 'Dor');
+        var gg = graficoSeg(); document.getElementById('grafico').innerHTML = gg;
+        var le = leituraSeg(); document.getElementById('leitura').innerHTML = le.length ? '<h5>O que o gráfico mostra</h5><ul>' + le.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>' : '';
         var t = 'SEGUIMENTO ' + cod() + ' (' + v.length + ' visitas, de ' + fd(primeira.data) + ' a ' + fd(ultima.data) + ')\n' +
           'Peso: ' + f1(primeira.peso) + ' → ' + f1(ultima.peso) + ' kg. Dor: ' + f1(primeira.dor) + ' → ' + f1(ultima.dor) + '.\n' +
           SIT.map(function (s) { var a = primeira[s[0] + 'D'], c = ultima[s[0] + 'D']; var ae = primeira[s[0] + 'E'], ce = ultima[s[0] + 'E']; if (a == null && c == null) return ''; return NOMES[s[0]] + ': ' + f1(a) + ' → ' + f1(c) + (s[1] ? ' (D), ' + f1(ae) + ' → ' + f1(ce) + ' (E)' : '') + ' cm'; }).filter(Boolean).join('\n');
+        if (le.length) t += '\n\nLeitura:\n- ' + le.join('\n- ');
         if (window.l360caso) window.l360caso.set('seguimento', { texto: t, codigo: cod() });
       }
 

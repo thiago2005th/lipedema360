@@ -48,6 +48,7 @@ const extras = [
     <h3 id="r-tit">Marque os achados</h3>
     <p id="r-txt">O resultado aparece conforme você marca os critérios.</p>
     <div id="r-det"></div>
+    <div class="grafico-papel" id="grafico"></div>
     <p class="nota">Regra aplicada, conforme Buso et al. (2019): diagnóstico altamente provável quando A1 a A6 estão presentes e, no exame, B (1+2), ou C (1+2), ou D (1+2), ou E. Na ausência de no máximo dois critérios entre A e E, a presença de F1 ou F2 também apoia o diagnóstico. Não é um escore validado de probabilidade. O diagnóstico de lipedema continua clínico e de exclusão.</p>
   </div>
   <div class="acoes-ferr">
@@ -59,6 +60,19 @@ const extras = [
     (function () {
       var caixas = document.querySelectorAll('input[data-k]');
       var saida = '';
+      function grafico() {
+        function m(k) { var e = document.querySelector('input[data-k="' + k + '"]'); return e && e.checked; }
+        var A = ['A1', 'A2', 'A3', 'A4', 'A5', 'A6'].filter(m).length;
+        var bl = (m('B1') && m('B2') ? 1 : 0) + (m('C1') && m('C2') ? 1 : 0) + (m('D1') && m('D2') ? 1 : 0) + (m('E') ? 1 : 0);
+        var F = ['F1', 'F2'].filter(m).length;
+        if (!A && !bl && !F) return '';
+        return window.l360doc ? window.l360doc.barras([
+          { rotulo: 'História (A1 a A6)', valor: A, corte: 6, max: 6, un: ' de 6' },
+          { rotulo: 'Exame: blocos completos (B a E)', valor: bl, corte: 1, max: 4, un: ' de 4' },
+          { rotulo: 'Critérios extras (F)', valor: F, corte: 1, max: 2, un: ' de 2' }
+        ]) : '';
+      }
+      window.l360grafico = grafico;
       function marcado(k) { var e = document.querySelector('input[data-k="' + k + '"]'); return e && e.checked; }
       function calc() {
         var A = ['A1','A2','A3','A4','A5','A6'].filter(marcado);
@@ -84,6 +98,7 @@ const extras = [
           'Exame: B ' + (B ? 'sim' : 'não') + ', C ' + (C ? 'sim' : 'não') + ', D ' + (D ? 'sim' : 'não') + ', E ' + (E ? 'sim' : 'não') + '\n' +
           'Extras: ' + (F.join(', ') || 'nenhum') + '\n' +
           'Interpretação: ' + tit + '. ' + txt;
+        var g = grafico(); document.getElementById('grafico').innerHTML = g ? '<h5>Critérios presentes x o que a regra exige (traço preto)</h5>' + g : '';
         if (window.l360caso) window.l360caso.set('criterios', { titulo: tit, A: A.length, exame: nExame, F: F.length, texto: saida });
       }
       caixas.forEach(function (c) { c.addEventListener('change', calc); });

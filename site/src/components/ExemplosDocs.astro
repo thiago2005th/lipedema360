@@ -3,15 +3,32 @@
 import { barras, linhas } from '../lib/svg';
 
 const us = [
-  ['Coxa anterior', 24.8, 22.1, 19.5, 17.9],
-  ['Face lateral da perna', 10.2, 9.6, 8.9, 8.4],
-  ['Pré-tibial', 14.1, 13.8, 11.6, 11.8],
-  ['Supramaleolar medial', 8.0, 7.4, 7.1, 7.0],
+  ['A', 'Coxa anterior', 24.8, 22.1, 19.5, 17.9],
+  ['B', 'Pré-tibial', 14.1, 13.8, 11.6, 11.8],
+  ['C', 'Face lateral da perna', 10.2, 9.6, 8.9, 8.4],
+  ['D', 'Supramaleolar medial', 8.0, 7.4, 7.1, 7.0],
 ] as const;
-const gUS = barras(us.flatMap(([n, d, e, cd, ce]) => [
-  { rotulo: `${n} (dir.)`, valor: d, corte: cd, max: 30, un: ' mm' },
-  { rotulo: `${n} (esq.)`, valor: e, corte: ce, max: 30, un: ' mm' },
+const gUS = barras(us.flatMap(([id, n, d, e, cd, ce]) => [
+  { rotulo: `${id} · ${n} (dir.)`, valor: d, corte: cd, max: 32, un: ' mm' },
+  { rotulo: `${id} · ${n} (esq.)`, valor: e, corte: ce, max: 32, un: ' mm' },
 ]));
+const gCrit = barras([
+  { rotulo: 'História (A1 a A6)', valor: 6, corte: 6, max: 6, un: ' de 6' },
+  { rotulo: 'Exame: blocos completos (B a E)', valor: 2, corte: 1, max: 4, un: ' de 4' },
+  { rotulo: 'Critérios extras (F)', valor: 1, corte: 1, max: 2, un: ' de 2' },
+]);
+const gDif = barras([
+  { rotulo: 'Lipedema', valor: 100, corte: null, max: 100, un: '%' },
+  { rotulo: 'Linfedema', valor: 0, corte: null, max: 100, un: '%' },
+  { rotulo: 'Obesidade', valor: 17, corte: null, max: 100, un: '%' },
+  { rotulo: 'Doença venosa', valor: 0, corte: null, max: 100, un: '%' },
+  { rotulo: 'Dercum', valor: 50, corte: null, max: 100, un: '%' },
+]);
+const gPlano = barras([
+  { rotulo: 'Consenso e revisão', valor: 5, corte: null, max: 6, un: ' itens' },
+  { rotulo: 'Evidência emergente', valor: 2, corte: null, max: 4, un: ' itens' },
+  { rotulo: 'Evidência insuficiente', valor: 0, corte: null, max: 2, un: ' itens' },
+]);
 const gAnt = barras([
   { rotulo: 'IMC (corte: sobrepeso)', valor: 28.8, corte: 25, max: 45, un: ' kg/m²' },
   { rotulo: 'Cintura-quadril (OMS)', valor: 0.71, corte: 0.85, max: 1.2 },
@@ -25,9 +42,12 @@ const gSeg = linhas(['jan', 'mar', 'mai', 'jul'], [
 ], 560, 190, '');
 
 const abas = [
-  { id: 'us', nome: 'Laudo de ultrassom' },
+  { id: 'us', nome: 'Laudo de ultrassom (POCUS)' },
+  { id: 'crit', nome: 'Critérios diagnósticos' },
+  { id: 'dif', nome: 'Diagnóstico diferencial' },
   { id: 'ant', nome: 'Antropometria' },
   { id: 'seg', nome: 'Seguimento' },
+  { id: 'plano', nome: 'Plano terapêutico' },
   { id: 'nota', nome: 'Nota de consulta' },
 ];
 ---
@@ -41,29 +61,89 @@ const abas = [
       <div class="folha">
         <span class="marca-exemplo">Exemplo · dados fictícios</span>
         <div class="fo-timbre-ex"><i>seu logo</i><span>Sua clínica · Dra. Fulana de Tal · CRM 000000<br />contato e endereço</span></div>
-        <h4>Ultrassonografia de pele e tecido subcutâneo dos membros inferiores</h4>
-        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Data:</b> 08/11/2026</span></div>
-        <h6>Gráfico</h6>
+        <h4>Laudo de ultrassonografia point-of-care (POCUS)</h4>
+        <p style="font-size:.78rem;color:#6b645b;margin:0 0 6px">Partes moles dos membros inferiores · avaliação de lipedema</p>
+        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Data:</b> 08/11/2026</span><span><b>IMC:</b> 28,8 kg/m²</span></div>
+        <h6>Medidas · epiderme até a fáscia muscular</h6>
         <Fragment set:html={gUS} />
-        <h6>Achados (derme + subcutâneo)</h6>
         <table>
-          <thead><tr><th>Ponto</th><th>Direita</th><th>Esquerda</th><th>Corte ótimo D / E</th></tr></thead>
+          <thead><tr><th>Ponto</th><th>Direita</th><th>Esquerda</th><th>Limiar D / E</th></tr></thead>
           <tbody>
-            {us.map(([n, d, e, cd, ce]) => <tr><td>{n}</td><td class="ok">{String(d).replace('.', ',')} mm</td><td class="ok">{String(e).replace('.', ',')} mm</td><td>{String(cd).replace('.', ',')} / {String(ce).replace('.', ',')} mm</td></tr>)}
+            {us.map(([id, n, d, e, cd, ce]) => <tr><td>{id} · {n}</td><td class="ok">{String(d).replace('.', ',')} mm</td><td class="ok">{String(e).replace('.', ',')} mm</td><td>{String(cd).replace('.', ',')} / {String(ce).replace('.', ',')} mm</td></tr>)}
           </tbody>
         </table>
+        <h6>Análise</h6>
+        <p>Derme preservada, com interface nítida. Subcutâneo de ecogenicidade normal, com septos em prateleira. Espessamento simétrico bilateral e pés poupados. Desproporção em relação ao sítio-controle (abdome, 9,4 mm). Líquido intersticial: ausente. Sistema venoso: sem alterações.</p>
         <h6>Impressão</h6>
-        <p>8 de 8 medidas acima do corte ótimo de Amato et al. (2021), incluindo o ponto pré-tibial, de melhor desempenho no estudo. O ultrassom é complementar: o diagnóstico de lipedema é clínico.</p>
+        <p>Espessamento acima dos limiares em 8 medidas (4 pontos), incluindo o pré-tibial. Achados que corroboram a hipótese clínica de LIPEDEMA.</p>
+        <div class="forca-ex"><span>Força da suspeita</span><i class="on"></i><i class="on"></i><i class="on"></i><b>ALTA</b><small>heurística interna, não validada</small></div>
+        <p style="font-size:.74rem;color:#6b645b">A ultrassonografia corrobora a hipótese clínica, mas não a confirma. Não substitui a ultrassonografia convencional.</p>
+        <div class="fo-assin">Dra. Fulana de Tal · CRM 000000</div>
         <div class="fo-rod">Referência: Amato ACM et al. Ultrasound criteria for lipedema diagnosis. Phlebology 2021. Gerado em Lipedema360 Profissional.</div>
       </div>
       <div class="exemplos-texto">
-        <h3>Laudo de ultrassom com gráfico e cortes da literatura</h3>
-        <p>Você digita as espessuras; o laudo sai redigido, com a comparação aos cortes publicados e o gráfico pronto.</p>
+        <h3>O roteiro do exame POCUS, do mapeamento ao laudo pronto</h3>
+        <p>Você segue o roteiro dos quatro pontos, mede dos dois lados e o laudo se escreve sozinho, com a força da suspeita e o gráfico contra os limiares.</p>
         <ul>
-          <li>Texto do laudo editável, pronto para copiar</li>
-          <li>Gráfico de cada ponto contra o corte ótimo</li>
-          <li>Seu logo, clínica e registro no cabeçalho</li>
-          <li>Imprima ou salve em PDF com um clique</li>
+          <li>Média das três medidas calculada para você</li>
+          <li>Critérios qualitativos, diferencial linfático e sítio-controle</li>
+          <li>Laudo em texto corrido, pronto para o prontuário</li>
+          <li>Seus dados, equipamento, cidade e logo no documento</li>
+          <li>Opção de ocultar a força da suspeita</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="exemplos-painel" data-painel="crit" hidden>
+    <div class="exemplos-grade">
+      <div class="folha">
+        <span class="marca-exemplo">Exemplo · dados fictícios</span>
+        <div class="fo-timbre-ex"><i>seu logo</i><span>Sua clínica · Dra. Fulana de Tal · CRM 000000<br />contato e endereço</span></div>
+        <h4>Critérios diagnósticos de lipedema</h4>
+        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Data:</b> 08/11/2026</span></div>
+        <h6>Critérios presentes x o que a regra exige</h6>
+        <Fragment set:html={gCrit} />
+        <h6>Resultado</h6>
+        <div class="fo-texto">História: 6/6 (A1 a A6)
+Exame: B sim, C sim, D não, E não
+Extras: F1
+Interpretação: diagnóstico altamente provável. A história completa está presente e há achado de exame que fecha a regra (B, C).</div>
+        <div class="fo-rod">Regra conforme Buso et al., Obesity 2019. Não é escore validado de probabilidade; o diagnóstico é clínico. Gerado em Lipedema360 Profissional.</div>
+      </div>
+      <div class="exemplos-texto">
+        <h3>A regra de diagnóstico, aplicada marcando o que você viu</h3>
+        <p>História, exame físico e critérios extras entram como checklist. O resultado mostra o que falta para fechar a regra da literatura.</p>
+        <ul>
+          <li>Gráfico do que está presente contra o que a regra exige</li>
+          <li>Texto de interpretação para o prontuário</li>
+          <li>Fonte citada em cada critério</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="exemplos-painel" data-painel="dif" hidden>
+    <div class="exemplos-grade">
+      <div class="folha">
+        <span class="marca-exemplo">Exemplo · dados fictícios</span>
+        <div class="fo-timbre-ex"><i>seu logo</i><span>Sua clínica · Dra. Fulana de Tal · CRM 000000<br />contato e endereço</span></div>
+        <h4>Diagnóstico diferencial</h4>
+        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Data:</b> 08/11/2026</span></div>
+        <h6>Concordância com o perfil típico</h6>
+        <Fragment set:html={gDif} />
+        <h6>Achados marcados</h6>
+        <p>Distribuição desproporcional; dor à palpação; equimoses fáceis; sinal do manguito; gordura resistente à dieta e ao exercício; acometimento bilateral e simétrico.</p>
+        <p style="font-size:.78rem;color:#6b645b">Compara cada achado ao perfil típico descrito por Buso et al. (2019). Não calcula probabilidade nem é diagnóstico. As condições podem coexistir.</p>
+        <div class="fo-rod">Gerado em Lipedema360 Profissional.</div>
+      </div>
+      <div class="exemplos-texto">
+        <h3>Lipedema, linfedema, obesidade, doença venosa e Dercum lado a lado</h3>
+        <p>Cada achado marcado soma ou subtrai do perfil de cada condição, e o gráfico mostra onde o quadro mais se encaixa.</p>
+        <ul>
+          <li>Concordâncias e discordâncias por condição</li>
+          <li>Aviso quando o perfil tem poucos achados discriminantes</li>
+          <li>Pronto para anexar à consulta</li>
         </ul>
       </div>
     </div>
@@ -88,7 +168,12 @@ const abas = [
             <tr><td>Gordura das pernas (DXA) ÷ IMC</td><td class="ok">0,49 · acima de 0,46</td></tr>
           </tbody>
         </table>
-        <p>IMC elevado com cintura-quadril baixa e razão gordura de pernas/IMC acima de 0,46: padrão compatível com acúmulo de gordura nas pernas, a interpretar com o exame físico.</p>
+        <h6>O que o gráfico mostra</h6>
+        <ul style="margin:0 0 8px;padding-left:18px;font-size:.84rem">
+          <li>IMC 28,8: sobrepeso. O IMC ignora a distribuição da gordura e, sozinho, não exclui nem confirma lipedema.</li>
+          <li>Cintura-quadril 0,71: abaixo de 0,85. Com IMC elevado, indica gordura concentrada abaixo da cintura, padrão compatível com lipedema, a confirmar ao exame físico.</li>
+          <li>Gordura das pernas ÷ IMC 0,49: acima de 0,46, valor que no estudo de Dietzel separou lipedema de obesidade.</li>
+        </ul>
         <div class="fo-rod">Referências: Buso et al., Obesity 2019; Dietzel et al., 2015. Gerado em Lipedema360 Profissional.</div>
       </div>
       <div class="exemplos-texto">
@@ -121,6 +206,12 @@ const abas = [
             <tr><td>Peso</td><td>78,4 kg</td><td>75,1 kg</td><td class="ok">−3,3 kg</td></tr>
           </tbody>
         </table>
+        <h6>O que o gráfico mostra</h6>
+        <ul style="margin:0 0 8px;padding-left:18px;font-size:.84rem">
+          <li>Coxa D: redução de 2,4 cm (3,9%) entre jan e jul. Perna D: redução de 1,2 cm (2,9%).</li>
+          <li>Peso: 78,4 → 75,1 kg.</li>
+          <li>Dado descritivo: não há ponto de corte validado para resposta ao tratamento no lipedema.</li>
+        </ul>
         <div class="fo-rod">Gerado em Lipedema360 Profissional.</div>
       </div>
       <div class="exemplos-texto">
@@ -130,6 +221,40 @@ const abas = [
           <li>Histórico guardado por paciente, só você vê</li>
           <li>Comparação com a avaliação anterior</li>
           <li>Cálculo de volume dos membros</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="exemplos-painel" data-painel="plano" hidden>
+    <div class="exemplos-grade">
+      <div class="folha">
+        <span class="marca-exemplo">Exemplo · dados fictícios</span>
+        <div class="fo-timbre-ex"><i>seu logo</i><span>Sua clínica · Dra. Fulana de Tal · CRM 000000<br />contato e endereço</span></div>
+        <h4>Plano terapêutico</h4>
+        <div class="fo-meta"><span><b>Paciente:</b> Exemplo, 38 anos</span><span><b>Data:</b> 08/11/2026</span></div>
+        <h6>Itens do plano por nível de evidência</h6>
+        <Fragment set:html={gPlano} />
+        <div class="fo-texto">Base do tratamento:
+- Educação e manejo de expectativas (consenso e revisão)
+- Estilo de vida ativo, com atividade aquática (consenso e revisão)
+
+Nutrição e peso:
+- Manejo nutricional e prevenção de obesidade (consenso e revisão)
+- Padrão isoglicêmico (evidência emergente)
+
+Conservador físico:
+- Terapia compressiva (consenso e revisão)
+- Compressão pneumática intermitente (evidência emergente)</div>
+        <div class="fo-rod">Os níveis refletem as revisões citadas, não uma graduação formal de evidência de cada intervenção. Gerado em Lipedema360 Profissional.</div>
+      </div>
+      <div class="exemplos-texto">
+        <h3>Um plano que mostra o quanto de evidência está por trás</h3>
+        <p>Marque as condutas e o documento sai organizado por eixo, com o nível de evidência de cada item e o gráfico do equilíbrio do plano.</p>
+        <ul>
+          <li>Cada item leva aos estudos da base</li>
+          <li>Revisão pré-cirúrgica incluída</li>
+          <li>Documento para o paciente, com o seu timbre</li>
         </ul>
       </div>
     </div>
