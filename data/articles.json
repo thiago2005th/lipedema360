@@ -2543,7 +2543,17 @@
   "area": "psicossocial",
   "peso": 60,
   "url": "https://pubmed.ncbi.nlm.nih.gov/42599946/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Lipedema na Suécia – \"O estudo LISE\": qualidade de vida e imagem corporal em mulheres com lipedema em comparação com controles saudáveis e mulheres com câncer",
+  "resumo_pt": "Estudo comparativo que incluiu 190 mulheres: 104 com lipedema, 42 controles saudáveis e 44 com câncer avançado (grupo exploratório). A qualidade de vida relacionada à saúde (QVRS) foi avaliada pelo RAND-36, a preocupação com a imagem corporal pelo Body Shape Questionnaire (BSQ) e os sintomas pelo Edmonton Symptom Assessment System (ESAS). Mulheres com lipedema apresentaram QVRS significativamente menor que os controles saudáveis nas oito dimensões do RAND-36 (p < 0,001). Os escores foram comparáveis aos de mulheres com câncer avançado em várias dimensões, incluindo capacidade funcional, dor corporal e problemas emocionais, e inferiores na dimensão de saúde geral (p < 0,05). A preocupação com a imagem corporal foi maior no lipedema que nos controles (p = 0,001), assim como a carga de sintomas (dor, fadiga, depressão, ansiedade, perda de apetite, dispneia e pior qualidade de vida; p < 0,001 para todos).",
+  "pontos_chave": [
+   "Mulheres com lipedema tiveram QVRS inferior à dos controles saudáveis nas oito dimensões do RAND-36 (p < 0,001).",
+   "Em várias dimensões, a QVRS foi comparável à de mulheres com câncer avançado, e pior na saúde geral (p < 0,05).",
+   "Houve maior preocupação com a imagem corporal (p = 0,001) e maior carga de sintomas, como dor, fadiga, depressão e ansiedade."
+  ],
+  "relevancia_clinica": "Os achados reforçam que o lipedema tem impacto físico e psicossocial relevante, justificando avaliação sistemática de dor, humor e imagem corporal e abordagem multiprofissional. Limitações: desenho transversal, amostra pequena, grupo com câncer apenas exploratório e sem ajuste detalhado para confundidores como IMC, o que impede inferência causal e limita a comparação com o câncer.",
+  "area_ia": "psicossocial",
+  "destaque": false
  },
  {
   "pmid": "42576190",
@@ -7371,7 +7381,17 @@
   "area": "epidemiologia",
   "peso": 60,
   "url": "https://pubmed.ncbi.nlm.nih.gov/41463059/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Sinais clínicos ao diagnóstico e comorbidades em uma grande coorte de pacientes com lipedema na Espanha",
+  "resumo_pt": "Estudo descritivo com 1803 pacientes com idade ≥ 17 anos, atendidas em duas clínicas na Espanha entre janeiro de 2022 e novembro de 2024. A idade média foi de 42,9 anos (DP 11,3), e 60,6% foram diagnosticadas durante a fase reprodutiva. O IMC médio foi de 28,6 (DP 6,2), 87,6% apresentavam distribuição ginoide de gordura e 46,6% foram classificadas como estágio IV ou V de Schingale. As comorbidades mais frequentes envolveram inflamação crônica de baixo grau e comprometimento do tecido conjuntivo: suspeita de aumento da permeabilidade intestinal (99%), dor na região trocantérica bilateral (97,4%), acometimento da banda iliotibial e hiperlaxidão ligamentar (95,8%). Disfunções tireoidianas, disfunção ovariana inflamatória e comprometimento psicológico também foram comuns. Os autores propõem uma abordagem de avaliação clínica inovadora e hipóteses etiológicas que ainda precisam ser testadas.",
+  "pontos_chave": [
+   "Coorte espanhola de 1803 pacientes, com 46,6% em estágio IV ou V de Schingale ao diagnóstico.",
+   "Alta frequência de dor trocantérica bilateral (97,4%) e hiperlaxidão ligamentar (95,8%), sugerindo comprometimento do tecido conjuntivo.",
+   "Suspeita de permeabilidade intestinal elevada em 99%, além de alterações tireoidianas, ovarianas e psicológicas frequentes."
+  ],
+  "relevancia_clinica": "Os dados reforçam que o lipedema vai além do tecido adiposo dos membros inferiores e justificam uma avaliação ampla de sinais musculoesqueléticos, endócrinos e psicológicos. Por ser um estudo descritivo, sem grupo controle, de duas clínicas especializadas (risco de viés de seleção) e com critérios não padronizados para itens como a permeabilidade intestinal, as prevalências não são generalizáveis e não permitem inferir causalidade.",
+  "area_ia": "epidemiologia",
+  "destaque": false
  },
  {
   "pmid": "41370187",
@@ -12065,7 +12085,17 @@
   "area": "cirurgia",
   "peso": 60,
   "url": "https://pubmed.ncbi.nlm.nih.gov/39797361/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Análise comparativa entre lipoaspiração e tratamento conservador em pacientes com lipedema: um estudo com questionário Body-Q modificado",
+  "resumo_pt": "Estudo transversal baseado em questionário online, com 1015 pacientes com lipedema recrutadas por mídias sociais; 860 responderam pelo menos uma seção completa do Body-Q modificado (taxa de resposta de 85%). Entre as pacientes tratadas de forma conservadora, a satisfação com abdome, braços, dorso, corpo, glúteos e face interna das coxas diminuiu de modo estatisticamente significativo com o avanço do estágio do lipedema. No domínio aparência, pacientes submetidas a pelo menos uma sessão cirúrgica relataram melhores escores para quadris e coxas (p < 0,01), face interna das coxas (p < 0,01) e excesso de pele (p = 0,01); a escala corporal global não atingiu significância (p < 0,081). No domínio qualidade de vida relacionada à saúde, o grupo submetido à lipoaspiração apresentou melhores escores de imagem corporal (p < 0,01), função física (p = 0,05), sintomas físicos (p = 0,04) e função psicológica (p < 0,01). Foram empregados os testes de Mann-Whitney U e Kruskal-Wallis; o resumo não informa os tamanhos de cada grupo nem tamanhos de efeito ou ICs.",
+  "pontos_chave": [
+   "A satisfação com a aparência corporal em pacientes tratadas de forma conservadora diminui conforme o estágio do lipedema avança.",
+   "Pacientes submetidas à lipoaspiração relataram melhor aparência de quadris, coxas, face interna das coxas e excesso de pele, mas sem diferença significativa na escala corporal global (p < 0,081).",
+   "A lipoaspiração associou-se a melhores escores de imagem corporal, função física, sintomas físicos e função psicológica."
+  ],
+  "relevancia_clinica": "Os resultados sugerem que a lipoaspiração se associa a melhor qualidade de vida relatada pelas pacientes, o que reforça o argumento para considerar a cirurgia e não apenas o manejo conservador, inclusive em estágios menos avançados. As limitações são o desenho transversal, o recrutamento por mídias sociais com viés de seleção, os desfechos autorrelatados com questionário modificado e a ausência de controle de confusão e de seguimento longitudinal, o que impede inferir causalidade.",
+  "area_ia": "cirurgia",
+  "destaque": false
  },
  {
   "pmid": "41406420",
@@ -13254,7 +13284,17 @@
   "area": "nutricao",
   "peso": 100,
   "url": "https://pubmed.ncbi.nlm.nih.gov/39408242/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Eficácia das dietas cetogênicas (baixo teor de carboidratos e alto teor de gordura) como potencial intervenção nutricional no lipedema: revisão sistemática e metanálise",
+  "resumo_pt": "Revisão sistemática com metanálise (RevMan 5.4.1) que avaliou o efeito de dietas cetogênicas low-carb high-fat (LCHF) em mulheres com lipedema, com busca em PubMed, PubMed Central, Science Direct e Web of Science. Foram incluídos sete estudos, com 329 mulheres com diagnóstico de lipedema e duração média de intervenção de 15,85 semanas. As diferenças médias pré e pós-intervenção mostraram redução significativa de IMC (DM 4,23; IC95% 2,49-5,97; p<0,00001), peso corporal (DM 7,94; IC95% 5,45-10,43; p<0,00001), circunferência da cintura (DM 8,05; IC95% 4,66-11,44; p<0,00001) e do quadril (DM 6,67; IC95% 3,35-9,99; p<0,0001). A sensibilidade dolorosa também diminuiu (DM 1,12; IC95% 0,44-1,79; p=0,001). Todos os estudos foram classificados como de qualidade \"regular\" pela Escala Newcastle-Ottawa. Os autores concluem que há possível associação benéfica entre dieta cetogênica LCHF e manejo do lipedema, ressalvando o número limitado de estudos e participantes.",
+  "pontos_chave": [
+   "Sete estudos (329 mulheres com lipedema) em dieta cetogênica LCHF, com duração média de cerca de 16 semanas.",
+   "Reduções significativas de IMC, peso, cintura e quadril, além de melhora da sensibilidade dolorosa (DM 1,12; p=0,001).",
+   "Todos os estudos tiveram qualidade apenas regular (Newcastle-Ottawa), e a amostra total é pequena."
+  ],
+  "relevancia_clinica": "Os dados sugerem que a dieta cetogênica pode ser uma opção nutricional para reduzir peso, medidas e dor no lipedema, mas não permitem afirmar efeito específico sobre o tecido lipedematoso, pois as medidas refletem perda de peso geral. As limitações incluem estudos observacionais pré-pós de qualidade regular, ausência de grupo controle, seguimento curto e amostra pequena; são necessários ensaios clínicos randomizados.",
+  "area_ia": "nutricao",
+  "destaque": true
  },
  {
   "pmid": "39316836",
@@ -17566,7 +17606,17 @@
   "area": "cirurgia",
   "peso": 60,
   "url": "https://pubmed.ncbi.nlm.nih.gov/37314596/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Lipoaspiração microcanular em anestesia tumescente em pacientes com lipedema: uma análise de 519 lipoaspirações",
+  "resumo_pt": "Análise retrospectiva de todas as pacientes com lipedema submetidas a lipoaspiração tumescente em um único serviço entre 2007 e 2021: 519 procedimentos em 178 pacientes, com idade média de 45 ± 15,5 anos. A idade média aumentou significativamente conforme o estágio do lipedema, o que reforça o conceito de doença crônica e progressiva. Três quartos das pacientes referiam ao menos uma comorbidade, sendo as mais frequentes hipertensão arterial (32,58%), obesidade (24,16%) e hipotireoidismo (20,79%). O volume médio de lipoaspirado foi de 4905 ± 2800 mL. Todas as pacientes relataram redução da dor de pelo menos 50% após o procedimento, e 96 alcançaram redução ≥ 90%. A intensidade da dor pré-operatória (p = 0,000) e o estágio do lipedema (p = 0,032) influenciaram significativamente a redução absoluta da dor, sem associação entre redução da dor e volume removido. A taxa de eventos adversos pós-operatórios foi de 2,89%.",
+  "pontos_chave": [
+   "Em 519 lipoaspirações tumescentes (178 pacientes), todas relataram redução da dor ≥ 50%, e 96 alcançaram ≥ 90%.",
+   "A dor pré-operatória e o estágio do lipedema influenciaram a redução absoluta da dor, que não se associou ao volume aspirado.",
+   "A taxa de eventos adversos pós-operatórios foi de 2,89%, e a idade média aumentou com o estágio da doença."
+  ],
+  "relevancia_clinica": "Os dados apoiam a lipoaspiração tumescente microcanular como opção eficaz e com baixa taxa de eventos adversos para reduzir a dor no lipedema, e sugerem que o volume removido não deve ser o alvo para prever o alívio da dor. As limitações são o desenho retrospectivo e unicêntrico, a ausência de grupo controle e a dor autorrelatada, o que limita a inferência causal e a generalização dos resultados.",
+  "area_ia": "cirurgia",
+  "destaque": true
  },
  {
   "pmid": "37299581",
@@ -27634,10 +27684,20 @@
    "Young Adult"
   ],
   "tipo": "observacional",
-  "area": "epidemiologia",
+  "area": "fisioterapia",
   "peso": 60,
   "url": "https://pubmed.ncbi.nlm.nih.gov/32171186/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Inclusão de produtos dermatológicos direcionados no regime de tratamento pré-cirúrgico do linfedema periférico e do lipedema",
+  "resumo_pt": "Ensaio com randomização avaliou se a adição por 2 semanas de produtos dermatológicos direcionados a um programa conservador pré-cirúrgico já estabelecido melhora a condição da pele em 150 pacientes com linfedema e lipedema. Os participantes foram alocados aleatoriamente ao grupo controle ou a um de dois grupos de tratamento. Os três grupos, em ambas as doenças, apresentaram redução significativa da maciez (softness). Os grupos com produtos direcionados tiveram redução significativa de depressões cutâneas (dimpling) e eritema, tanto no linfedema quanto no lipedema. Apenas as pacientes com lipedema mostraram redução significativa de ressecamento/hiperqueratose após o uso dos produtos. O resumo disponível não informa valores de p, tamanhos de efeito, IC nem a distribuição de pacientes por doença e grupo.",
+  "pontos_chave": [
+   "Produtos dermatológicos direcionados por 2 semanas reduziram dimpling e eritema no linfedema e no lipedema.",
+   "Redução de ressecamento/hiperqueratose ocorreu apenas no lipedema.",
+   "Todos os grupos, inclusive o controle, tiveram redução da maciez, o que sugere efeito do programa conservador de base."
+  ],
+  "relevancia_clinica": "Os achados apoiam a inclusão de cuidados dermatológicos direcionados no preparo pré-cirúrgico, com benefício cutâneo de curto prazo. As limitações são o seguimento de apenas 2 semanas, desfechos cutâneos provavelmente avaliados de forma pouco detalhada, ausência de dados quantitativos no resumo e a necessidade de replicação, como os próprios autores indicam.",
+  "area_ia": "fisioterapia",
+  "destaque": false
  },
  {
   "pmid": "31186091",
@@ -33182,7 +33242,17 @@
   "area": "cirurgia",
   "peso": 60,
   "url": "https://pubmed.ncbi.nlm.nih.gov/21824127/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "A lipoaspiração tumescente no lipedema proporciona bons resultados a longo prazo",
+  "resumo_pt": "Estudo monocêntrico, não controlado, que avaliou a eficácia a longo prazo da lipoaspiração sob anestesia local tumescente com microcânulas vibratórias no lipedema. Foram tratadas 164 pacientes previamente submetidas a anos de terapia conservadora, e 112 foram reavaliadas por questionário padronizado, em média 3 anos e 8 meses após a cirurgia inicial (variação: 1 ano e 1 mês a 7 anos e 4 meses). Houve redução do tecido adiposo subcutâneo (média de 9.846 mL por paciente) e melhora da forma corporal. As pacientes relataram melhora acentuada ou desaparecimento de dor espontânea, sensibilidade à pressão, edema, hematomas, restrição de movimento e prejuízo estético (P<0,001). Os estágios II e III tiveram melhora maior que o estágio I. A terapia descongestiva física pôde ser suspensa em 22,4% dos casos ou reduzida nos demais. As taxas de infecção de ferida (1,4%) e de sangramento (0,3%) foram baixas, sem complicações graves.",
+  "pontos_chave": [
+   "Lipoaspiração tumescente reduziu dor, edema, hematomas e limitação de movimento (P<0,001) em 112 pacientes reavaliadas após média de 3 anos e 8 meses.",
+   "Pacientes nos estágios II e III tiveram melhora maior que as do estágio I; a terapia descongestiva foi suspensa em 22,4% e reduzida nas demais.",
+   "Complicações graves não foram observadas (infecção de ferida 1,4%; sangramento 0,3%)."
+  ],
+  "relevancia_clinica": "Os resultados sustentam a lipoaspiração tumescente como opção para pacientes com lipedema refratárias ao tratamento conservador, com perfil de segurança favorável. As limitações são o desenho sem grupo controle, os desfechos autorrelatados por questionário, a perda de seguimento (112 de 164) e a ausência de dados quantitativos comparativos, o que expõe o estudo a vieses de seleção e de memória.",
+  "area_ia": "cirurgia",
+  "destaque": true
  },
  {
   "pmid": "21780050",
@@ -35876,7 +35946,17 @@
   "area": "diagnostico",
   "peso": 30,
   "url": "https://pubmed.ncbi.nlm.nih.gov/10528533/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "[Lipedema da perna associado à dermatomiosite]",
+  "resumo_pt": "Relato de caso de lipedema de membros inferiores, de apresentação incomum, associado à dermatomiosite em uma menina de 8 anos. O lipedema era de intensidade moderada, com distribuição segmentar expressiva em coxas e pernas, sem aumento significativo de volume nos últimos 10 anos e sem sinais de linfostase. A influência hereditária não foi confirmada. O exame histológico do tecido lipedematoso revelou expressiva presença de componente imune. Segundo os autores, não havia na literatura disponível descrição da associação entre lipedema e dermatomiosite, do lipedema segmentar de membros inferiores com esse padrão, nem de seu surgimento como consequência de corticoterapia. O resumo não informa dados quantitativos adicionais (p, IC).",
+  "pontos_chave": [
+   "Caso de lipedema segmentar de membros inferiores associado à dermatomiosite em menina de 8 anos, sem linfostase e sem histórico familiar confirmado.",
+   "A histologia do tecido lipedematoso mostrou expressivo componente imune.",
+   "Os autores afirmam que a associação com dermatomiosite e o possível surgimento após corticoterapia não haviam sido publicados."
+  ],
+  "relevancia_clinica": "Não altera a prática clínica; apenas sugere considerar um componente imunológico e a possível relação com corticoides em casos atípicos de início precoce. As limitações são o desenho de relato de caso único, a impossibilidade de inferir causalidade e a escassez de dados no resumo (por exemplo, a cronologia da corticoterapia).",
+  "area_ia": "diagnostico",
+  "destaque": false
  },
  {
   "pmid": "9664268",
