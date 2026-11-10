@@ -3217,10 +3217,20 @@
   ],
   "mesh": [],
   "tipo": "observacional",
-  "area": "genetica",
+  "area": "diagnostico",
   "peso": 60,
   "url": "https://pubmed.ncbi.nlm.nih.gov/42389893/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Avaliação da inteligência artificial generativa na produção de subtipos anatômicos distintos de lipedema: um estudo de acurácia diagnóstica",
+  "resumo_pt": "Em auditoria prospectiva, o gerador de imagens do ChatGPT foi solicitado a produzir 60 imagens para cada um dos cinco tipos anatômicos de lipedema da classificação de Schmeller (I-V), totalizando 300 imagens. Os prompts foram padronizados e continham apenas o rótulo do subtipo. Dois clínicos classificaram as imagens às cegas, com um terceiro resolvendo as discordâncias. Todas as 300 imagens foram avaliáveis. A sensibilidade foi de 1,00 para os tipos I, II e III, e de 0,00 para os tipos IV (predomínio em braços) e V (panturrilha isolada), pois todas as imagens solicitadas como IV e V foram classificadas como tipo III. Com isso, a especificidade do tipo III foi de 0,50. A acurácia global foi de 0,600, o κ de Cohen não ponderado foi de 0,500 e o ponderado quadrático de 0,667, e a AUC ROC micro e macro-média foi de 0,750. Os autores concluem que o modelo reproduz gradientes de gravidade nos membros inferiores, mas reduz os subtipos ao fenótipo dominante do tipo III.",
+  "pontos_chave": [
+   "O modelo gerou imagens coerentes para os tipos I, II e III de lipedema (sensibilidade de 1,00 em cada um).",
+   "Nenhuma imagem dos tipos IV e V foi reproduzida (sensibilidade de 0,00); todas foram classificadas como tipo III.",
+   "A acurácia global foi de 0,600 (κ de 0,500; AUC de 0,750), sugerindo que a IA codifica o lipedema como um único fenótipo visual."
+  ],
+  "relevancia_clinica": "Imagens geradas por IA não devem ser usadas, sem curadoria, em educação do paciente ou na formação de residentes e profissionais, pois podem reforçar a ideia de que o lipedema é restrito aos membros inferiores e subestimar as formas com acometimento de braços ou panturrilha isolada. As limitações são o teste de um único modelo, o uso de prompts mínimos (apenas o rótulo do subtipo), que podem não refletir descrições mais detalhadas, e a classificação feita por apenas dois avaliadores, sem validação externa.",
+  "area_ia": "diagnostico",
+  "destaque": false
  },
  {
   "pmid": "42453672",
@@ -6851,6 +6861,71 @@
   ],
   "relevancia_clinica": "A técnica é simples e de baixo custo, e pode ser considerada como opção para manejo de coleções líquidas pós-lipoaspiração em lipedema, embora ainda não permita concluir benefício causal. As limitações incluem ausência de grupo controle concomitante, comparação com casos históricos, desfechos subjetivos, seguimento curto e amostra de centro único.",
   "area_ia": "cirurgia",
+  "destaque": false
+ },
+ {
+  "pmid": "43003071",
+  "titulo": "A Data-Driven Approach to Polygenic Risk Scoring: Combining Support Vector Machine and Ridge Regression in Diseases Lacking GWAS Data Utilizing Lipedema as a Model",
+  "resumo_original": "Multifactorial genetic diseases (as currently applicable for incompletely understood genetic conditions such as lipedema) present a polygenic architecture in which numerous common Single Nucleotide Polymorphisms (SNPs) contribute to overall risk with small summed effects. Traditional Polygenic Risk Scores (PRS) rely on GWAS-derived effect sizes, which are often unavailable or poorly transferable for understudied or rare diseases. This study proposes a summary-statistics-independent (external-GWAS-independent) pipeline for PRS construction and illustrates its application in lipedema. Our pipeline uses individual-level data (n=314; 208 cases, 106 controls) and preselected variants chosen based on biological relevance and physio-logical pathways involved. A standardized workflow includes quality control, alignment, variant calling, annotation, and genotype filtering. A linear Support Vector Machine (SVM) ranks variants by absolute weight to identify the most informative features. Ridge regression with L2 regularization is then applied to derive stable PRS weights. Model performance is evaluated using AUC, accuracy, F1 score, and Nagelkerke's pseudo-R². Analyses of PRS distributions and predictor importance emphasize interpretability and capture weak but cumulative signals. The model achieved an AUC of 0.87 and a Nagelkerke's pseudo-R² of 0.13, indicating meaningful capture of aggregated genetic risk. The proposed summary-statistics-independent pipeline offers a transparent and clinically interpretable strategy for PRS development in GWAS-scarce multifactorial diseases. The combined SVM-ridge strategy appears robust and 140 adaptable, with encouraging performance in lipedema and potential for translational risk stratification. These results should be considered proof-of-concept, pending external validation.",
+  "autores": [
+   "Ferrari L",
+   "Gordani O",
+   "Macchia A",
+   "Feizyab S",
+   "Donato K",
+   "Concas MP",
+   "Guerri G",
+   "Colombo GI",
+   "Gasparini P",
+   "Abidin A",
+   "Nardone GG",
+   "Bonetti G",
+   "Pecori A",
+   "Michelini Sᵃ",
+   "Michelini Sᵉ",
+   "Michelini Sⁱ",
+   "Dhamo X",
+   "Kalluci E",
+   "Bertelli M"
+  ],
+  "revista": "Lymphology",
+  "data": "2026-01-01",
+  "doi": "",
+  "pmcid": "",
+  "idioma": "eng",
+  "tipos_publicacao": [
+   "Journal Article"
+  ],
+  "keywords": [
+   "GWAS",
+   "Lipedema",
+   "Machine learning",
+   "Multifactorial diseases",
+   "Polygenic Risk Score"
+  ],
+  "mesh": [
+   "Humans",
+   "Genetic Risk Score",
+   "Support Vector Machine",
+   "Genome-Wide Association Study",
+   "Polymorphism, Single Nucleotide",
+   "Multifactorial Inheritance",
+   "Genetic Predisposition to Disease"
+  ],
+  "tipo": "observacional",
+  "area": "genetica",
+  "peso": 60,
+  "url": "https://pubmed.ncbi.nlm.nih.gov/43003071/",
+  "coletado_em": "2026-11-10",
+  "titulo_pt": "Uma abordagem orientada por dados para escore de risco poligênico: combinando máquina de vetores de suporte e regressão ridge em doenças sem dados de GWAS, usando o lipedema como modelo",
+  "resumo_pt": "Os autores propõem um pipeline de construção de escore de risco poligênico (PRS) independente de estatísticas sumárias de GWAS externos, aplicado ao lipedema, doença sem GWAS robustos. Utilizaram dados individuais de 314 participantes (208 casos e 106 controles) e variantes pré-selecionadas por relevância biológica e das vias fisiológicas envolvidas. O fluxo incluiu controle de qualidade, alinhamento, chamada de variantes, anotação e filtragem de genótipos. Uma SVM linear ranqueou as variantes pelo valor absoluto dos pesos, e a regressão ridge (regularização L2) derivou os pesos finais do PRS. O modelo obteve AUC de 0,87 e pseudo-R² de Nagelkerke de 0,13. O resumo cita também acurácia e F1, mas não informa seus valores, nem IC ou valores de p. Os autores classificam os resultados como prova de conceito, pendente de validação externa.",
+  "pontos_chave": [
+   "Pipeline de PRS sem dependência de GWAS externo, combinando SVM linear (seleção de variantes) e regressão ridge (pesos).",
+   "Em 314 indivíduos (208 casos, 106 controles), o modelo obteve AUC de 0,87 e pseudo-R² de Nagelkerke de 0,13.",
+   "Resultados são prova de conceito e requerem validação externa antes de qualquer uso translacional."
+  ],
+  "relevancia_clinica": "Nada muda na prática clínica por ora: o PRS não é uma ferramenta diagnóstica ou de estratificação de risco validada para lipedema. As limitações incluem amostra pequena, variantes pré-selecionadas por plausibilidade biológica, risco de sobreajuste (o resumo não descreve validação independente) e ausência de replicação externa.",
+  "area_ia": "genetica",
   "destaque": false
  },
  {
@@ -29645,10 +29720,20 @@
    "Treatment Outcome"
   ],
   "tipo": "ensaio",
-  "area": "genetica",
+  "area": "fisioterapia",
   "peso": 80,
   "url": "https://pubmed.ncbi.nlm.nih.gov/28930626/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Estudo piloto: terapia manual do tecido adiposo subcutâneo (TAS) de corpo inteiro melhorou a dor e a estrutura do TAS em mulheres com lipedema",
+  "resumo_pt": "Estudo piloto prospectivo de braço único, realizado em centro médico acadêmico, com 7 mulheres com lipedema (46 ± 5 anos; peso 90 ± 19 kg). A intervenção consistiu em 12 sessões de 90 min de terapia manual do TAS ao longo de 4 semanas. Peso, taxa metabólica de repouso e o Body Shape Questionnaire (BSQ) não se alteraram significativamente. O volume das pernas, a adipometria em 8 de 9 áreas (p < 0,007), a LEFS (p = 0,002) e a dor média (p = 0,007) diminuíram em relação ao basal. A fibrose diminuiu nos nódulos, quadris e região inguinal, e a ultrassonografia mostrou melhora da estrutura do TAS em alguns indivíduos. A DXA mostrou tendência de redução da gordura de membros em relação à gordura corporal total (p = 0,08) e da gordura de tronco (p = 0,08), sem significância. Efeitos adversos foram frequentes: dor, equimoses, prurido, edema e doença do refluxo gastroesofágico.",
+  "pontos_chave": [
+   "Dor média, volume das pernas e adipometria (8 de 9 áreas) reduziram significativamente após 12 sessões em 4 semanas.",
+   "A fibrose diminuiu nos nódulos, quadris e região inguinal; a ultrassonografia mostrou melhora estrutural em alguns casos.",
+   "Peso, taxa metabólica de repouso e BSQ não mudaram, e os efeitos adversos foram comuns, embora todas as participantes recomendassem a terapia."
+  ],
+  "relevancia_clinica": "Os resultados sugerem que a terapia manual do TAS pode ser uma opção conservadora promissora para dor e volume no lipedema, mas ainda não alteram a prática de forma definitiva. As limitações são a amostra muito pequena (n = 7), a ausência de grupo controle, o desfecho de curto prazo e a falta de cegamento, o que exige confirmação em ensaios controlados.",
+  "area_ia": "fisioterapia",
+  "destaque": false
  },
  {
   "pmid": "28835426",
