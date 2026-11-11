@@ -1,5 +1,75 @@
 [
  {
+  "pmid": "43009550",
+  "titulo": "From Lipoabdominoplasty to Lipedema Surgery: New Perspectives on Reducing Benzodiazepine Use",
+  "resumo_original": "",
+  "autores": [
+   "Albanese R",
+   "Tomaselli F",
+   "Tambasco D"
+  ],
+  "revista": "Aesthetic plastic surgery",
+  "data": "2026-11-10",
+  "doi": "10.1097/PRS.0000000000004461",
+  "pmcid": "",
+  "idioma": "eng",
+  "tipos_publicacao": [
+   "Letter"
+  ],
+  "keywords": [],
+  "mesh": [],
+  "tipo": "carta",
+  "area": "cirurgia",
+  "peso": 10,
+  "url": "https://pubmed.ncbi.nlm.nih.gov/43009550/",
+  "coletado_em": "2026-11-11"
+ },
+ {
+  "pmid": "43009549",
+  "titulo": "The Reduction Surgery To Decrease Pain in Lipedema: A Study with Patients From Celip-Specialized Lipedema Center",
+  "resumo_original": "INTRODUCTION: Lipedema mainly affects women and not infrequently causes intense pain, especially in the 30 to 41 age group.\nOBJECTIVE: To assess how effective lipedema reduction surgery can be in controlling the pain associated with the disease, as well as in controlling symptoms and, consequently, improving patients' quality of life.\nMETHODS: In this study, 26 patients with lipedema were followed up and evaluated at 3 different times: before the surgical procedure, after 6 months and after 12 months.\nRESULTS: It was found that the surgical procedure reduces around 50% of the pain reported at the first assessment point and can reach 100% pain reduction with the application of interdisciplinary procedures that change the patients' lifestyles toward healthier eating routines and more active physical exercise.\nCONCLUSION: Lifestyle changes are fundamental to the long-term success of surgery and pain reduction, corroborating scientific knowledge that lipedema treatment should be interdisciplinary.\nLEVEL OF EVIDENCE IV: Evidence obtained from multiple time series with or without the intervention, such as case studies. Dramatic results in uncontrolled trials might also be regarded as this type of evidence. This journal requires that authors assign a level of evidence to each article. For a full description of these Evidence-Based Medicine ratings, please refer to the Table of Contents or the online Instructions to Authors www.springer.com/00266 .",
+  "autores": [
+   "Manfrim HDT",
+   "Manfrim CM",
+   "Amaro CR",
+   "Patrício A",
+   "Bertoncelo VL",
+   "do Amaral JPZ",
+   "Daronch OT"
+  ],
+  "revista": "Aesthetic plastic surgery",
+  "data": "2026-11-10",
+  "doi": "10.12740/APP/201427",
+  "pmcid": "11728083",
+  "idioma": "eng",
+  "tipos_publicacao": [
+   "Journal Article"
+  ],
+  "keywords": [
+   "Chronic pain",
+   "Life quality",
+   "Lipedema",
+   "Plastic surgery",
+   "Postoperative care"
+  ],
+  "mesh": [],
+  "tipo": "observacional",
+  "area": "cirurgia",
+  "peso": 60,
+  "url": "https://pubmed.ncbi.nlm.nih.gov/43009549/",
+  "coletado_em": "2026-11-11",
+  "titulo_pt": "A cirurgia de redução para diminuir a dor no lipedema: um estudo com pacientes do centro especializado em lipedema Celip",
+  "resumo_pt": "Estudo de série de casos com 26 pacientes com lipedema, avaliadas em três momentos: pré-operatório, 6 e 12 meses após a cirurgia de redução. Segundo os autores, o procedimento reduziu em torno de 50% a dor referida na primeira avaliação. A redução poderia chegar a 100% quando associada a abordagem interdisciplinar, com mudanças de estilo de vida (alimentação mais saudável e maior atividade física). O resumo não informa instrumento de mensuração da dor, valores de p, intervalos de confiança, técnica cirúrgica nem o número de pacientes que atingiram 100% de redução. Nível de evidência IV.",
+  "pontos_chave": [
+   "Em 26 pacientes, a cirurgia de redução diminuiu cerca de 50% da dor referida, em comparação com a avaliação pré-operatória.",
+   "Redução de até 100% da dor foi relatada quando a cirurgia foi associada a intervenções interdisciplinares de alimentação e exercício físico.",
+   "Os autores concluem que mudanças de estilo de vida são fundamentais para o sucesso a longo prazo e que o tratamento deve ser interdisciplinar."
+  ],
+  "relevancia_clinica": "Os dados sugerem benefício da cirurgia sobre a dor e reforçam o manejo interdisciplinar, mas não alteram a prática de forma conclusiva. Limitações: amostra pequena (n=26), ausência de grupo controle, nível de evidência IV, acompanhamento de até 12 meses e falta de detalhes sobre mensuração da dor e análise estatística, o que impede atribuir o efeito à cirurgia ou às mudanças de estilo de vida.",
+  "area_ia": "cirurgia",
+  "destaque": false
+ },
+ {
   "pmid": "42961804",
   "titulo": "The reliability and validity of the Turkish version of the lipedema screening questionnaire",
   "resumo_original": "ObjectivesLipedema is a progressive adipose disorder affecting women, with diagnosis often delayed due to symptom overlap and lack of validated tools. This study assesses the Turkish version of the Lipedema Screening Questionnaire (T-LSQ) through cultural adaptation and psychometric evaluation. The aim of this study was to investigate selected psychometric properties of the Turkish version of the Lipedema Screening Questionnaire (T-LSQ).MethodsThe study involved 59 female volunteers diagnosed with lipedema/lipolymphedema by a cardiovascular surgeon. Key demographics such as age, onset age, lipedema types and stages, clinical features, and Body Mass Index were recorded. The Turkish adaptation of the LSQ was performed in accordance with the protocol of Beaton et al. Confirmatory factor analysis was performed for structural validity. Convergent construct validity was assessed by examining the correlations between T-LSQ scores and the Lower Extremity Functional Scale (LEFS), Lymphedema Life Impact Scale (LLIS), and Lymphoedema Functioning, Disability and Health Questionnaire for Lower Extremity Lymphedema (Lymph-ICF-LL). Test-retest reliability and internal consistency were also evaluated.ResultsSignificant correlations were found between the T-LSQ and the LEFS, LLIS, and Lymph-ICF-LL (r = -0.407, r = 0.613, and r = 0.548, respectively). Test-retest reliability was excellent (ICC = 0.996, 95% CI: 0.994-0.998), while Cronbach's alpha was 0.60. CFA findings provided mixed evidence regarding structural validity.ConclusionThe Turkish version of the LSQ showed excellent test-retest reliability and evidence of convergent construct validity.",
@@ -10327,7 +10397,17 @@
   "area": "cirurgia",
   "peso": 95,
   "url": "https://pubmed.ncbi.nlm.nih.gov/40391527/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Terapia por ondas de choque em pacientes com lipedema: um estudo prospectivo",
+  "resumo_pt": "Estudo prospectivo (classificado na base como ensaio clínico randomizado, embora o abstract descreva apenas um estudo prospectivo com grupo controle, sem detalhar a randomização) avaliou a terapia por ondas de choque (SWT) precoce na fibrose pós-lipoaspiração no lipedema. Foram incluídas 50 mulheres com lipedema estágio II-III submetidas a lipoaspiração assistida por energia (PAL), que receberam SWT 3 vezes por semana durante 3 semanas, iniciando 7 dias após a cirurgia, comparadas a 25 controles sem SWT. O grupo SWT apresentou menor fibrose na elastografia por ultrassom (2,1 ± 0,3 vs 3,8 ± 0,5; p < 0,001), maior elasticidade cutânea (1,5 ± 0,2 mm vs 1,0 ± 0,3 mm; p < 0,01) e menor dor (2,3 ± 0,8 vs 4,7 ± 1,2; p < 0,001). A satisfação foi maior no grupo SWT (92% vs 68%; p < 0,01). Os autores concluem que a SWT precoce é eficaz e segura, mas o abstract não informa intervalos de confiança, escalas utilizadas, tempo de seguimento nem dados detalhados de segurança.",
+  "pontos_chave": [
+   "SWT iniciada 7 dias após PAL reduziu a fibrose à elastografia (2,1 vs 3,8; p < 0,001).",
+   "O grupo SWT teve melhor elasticidade cutânea e menos dor (2,3 vs 4,7; p < 0,001).",
+   "Satisfação das pacientes foi maior com SWT (92% vs 68%; p < 0,01)."
+  ],
+  "relevancia_clinica": "Os resultados sugerem que a SWT precoce pode ser considerada como adjuvante no pós-operatório de lipoaspiração no lipedema, especialmente para fibrose e dor. Cautela: amostra pequena, provável centro único, ausência de cegamento e de detalhes de randomização, seguimento e desfechos de segurança no abstract, além de os mecanismos citados (atividade de fibroblastos, citocinas) não parecerem ter sido medidos; são necessários estudos maiores e controlados por sham.",
+  "area_ia": "cirurgia",
+  "destaque": true
  },
  {
   "pmid": "40386000",
@@ -11900,10 +11980,20 @@
   ],
   "mesh": [],
   "tipo": "meta",
-  "area": "epidemiologia",
+  "area": "diagnostico",
   "peso": 100,
   "url": "https://pubmed.ncbi.nlm.nih.gov/39991623/",
-  "coletado_em": "2026-11-06"
+  "coletado_em": "2026-11-06",
+  "titulo_pt": "Avaliação objetiva da aptidão cardiorrespiratória em indivíduos com linfedema e lipedema: revisão sistemática e metanálise",
+  "resumo_pt": "Revisão sistemática com metanálise de estudos observacionais (Scopus, PubMed e Embase) sobre medidas objetivas de aptidão cardiorrespiratória (ACR) em indivíduos com lipedema e linfedema, primário e secundário. Foram incluídos oito artigos, com predomínio de mulheres. Quatro medidas objetivas de ACR foram relatadas: índices hemodinâmicos, índices espirométricos, VO2 pico e teste de caminhada de 6 minutos (TC6). O VO2 pico foi significativamente menor em mulheres com linfedema relacionado ao câncer de mama, sem correlação com o volume dos membros afetados. Na metanálise, a distância no TC6 foi menor no lipedema do que no linfedema de membros inferiores (diferença combinada: 37,71 [IC: 5,19-70,22], p = 0,02, I² = 0%). Em um dos artigos incluídos, o TC6 associou-se a medidas subjetivas de ACR, como o escore de função física do SF-36.",
+  "pontos_chave": [
+   "Foram incluídos oito estudos observacionais, com quatro tipos de medidas objetivas de ACR: hemodinâmica, espirometria, VO2 pico e TC6.",
+   "O TC6 foi menor no lipedema do que no linfedema de membros inferiores (diferença combinada de 37,71, IC 5,19-70,22, p = 0,02, I² = 0%).",
+   "O VO2 pico foi menor em mulheres com linfedema relacionado ao câncer de mama, sem correlação com o volume do membro."
+  ],
+  "relevancia_clinica": "O TC6 pode ser uma medida objetiva e acessível para acompanhar a capacidade funcional no lipedema e no linfedema, e sugere pior desempenho no lipedema. As evidências são limitadas: poucos estudos, desenhos observacionais e apenas parte deles entrou na metanálise, o que exige cautela na interpretação e não permite definir valores de corte ou uso diagnóstico.",
+  "area_ia": "diagnostico",
+  "destaque": true
  },
  {
   "pmid": "39949954",
