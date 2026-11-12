@@ -1,5 +1,44 @@
 [
  {
+  "pmid": "43012743",
+  "titulo": "International ultrasound protocol for the diagnostic evaluation of lipedema: anatomical, fascial and microvascular criteria",
+  "resumo_original": "BACKGROUND: Lipedema is a chronic disorder of adipose and loose connective tissue characterized by a symmetrical and disproportionate fat distribution, predominantly affecting women. Despite increasing recognition, the lack of a standardized and reproducible imaging protocol limits objective diagnosis, differentiation from related conditions, and comparability across centers. Ultrasonography represents an accessible and versatile tool for evaluating subcutaneous tissue, fascial structures, and microcirculation in lipedema.\nMETHODS: We developed an international, multidisciplinary, expert-based ultrasound protocol using a structured methodological framework. The protocol integrates standardized anatomical measurement points for the lower limbs (A-D) and upper limbs (1-6), quantitative assessment of subcutaneous thickness using validated cutoff values, qualitative evaluation of tissue architecture, and systematic analysis of superficial and deep fasciae. High-sensitivity Doppler techniques, including Micro Flow Imaging, were incorporated to assess microvascular patterns. Histological correlations were derived from previously published data from the authors' group, supporting the interpretation of microvascular and structural findings. The protocol was constructed through integration of current literature and expert clinical experience from a multidisciplinary international group. A structured worksheet was designed to support standardized clinical and imaging data collection.\nRESULTS: The proposed protocol enables consistent identification of lipedema-related ultrasonographic features, including increased subcutaneous thickness, septal disorganization, nodularity, fascial thickening, reduced fascial gliding, and low-resistance microvascular flow. The use of standardized measurement points and cutoff values enhances reproducibility and supports differentiation from lymphedema, edema, obesity, and lipohypertrophy. By integrating quantitative, qualitative, and functional parameters, the protocol addresses current limitations of purely qualitative ultrasound classifications. The worksheet and cartographic approach allow systematic bilateral documentation and facilitate multicenter comparability.\nCONCLUSIONS: This international ultrasound protocol provides a comprehensive and standardized approach for the diagnostic assessment of lipedema, integrating subcutaneous, fascial, and microvascular parameters. It should be interpreted as an expert-informed framework intended to improve diagnostic consistency and to support future prospective validation studies. Its application may improve diagnostic accuracy, promote multicenter research, and support longitudinal monitoring and therapeutic decision-making.",
+  "autores": [
+   "Cardoso Oliveira N",
+   "Barros FS",
+   "Storino J",
+   "Pusic J",
+   "Agüero Wagner C",
+   "Santos FR",
+   "Henriques Lyra P"
+  ],
+  "revista": "International angiology : a journal of the International Union of Angiology",
+  "data": "2026-11-11",
+  "doi": "10.23736/S0392-9590.26.05571-9",
+  "pmcid": "",
+  "idioma": "eng",
+  "tipos_publicacao": [
+   "Journal Article"
+  ],
+  "keywords": [],
+  "mesh": [],
+  "tipo": "observacional",
+  "area": "diagnostico",
+  "peso": 60,
+  "url": "https://pubmed.ncbi.nlm.nih.gov/43012743/",
+  "coletado_em": "2026-11-12",
+  "titulo_pt": "Protocolo internacional de ultrassonografia para a avaliação diagnóstica do lipedema: critérios anatômicos, fasciais e microvasculares",
+  "resumo_pt": "Trata-se de um protocolo ultrassonográfico internacional, multidisciplinar e baseado em consenso de especialistas, desenvolvido a partir de estrutura metodológica sistematizada, da literatura atual e da experiência clínica dos autores. Ele combina pontos anatômicos padronizados de mensuração (membros inferiores A-D; membros superiores 1-6), espessura do tecido subcutâneo com valores de corte previamente validados, avaliação qualitativa da arquitetura tecidual, análise das fáscias superficial e profunda e Doppler de alta sensibilidade (incluindo Micro Flow Imaging) para o padrão microvascular. Segundo os autores, o protocolo permite identificar de forma consistente os achados associados ao lipedema: aumento da espessura subcutânea, desorganização septal, nodularidade, espessamento fascial, redução do deslizamento fascial e fluxo microvascular de baixa resistência. Os pontos e cortes padronizados favoreceriam a reprodutibilidade e a diferenciação de linfedema, edema, obesidade e lipohipertrofia. Há também uma planilha estruturada para registro bilateral. Não foram apresentados dados de acurácia, sensibilidade, especificidade ou concordância interobservador; as correlações histológicas vieram de dados publicados previamente pelo mesmo grupo.",
+  "pontos_chave": [
+   "Protocolo padroniza pontos de mensuração em membros inferiores (A-D) e superiores (1-6), com valores de corte de espessura subcutânea.",
+   "Integra avaliação do subcutâneo, das fáscias (espessamento e deslizamento reduzido) e da microvascularização por Doppler/Micro Flow Imaging.",
+   "Trata-se de proposta baseada em consenso de especialistas, ainda sem validação prospectiva."
+  ],
+  "relevancia_clinica": "O protocolo oferece uma base comum para documentar e comparar achados ultrassonográficos entre centros e pode auxiliar o diagnóstico diferencial e o acompanhamento longitudinal. Como é um arcabouço baseado em opinião de especialistas, sem dados de acurácia diagnóstica ou reprodutibilidade, deve ser usado como apoio ao diagnóstico clínico até que haja validação prospectiva.",
+  "area_ia": "diagnostico",
+  "destaque": true
+ },
+ {
   "pmid": "43009550",
   "titulo": "From Lipoabdominoplasty to Lipedema Surgery: New Perspectives on Reducing Benzodiazepine Use",
   "resumo_original": "",
